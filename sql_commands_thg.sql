@@ -102,11 +102,50 @@ DELIMITER ;
 -- trigger ideas
 -- when placement is set as 1 for a tribute (or more), check if victor for that tribute_id exists and if not, victor is created
 -- 		also add entry into game_victor junction table
--- when new gamemaker score is added, update the average for tribute
+-- when new gamemaker score is added, update the average for tribute - continuous
 -- trigger to limit adding more than set tribute count for game once created
 -- trigger to update participant id from NULL to composite key
 
 
+
+-- ===========================================================================
+-- FUNCTION: calculates and returns the training score
+-- ===========================================================================
+DROP FUNCTION IF EXISTS get_training_score;
+DELIMITER $$
+
+CREATE FUNCTION get_training_score(p_participant_id VARCHAR(64), p_game_number)
+RETURNS DECIMAL(2, 0)
+DETERMINISTIC
+BEGIN
+
+
+    DECLARE training_score DECIMAL(2, 0);
+
+    SELECT ROUND(AVG(assessment_score)) INTO training_score
+    FROM
+    (SELECT gs.assessment_score
+    FROM gamemaker_score gs
+    WHERE participant_id = p_participant_id)
+
+    RETURN COALESCE(avg_score, NULL);
+END $$
+
+DELIMITER ;
+
+
+
+
+
+-- FUNCTIONS
+-- CREATE FUNCTION NAME (FIELD1 FIELD1_DATATYPE, ...)
+-- RETURNS data_type
+-- DETERMINISTIC OR NOT
+-- Contains SQL | NO SQL | READS SQL DATA | MODIFIES SQL DATA
+
+-- WRITE FUNCTION THAT RETURNS AN INTEGER
+-- THAT IS THE BUMBER OF DISTINCT school names
+-- within the student table
 
 
 -- ===========================================================================
@@ -198,3 +237,33 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+-- ===========================================================================
+-- TRIGGER: prevents participant insertion if required number of tributes
+-- for the games has already been reached
+-- outputs a signal
+-- ===========================================================================
+DROP TRIGGER IF EXISTS limit_participant_count;
+DELIMITER $$
+
+CREATE TRIGGER limit_participant_count
+BEFORE INSERT ON participant
+FOR EACH ROW
+BEGIN
+
+    DECLARE num_participants INT;
+    DECLARE max_tributes INT;
+
+    SELECT COUNT INTO num_participants FROM participant;
+    SELECT required_tribute_count INTO max_tributes FROM game;
+
+    IF num_participants = max_tributes THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'required tribute count has been reached';
+    END IF;
+
+END $$
+
+DELIMITER ;
+    
