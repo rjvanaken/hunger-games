@@ -154,7 +154,31 @@ def display_sponsorships(sponsorships):
         print(f"{sponsorship['sponsorship_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | {sponsorship['amount']:<10}")
     print("=" * 100 + "\n")
 
+    # VIEW GAMES
+def display_view_games_menu():
+    """Displays the menu for viewing games"""
+    print("\n=== VIEW GAMES ===")
+    print("1: View All Games")
+    print("2: Search Game by Number")
+    print("0: RETURN")
+    choice = input("Enter choice: ")
+    return choice
 
+def display_games(games):
+    """Display formatted list of games"""
+    if not games:
+        print("\nNo games found.")
+        return
+        
+    print("\n" + "=" * 80)
+    print("GAMES")
+    print("=" * 80)
+    print(f"{'Game Number':<12} | {'Start Date':<12} | {'End Date':<12} | {'Victor':<30} | {'Location':<30}")
+    print("-" * 80)
+    for game in games:
+        victor = ', '.join([v['victor_name'] for v in game['victors']]) if game['victors'] else 'TBD'
+        print(f"{game['game_number']:<12} | {str(game['start_date']):<12} | {str(game['end_date']):<12} | {victor:<30} | {game['location']:<30}")
+    print("=" * 80 + "\n")
 
 
 '''
