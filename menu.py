@@ -13,6 +13,40 @@ def display_menu():
 
 
 '''
+SELECT GAME 
+'''
+
+def display_games(game_list):
+    print("=================================")
+    print("SELECT A GAME: ")
+    for game in game_list:
+        print("- " + game)
+    # run function that handles this input
+    print("=================================")
+
+
+
+def get_game_input(game_list):
+    """handle game input"""
+    # Step 13: Get input
+    
+    display_games(game_list)
+    game_type_input = input("Enter a game number from the above list: ")
+    # Step 14: Validate | Step 15: Error message and repeat input request
+    while game_type_input not in game_list:
+        print("Invalid game number. Please try again.")
+        display_games(game_list)
+        game_input = input("Enter a game number from the above list: ")    
+    
+    # Find and return the correct case version
+    index = game_list.index(game_input)
+    return game_list[index]
+
+
+    # NOT FINISHED
+
+
+'''
 MANAGE RECORDS
 '''
 
@@ -46,30 +80,20 @@ def display_view_records_menu():
     print("5: View Team Members")
     print("6: View Participants")
     print("7: View Victors")
-    print("8: View Districts Victors")
     print("0: RETURN TO MAIN MENU")
     choice = input("Enter choice: ")
     return choice
 
-def display_view_tribute_menu():
+# VIEW TRIBUTES
+def display_view_tributes_menu():
     """Displays the menu for viewing tributes"""
     print("\n=== VIEW TRIBUTES ===")
     print("1: View All Tributes")
     print("2: Search Tribute by Name")
-    print("3: View Tributes by District")
+    print("3: View Tributes From District")
     print("0: RETURN")
     choice = input("Enter choice: ")
     return choice
-
-
-def get_tribute_name_input():
-    """Get tribute name from user"""
-    name = input("Enter tribute name to search: ")
-    return name
-
-def get_district_num_input():
-    district = input("Enter district number: ")
-    return district
 
 def display_tributes(tributes):
     """Display formatted list of tributes"""
@@ -88,40 +112,84 @@ def display_tributes(tributes):
 
 
 
+    # VIEW SPONSORS
+def display_view_sponsors_menu():
+    """Displays the menu for viewing sponsors"""
+    print("\n=== VIEW SPONSORS ===")
+    print("1: View All Sponsors")
+    print("2: Search Sponsor by Name")
+    print("3: View All Sponsorships")
+    print("4: View Sponsorships by Game and/or Tribute") 
+    print("0: RETURN")
+    choice = input("Enter choice: ")
+    return choice
 
+def display_sponsors(sponsors):
+    """Display formatted list of sponsors"""
+    if not sponsors:
+        print("\nNo sponsors found.")
+        return
+        
+    print("\n" + "=" * 80)
+    print("SPONSORS")
+    print("=" * 80)
+    print(f"{'ID':<5} | {'Name':<30} | {'Total Contributions':<20}")
+    print("-" * 80)
+    for sponsor in sponsors:
+        print(f"{sponsor['sponsor_id']:<5} | {sponsor['name']:<30} | {sponsor['total_contributions']:<20}")
+    print("=" * 80 + "\n")
+
+def display_sponsorships(sponsorships):
+    """Display formatted list of sponsorships"""
+    if not sponsorships:
+        print("\nNo sponsorships found.")
+        return
+        
+    print("\n" + "=" * 100)
+    print("SPONSORSHIPS")
+    print("=" * 100)
+    print(f"{'Sponsorship ID':<15} | {'Sponsor Name':<30} | {'Tribute Name':<30} | {'Game Number':<12} | {'Amount':<10}")
+    print("-" * 100)
+    for sponsorship in sponsorships:
+        print(f"{sponsorship['sponsorship_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | {sponsorship['amount']:<10}")
+    print("=" * 100 + "\n")
 
 
 
 
 '''
-SELECT GAME 
+ANALYTICS
 '''
 
-def display_games(game_list):
-    print("=================================")
-    print("SELECT A GAME: ")
-    for game in game_list:
-        print("- " + game)
-    # run function that handles this input
-    print("=================================")
+
+'''
+INPUT FUNCTIONS
+'''
+def get_name_input(prompt):
+    """Get name from user for:
+    - tribute
+    - sponsor
+    - gamemaker
+    - team member
+    """
+    name = input(f"{prompt}: ").strip()
+    return name
+
+def get_number_input(prompt):
+    """Get and validate number from user for:
+    - game
+    - district
+    """
+    while True:
+        number = input(f"{prompt}: ").strip()
+        if number.isdigit():
+            return int(number)
+        print("Invalid input. Please enter a number.")
 
 
 
-def get_game_input(game_list):
-    """handle game input"""
-    # Step 13: Get input
-    
-    display_games(game_list)
-    game_type_input = input("Enter a game number from the above list: ")
-    # Step 14: Validate | Step 15: Error message and repeat input request
-    while game_type_input not in game_list:
-        print("Invalid game number. Please try again.")
-        display_games(game_list)
-        game_input = input("Enter a game number from the above list: ")    
-    
-    # Find and return the correct case version
-    index = game_list.index(game_input)
-    return game_list[index]
+
+
 
 
 
