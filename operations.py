@@ -1,5 +1,18 @@
 import pymysql
 
+
+'''
+==============================
+CALCULATIONS
+==============================
+'''
+
+def get_sponsor_total(connection, sponsor_id):
+    cursor = connection.cursor()
+    cursor.execute("SELECT get_total_contributions(%s)", (sponsor_id,))
+    result = cursor.fetchone()
+    return result[0] if result else 0
+
 '''
 ==============================
 SELECT GAME OPERATIONS
@@ -25,17 +38,20 @@ VIEW OPERATIONS
 '''
 # Generic View Table (with no foreign keys needed)
 def view_table(connection, table_name):
+    print("trying to view")
     """Get all tributes from database"""
     cursor = connection.cursor()
     query = f"SELECT * FROM {table_name}"
     cursor.execute(query)
     rows = cursor.fetchall()
     cursor.close()
+    print("ready to return")
     return rows
 
 
 # View Tributes
 def view_tributes(connection, name=None, district=None):
+    print("entering view tribute handle function")
     cursor = connection.cursor()
     query = "SELECT * FROM tribute WHERE 1=1"
     params = []
@@ -69,8 +85,7 @@ def view_sponsorships(connection, game_number=None, tribute_name=None):
     cursor = connection.cursor()
     
     query = """
-        SELECT s.name AS sponsor_name, t.name AS tribute_name, 
-               sp.sponsor_amount, p.game_number
+        SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount, p.game_number
         FROM sponsorship sp
         JOIN sponsor s ON sp.sponsor_id = s.sponsor_id
         JOIN participant p ON sp.participant_id = p.participant_id

@@ -1,7 +1,7 @@
 import pymysql
 
 def get_credentials():
-    """Step 10: Prompt for username and password"""
+    """Prompt for username and password"""
     username = input("Enter database username: ")
     password = input("Enter database password: ")
     return username, password

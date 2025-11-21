@@ -134,8 +134,26 @@ END $$
 DELIMITER ;
 
 
+DROP FUNCTION IF EXISTS get_total_contributions;
 
+DELIMITER $$
+CREATE FUNCTION get_total_contributions(p_sponsor_id INT)
+RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+	
+	DECLARE total_contributions DECIMAL(10, 2);
+	
+	SELECT COALESCE(SUM(sponsor_amount), 0) INTO total_contributions
+	FROM sponsorship
+	WHERE sponsor_id = p_sponsor_id;
+	
+	
+	RETURN total_contributions;
 
+END $$
+	
+DELIMITER ;	
 
 -- FUNCTIONS
 -- CREATE FUNCTION NAME (FIELD1 FIELD1_DATATYPE, ...)

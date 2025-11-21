@@ -1,3 +1,4 @@
+import operations as ops
 
 def display_menu():
     """Top menu options"""
@@ -6,8 +7,8 @@ def display_menu():
     print("2: Manage Capitol Records")
     print("3: View Capitol Records")
     print("4: Get Stats & Analytics")
-    print("\n")
-    print("0: DISCONNECT FROM DATABASE")
+    print("------------------------------")
+    print("0: DISCONNECT FROM DATABASE\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -60,7 +61,7 @@ def display_manage_records_menu():
     print("5: Manage Team Members")
     print("6: Manage Participants")
     print("7: Manage Victors")
-    print("0: RETURN TO MAIN MENU")
+    print("0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -104,10 +105,10 @@ def display_tributes(tributes):
     print("\n" + "=" * 80)
     print("TRIBUTES")
     print("=" * 80)
-    print(f"{'ID':<5} | {'Name':<30} | {'District':<8} | {'Gender':<8} | {'Birth Date':<12}")
+    print(f"{'ID':<5} | {'Name':<25} | {'District':<8} | {'Gender':<8} | {'Birth Date':<12}")
     print("-" * 80)
     for tribute in tributes:
-        print(f"{tribute['tribute_id']:<5} | {tribute['name']:<30} | {tribute['district']:<8} | {tribute['gender']:<8} | {str(tribute['birth_date']):<12}")
+        print(f"{tribute['tribute_id']:<5} | {tribute['name']:<25} | {tribute['district']:<8} | {tribute['gender']:<8} | {str(tribute['dob']):<12}")
     print("=" * 80 + "\n")
 
 
@@ -124,7 +125,7 @@ def display_view_sponsors_menu():
     choice = input("Enter choice: ")
     return choice
 
-def display_sponsors(sponsors):
+def display_sponsors(connection, sponsors):
     """Display formatted list of sponsors"""
     if not sponsors:
         print("\nNo sponsors found.")
@@ -136,7 +137,8 @@ def display_sponsors(sponsors):
     print(f"{'ID':<5} | {'Name':<30} | {'Total Contributions':<20}")
     print("-" * 80)
     for sponsor in sponsors:
-        print(f"{sponsor['sponsor_id']:<5} | {sponsor['name']:<30} | {sponsor['total_contributions']:<20}")
+        total_contributions = ops.get_sponsor_total(connection, sponsor['sponsor_id'])
+        print(f"{sponsor['sponsor_id']:<5} | {sponsor['name']:<30} | {total_contributions:<20}")
     print("=" * 80 + "\n")
 
 def display_sponsorships(sponsorships):
@@ -148,10 +150,10 @@ def display_sponsorships(sponsorships):
     print("\n" + "=" * 100)
     print("SPONSORSHIPS")
     print("=" * 100)
-    print(f"{'Sponsorship ID':<15} | {'Sponsor Name':<30} | {'Tribute Name':<30} | {'Game Number':<12} | {'Amount':<10}")
+    print(f"{'Sponsor ID':<15} | {'Participant ID':<15} | {'Sponsor Name':<30} | {'Tribute Name':<30} | {'Game Number':<12} | {'Amount':<10}")
     print("-" * 100)
     for sponsorship in sponsorships:
-        print(f"{sponsorship['sponsorship_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | {sponsorship['amount']:<10}")
+        print(f"{sponsorship['sponsor_id']:<15} | {sponsorship['participant_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | {sponsorship['amount']:<10}")
     print("=" * 100 + "\n")
 
     # VIEW GAMES
@@ -196,7 +198,7 @@ def get_name_input(prompt):
     - gamemaker
     - team member
     """
-    name = input(f"{prompt}: ").strip()
+    name = input(f"{prompt}: ")
     return name
 
 def get_number_input(prompt):
