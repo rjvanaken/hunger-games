@@ -171,6 +171,120 @@ def view_games(connection, game_number=None, tribute_name=None, victor_name=None
     return games
 
 
+# View Gamemakers
+def view_gamemakers(connection, name=None, game_number=None):
+    cursor = connection.cursor()
+    query = "SELECT * FROM gamemaker WHERE 1=1"
+    params = []
+    
+    if name:
+        query += " AND name LIKE %s"
+        params.append(f"%{name}%")
+    
+    if game_number:
+        query += " AND game_number = %s"
+        params.append(game_number)
+
+    cursor.execute(query, params)
+    gamemakers = cursor.fetchall()
+    cursor.close()
+    return gamemakers
+
+
+# View Team Member
+def view_team_members(connection, name=None, member_type=None, tribute_name=None):
+    cursor = connection.cursor()
+    query = "SELECT * FROM team_member WHERE 1=1"
+    """SELECT tm.member_id, tm.name, 
+            FROM team_member tm
+            JOIN team_role tr
+            WHERE 1=1"
+            """ # INCOMPLETE - NEED TO DO SIMILAR THING TO GAME VICTOR TO STRING UP ALL MEMBER TYPES THEY HAVE BEEN
+    params = []
+    
+    if name:
+        query += " AND name LIKE %s"
+        params.append(f"%{name}%")
+    
+    if member_type:
+        query += " AND member_type = %s"
+        params.append(member_type)
+
+    if tribute_name:
+        query += " AND tribute_name LIKE %s"
+        params.append(f"%{tribute_name}%")
+
+    cursor.execute(query, params)
+    team_members = cursor.fetchall()
+    cursor.close()
+    return team_members
+
+
+# View Participants
+def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, gamemaker_score=None): # TODO: calculate age function needed
+    cursor = connection.cursor()
+    query = """SELECT *
+            FROM participant p
+            JOIN game g ON participant
+            JOIN tribute t
+            WHERE 1=1"
+            """
+    params = []
+    
+    if tribute_name:
+        query += " AND name LIKE %s"
+        params.append(f"%{tribute_name}%")
+    
+    if age_during_games:
+        query += " AND age_during_games = %s"
+        params.append(age_during_games)
+
+    if game_number:
+        query += " AND game_number = %s"
+        params.append(game_number)
+
+    if gamemaker_score:
+        query += " AND gamemaker_score = %s"
+        params.append(gamemaker_score)
+
+
+    cursor.execute(query, params)
+    participants = cursor.fetchall()
+    cursor.close()
+    return participants
+
+
+# View Victors
+
+def view_victors(connection, game_number=None, tribute_name=None):
+    """View victors with optional filters"""
+    cursor = connection.cursor()
+    
+    query = """SELECT p.participant_id, p.tribute_id, t.name, p.game_id
+            FROM participant p
+            JOIN tribute t ON p.tribute_id = t.tribute_id
+            WHERE 1=1"
+            """
+    params = []
+    
+    if game_number:
+        query += " AND p.game_number = %s"
+        params.append(game_number)
+    
+    if tribute_name:
+        query += " AND t.name LIKE %s"
+        params.append(f"%{tribute_name}%")
+    
+
+    query += " AND p.final_placement_id = %s"
+    query += " ORDER BY game_number ASC"
+    
+    cursor.execute(query, params)
+    victors = cursor.fetchall()
+    cursor.close()
+    return victors
+
+
 '''
 ==============================
 MANAGE OPERATIONS
