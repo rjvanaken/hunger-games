@@ -9,9 +9,18 @@ CALCULATIONS
 
 def get_sponsor_total(connection, sponsor_id):
     cursor = connection.cursor()
-    cursor.execute("SELECT get_total_contributions(%s)", (sponsor_id,))
+    cursor.execute("SELECT get_total_contributions(%s) AS total", (sponsor_id,))
     result = cursor.fetchone()
-    return result[0] if result else 0
+    cursor.close()
+    return result['total'] if result else 0
+
+
+def get_gamemaker_score(connection, participant_id, ):
+    cursor = connection.cursor()
+    cursor.execute("SELECT get_training_score(%s) AS score", (participant_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['score'] if result else 0
 
 '''
 ==============================
@@ -85,7 +94,7 @@ def view_sponsorships(connection, game_number=None, tribute_name=None):
     cursor = connection.cursor()
     
     query = """
-        SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount, p.game_number
+        SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount as amount, p.game_number
         FROM sponsorship sp
         JOIN sponsor s ON sp.sponsor_id = s.sponsor_id
         JOIN participant p ON sp.participant_id = p.participant_id
@@ -108,6 +117,58 @@ def view_sponsorships(connection, game_number=None, tribute_name=None):
     sponsorships = cursor.fetchall()
     cursor.close()
     return sponsorships
+
+#VIEW-GAMES
+def view_games(connection, game_number=None, tribute_name=None, victor_name=None):
+    """View games with optional filters"""
+    cursor = connection.cursor()
+    
+    query = """
+        SELECT g.game_number as game_number, g.required_tribute_count as tribute_count, g.start_date, g.end_date, 
+            GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ', ') as victor_names 
+        FROM game g
+        LEFT JOIN game_victor gv ON g.game_number = gv.game_number
+        LEFT JOIN victor v ON gv.victor_id = v.victor_id
+        LEFT JOIN tribute t ON v.victor_id = t.tribute_id
+       
+    """
+
+    if tribute_name:
+        query += """
+            LEFT JOIN participant p ON g.game_number = p.game_number
+            LEFT JOIN tribute participant_t ON p.tribute_id = participant_t.tribute_id
+        """
+
+    query += " WHERE 1=1"
+    params = []
+    
+    if game_number:
+        query += " AND g.game_number = %s"
+        params.append(game_number)
+
+    if tribute_name:
+        query += " AND participant_t.name LIKE %s"
+        params.append(f"%{tribute_name}%")
+    
+    if victor_name:
+        query += """ AND g.game_number IN (
+            SELECT DISTINCT gv2.game_number 
+            FROM game_victor gv2
+            JOIN victor v2 ON gv2.victor_id = v2.victor_id
+            JOIN tribute t2 ON v2.victor_id = t2.tribute_id
+            WHERE t2.name LIKE %s
+        )"""
+        params.append(f"%{victor_name}%")
+
+    query += """
+    GROUP BY g.game_number, g.start_date, g.end_date, g.required_tribute_count
+    ORDER BY g.game_number
+    """
+    
+    cursor.execute(query, params)
+    games = cursor.fetchall()
+    cursor.close()
+    return games
 
 
 '''

@@ -7,9 +7,9 @@ def main():
     """Main application loop"""
     connection = None
     
-    print("==================================")
-    print("THE HUNGER GAMES MANAGEMENT SYSTEM")
-    print("==================================")
+    print("====================================")
+    print(" THE HUNGER GAMES MANAGEMENT SYSTEM ")
+    print("====================================")
 
     # Get database credentials and connect
     while True:
@@ -71,7 +71,7 @@ def handle_view_records(connection):
         elif view_choice == '2':
             handle_view_sponsors(connection)
         elif view_choice == '3':
-            pass
+            handle_view_games(connection)
         elif view_choice == '4':
             pass
         elif view_choice == '5':
@@ -81,9 +81,10 @@ def handle_view_records(connection):
         elif view_choice == '7':
             pass
         elif view_choice == '0':
-            pass
+            break
         else:
             print("Invalid entry")
+        
 
 # VIEW-TRIBUTES
 def handle_view_tributes(connection):
@@ -120,28 +121,59 @@ def handle_view_sponsors(connection):
         
         elif choice == "2":
             name = menu.get_name_input("Enter sponsor name")
-            rows = ops.view_table(connection, 'sponsor')
+            rows = ops.search_sponsor_by_name(connection, name)
             menu.display_sponsors(connection, rows)
         
         elif choice == "3":
-            rows = ops.view_table(connection, 'sponsorship')
+            rows = ops.view_sponsorships(connection, None, None)
             menu.display_sponsorships(rows)
             
         elif choice == "4":
+            game = menu.get_number_input("Enter game number (0 to skip)")
+            if game == "0":
+                game = None
             name = menu.get_name_input("Enter tribute name (0 to skip)")
             if name == "0":
                 name = None
-            district = menu.get_number_input("Enter district number (0 to skip)")
-            if district == "0":
-                district = None
-            rows =  ops.view_sponsorships(connection, name, district)
+            rows =  ops.view_sponsorships(connection, game, name)
             menu.display_sponsorships(rows)
 
         elif choice == "0":
             break
         else:
             print("Invalid entry")
+
+
+#VIEW-GAMES
+
+def handle_view_games(connection):
+    while True:
+        choice = menu.display_view_games_menu()
+        if choice == "1":
+            rows = ops.view_games(connection)
+            menu.display_games(rows)
         
+        elif choice == "2":
+            game = menu.get_number_input("Enter game number")
+            rows = ops.view_games(connection, game)
+            menu.display_games(rows)
+
+        elif choice == "3":
+            name = menu.get_name_input("Enter tribute name")
+            rows = ops.view_games(connection, None, name)
+            menu.display_games(rows)
+
+        elif choice == "4":
+            name = menu.get_name_input("Enter victor name")
+            rows = ops.view_games(connection, None, None, name)
+            menu.display_games(rows)
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid entry")
+        
+
 
 def handle_analytics(connection):
     """Handle stats & analytics"""

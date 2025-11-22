@@ -61,6 +61,7 @@ def display_manage_records_menu():
     print("5: Manage Team Members")
     print("6: Manage Participants")
     print("7: Manage Victors")
+    print("------------------------------------")
     print("0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")
     return choice
@@ -81,7 +82,8 @@ def display_view_records_menu():
     print("5: View Team Members")
     print("6: View Participants")
     print("7: View Victors")
-    print("0: RETURN TO MAIN MENU")
+    print("------------------------------------")
+    print("0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -92,7 +94,8 @@ def display_view_tributes_menu():
     print("1: View All Tributes")
     print("2: Search Tribute by Name")
     print("3: View Tributes From District")
-    print("0: RETURN")
+    print("------------------------------------")
+    print("0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -103,12 +106,12 @@ def display_tributes(tributes):
         return
         
     print("\n" + "=" * 80)
-    print("TRIBUTES")
+    print(" TRIBUTES")
     print("=" * 80)
-    print(f"{'ID':<5} | {'Name':<25} | {'District':<8} | {'Gender':<8} | {'Birth Date':<12}")
+    print(f" {'ID':<5} | {'Name':<25} | {'District':<8} | {'Gender':<8} | {'Birth Date':<12}")
     print("-" * 80)
     for tribute in tributes:
-        print(f"{tribute['tribute_id']:<5} | {tribute['name']:<25} | {tribute['district']:<8} | {tribute['gender']:<8} | {str(tribute['dob']):<12}")
+        print(f" {tribute['tribute_id']:<5} | {tribute['name']:<25} | {tribute['district']:<8} | {tribute['gender']:<8} | {str(tribute['dob']):<12}")
     print("=" * 80 + "\n")
 
 
@@ -121,7 +124,8 @@ def display_view_sponsors_menu():
     print("2: Search Sponsor by Name")
     print("3: View All Sponsorships")
     print("4: View Sponsorships by Game and/or Tribute") 
-    print("0: RETURN")
+    print("----------------------------------------------")
+    print("0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -131,15 +135,15 @@ def display_sponsors(connection, sponsors):
         print("\nNo sponsors found.")
         return
         
-    print("\n" + "=" * 80)
-    print("SPONSORS")
-    print("=" * 80)
-    print(f"{'ID':<5} | {'Name':<30} | {'Total Contributions':<20}")
-    print("-" * 80)
+    print("\n" + "=" * 70)
+    print(" SPONSORS")
+    print("=" * 70)
+    print(f" {'ID':<5} | {'Name':<35} | {'Total Contributions':<10}")
+    print("-" * 70)
     for sponsor in sponsors:
         total_contributions = ops.get_sponsor_total(connection, sponsor['sponsor_id'])
-        print(f"{sponsor['sponsor_id']:<5} | {sponsor['name']:<30} | {total_contributions:<20}")
-    print("=" * 80 + "\n")
+        print(f" {sponsor['sponsor_id']:<5} | {sponsor['name']:<35} | ${total_contributions:<10,.2f}")
+    print("=" * 70 + "\n")
 
 def display_sponsorships(sponsorships):
     """Display formatted list of sponsorships"""
@@ -147,14 +151,14 @@ def display_sponsorships(sponsorships):
         print("\nNo sponsorships found.")
         return
         
-    print("\n" + "=" * 100)
-    print("SPONSORSHIPS")
-    print("=" * 100)
-    print(f"{'Sponsor ID':<15} | {'Participant ID':<15} | {'Sponsor Name':<30} | {'Tribute Name':<30} | {'Game Number':<12} | {'Amount':<10}")
-    print("-" * 100)
+    print("\n" + "=" * 130)
+    print(" SPONSORSHIPS")
+    print("=" * 130)
+    print(f" {'Sponsor ID':<12} | {'Participant ID':<15} | {'Sponsor Name':<30} | {'Tribute Name':<30} | {'Game Number':<12} | {'Amount':<10}")
+    print("-" * 130)
     for sponsorship in sponsorships:
-        print(f"{sponsorship['sponsor_id']:<15} | {sponsorship['participant_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | {sponsorship['amount']:<10}")
-    print("=" * 100 + "\n")
+        print(f" {sponsorship['sponsor_id']:<12} | {sponsorship['participant_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | ${sponsorship['amount']:<10,.2f}")
+    print("=" * 130 + "\n")
 
     # VIEW GAMES
 def display_view_games_menu():
@@ -162,7 +166,10 @@ def display_view_games_menu():
     print("\n=== VIEW GAMES ===")
     print("1: View All Games")
     print("2: Search Game by Number")
-    print("0: RETURN")
+    print("3: Search Game by Tribute")
+    print("4: Search Game by Victor")
+    print("---------------------------")
+    print("0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -172,15 +179,15 @@ def display_games(games):
         print("\nNo games found.")
         return
         
-    print("\n" + "=" * 80)
-    print("GAMES")
-    print("=" * 80)
-    print(f"{'Game Number':<12} | {'Start Date':<12} | {'End Date':<12} | {'Victor':<30} | {'Location':<30}")
-    print("-" * 80)
+    print("\n" + "=" * 115)
+    print(" GAMES")
+    print("=" * 115)
+    print(f" {'Game Number':<12} | {'Number of Tributes':<20} | {'Start Date':<12} | {'End Date':<12} | {'Victor(s)':<}")
+    print("-" * 115)
     for game in games:
-        victor = ', '.join([v['victor_name'] for v in game['victors']]) if game['victors'] else 'TBD'
-        print(f"{game['game_number']:<12} | {str(game['start_date']):<12} | {str(game['end_date']):<12} | {victor:<30} | {game['location']:<30}")
-    print("=" * 80 + "\n")
+        victors = game['victor_names'] if game['victor_names'] else 'TBD'
+        print(f" {game['game_number']:<12} | {game['tribute_count']:<20} | {str(game['start_date']):<12} | {str(game['end_date']):<12} | {victors:<30}")
+    print("=" * 115 + "\n")
 
 
 '''
