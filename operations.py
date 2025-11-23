@@ -174,7 +174,12 @@ def view_games(connection, game_number=None, tribute_name=None, victor_name=None
 # View Gamemakers
 def view_gamemakers(connection, name=None, game_number=None):
     cursor = connection.cursor()
-    query = "SELECT * FROM gamemaker WHERE 1=1"
+    query = """
+    SELECT g.gamemaker_id as gamemaker_id, g.name as name
+    FROM gamemaker g
+    JOIN game_creator gc ON g.gamemaker_id = gc.gamemaker_id
+    WHERE 1=1
+    """
     params = []
     
     if name:
@@ -182,7 +187,7 @@ def view_gamemakers(connection, name=None, game_number=None):
         params.append(f"%{name}%")
     
     if game_number:
-        query += " AND game_number = %s"
+        query += " AND gc.game_number = %s"
         params.append(game_number)
 
     cursor.execute(query, params)
@@ -194,12 +199,11 @@ def view_gamemakers(connection, name=None, game_number=None):
 # View Team Member
 def view_team_members(connection, name=None, member_type=None, tribute_name=None):
     cursor = connection.cursor()
-    query = "SELECT * FROM team_member WHERE 1=1"
-    """SELECT tm.member_id, tm.name, 
+    query = """SELECT tm.member_id, tm.name, GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ', ') as roles
             FROM team_member tm
-            JOIN team_role tr
-            WHERE 1=1"
-            """ # INCOMPLETE - NEED TO DO SIMILAR THING TO GAME VICTOR TO STRING UP ALL MEMBER TYPES THEY HAVE BEEN
+            JOIN team_role tr ON tm.member_id = tr.member_id
+            WHERE 1=1
+            """
     params = []
     
     if name:
@@ -207,12 +211,28 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
         params.append(f"%{name}%")
     
     if member_type:
-        query += " AND member_type = %s"
+        query += """AND tm.member_id IN (
+        SELECT DISTINCT tr2.member_id
+        FROM team_role tr2
+        WHERE tr2.member_type = %s
+        )"""
         params.append(member_type)
 
     if tribute_name:
-        query += " AND tribute_name LIKE %s"
+        query += """AND tm.member_id IN (
+        SELECT DISTINCT tr2.member_id
+        FROM team_role tr2
+        JOIN participant p ON tr2.participant_id = p.participant_id
+        JOIN tribute t ON p.tribute_id = t.tribute_id
+        WHERE t.name LIKE %s
+        )"""
         params.append(f"%{tribute_name}%")
+
+
+    query += """
+    GROUP BY tm.member_id, tm.name
+    ORDER BY tm.member_id ASC
+    """
 
     cursor.execute(query, params)
     team_members = cursor.fetchall()
@@ -221,7 +241,7 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
 
 
 # View Participants
-def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, gamemaker_score=None): # TODO: calculate age function needed
+def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None): # TODO: calculate age function needed
     cursor = connection.cursor()
     query = """SELECT *
             FROM participant p
@@ -243,9 +263,9 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
         query += " AND game_number = %s"
         params.append(game_number)
 
-    if gamemaker_score:
-        query += " AND gamemaker_score = %s"
-        params.append(gamemaker_score)
+    if training_score:
+        query += " AND training_score = %s"
+        params.append(training_score)
 
 
     cursor.execute(query, params)
@@ -255,29 +275,31 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
 
 
 # View Victors
-
-def view_victors(connection, game_number=None, tribute_name=None):
+def view_victors(connection, tribute_name=None, game_number=None):
     """View victors with optional filters"""
     cursor = connection.cursor()
     
-    query = """SELECT p.participant_id, p.tribute_id, t.name, p.game_id
-            FROM participant p
-            JOIN tribute t ON p.tribute_id = t.tribute_id
-            WHERE 1=1"
+    query = """SELECT v.victor_id, t.name, t.district, GROUP_CONCAT(DISTINCT gv.game_number ORDER BY gv.game_number SEPARATOR ', ') as games_won
+            FROM victor v
+            JOIN game_victor gv ON v.victor_id = gv.victor_id
+            JOIN tribute t ON v.victor_id = t.tribute_id
+            WHERE 1=1
             """
     params = []
-    
-    if game_number:
-        query += " AND p.game_number = %s"
-        params.append(game_number)
     
     if tribute_name:
         query += " AND t.name LIKE %s"
         params.append(f"%{tribute_name}%")
-    
 
-    query += " AND p.final_placement_id = %s"
-    query += " ORDER BY game_number ASC"
+    if game_number:
+        query += " AND games_won LIKE %s"
+        params.append(f"%{game_number}%")
+
+
+    query += """
+    GROUP BY v.victor_id, t.name, t.district
+    ORDER BY v.victor_id ASC
+    """
     
     cursor.execute(query, params)
     victors = cursor.fetchall()

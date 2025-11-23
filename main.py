@@ -62,7 +62,6 @@ def handle_manage_records(connection):
     pass
 
 def handle_view_records(connection):
-    print("handle view records submenu")
     """Handle view records submenu"""
     while True:
         view_choice = menu.display_view_records_menu()
@@ -73,13 +72,16 @@ def handle_view_records(connection):
         elif view_choice == '3':
             handle_view_games(connection)
         elif view_choice == '4':
-            pass
+            handle_view_gamemakers(connection)
         elif view_choice == '5':
+            handle_view_team_members(connection)
             pass
+            
         elif view_choice == '6':
+            # handle_view_participants(connection)
             pass
         elif view_choice == '7':
-            pass
+            handle_view_victors(connection)
         elif view_choice == '0':
             break
         else:
@@ -111,6 +113,7 @@ def handle_view_tributes(connection):
             break
         else:
             print("Invalid entry")
+
 #VIEW-SPONSORS
 def handle_view_sponsors(connection):
     while True:
@@ -145,7 +148,6 @@ def handle_view_sponsors(connection):
 
 
 #VIEW-GAMES
-
 def handle_view_games(connection):
     while True:
         choice = menu.display_view_games_menu()
@@ -172,7 +174,105 @@ def handle_view_games(connection):
             break
         else:
             print("Invalid entry")
+
+# VIEW GAMEMAKERS
+def handle_view_gamemakers(connection):
+    while True:
+        choice = menu.display_view_gamemakers_menu()
+        if choice == "1":
+            rows = ops.view_gamemakers(connection)
+            menu.display_gamemakers(rows)
         
+        elif choice == "2":
+            name = menu.get_name_input("Enter gamemaker name")
+            rows = ops.view_gamemakers(connection, name)
+            menu.display_gamemakers(rows)
+
+        elif choice == "3":
+            game = menu.get_number_input("Enter game number")
+            rows = ops.view_gamemakers(connection, None, game)
+            menu.display_gamemakers(rows)
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid entry")
+
+# VIEW TEAM MEMBERS
+def handle_view_team_members(connection):
+    while True:
+        choice = menu.display_view_team_members_menu()
+        if choice == "1":
+            rows = ops.view_team_members(connection) #TODO
+            menu.display_team_members(rows) #TODO
+        
+        elif choice == "2":
+            name = menu.get_name_input("Enter team member name")
+            rows = ops.view_team_members(connection, name) #TODO
+            menu.display_team_members(rows) #TODO
+
+        elif choice == "3":
+            type = menu.display_member_types()
+            if type == "1":
+                rows = ops.view_team_members(connection, member_type='escort')
+                menu.display_team_members(rows) #TODO
+            elif type == '2':
+                rows = ops.view_team_members(connection, member_type='mentor')
+                menu.display_team_members(rows) #TODO
+            elif type == '3':
+                rows = ops.view_team_members(connection, member_type='stylist')
+                menu.display_team_members(rows) #TODO
+            elif type == '4':
+                rows = ops.view_team_members(connection, member_type='prep')
+                menu.display_team_members(rows) #TODO
+            elif choice == "0":
+                break
+            else:
+                print("Invalid entry")
+
+        elif choice == "4":
+            tribute_name = menu.get_name_input("Enter tribute name")
+            rows = ops.view_team_members(connection, None, None, tribute_name) #TODO
+            menu.display_team_members(rows) #TODO
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid entry")
+        
+# VIEW PARTICIPANTS
+
+
+
+
+#VIEW-VICTORS
+def handle_view_victors(connection):
+    while True:
+        choice = menu.display_view_victors_menu()
+        if choice == '1':
+            rows = ops.view_victors(connection)
+            menu.display_victors(rows)
+
+        elif choice == '2':
+            tribute_name = menu.get_name_input("Enter tribute name")
+            rows = ops.view_victors(connection, tribute_name)
+            menu.display_victors(rows)
+
+        elif choice == '3':
+            game = menu.get_number_input("Enter game number")
+            rows = ops.view_victors(connection, None, game)
+            menu.display_victors(rows)
+
+        elif choice == "0":
+            break
+        else:
+            print("Invalid entry")
+
+
+
+
+
+
 
 
 def handle_analytics(connection):

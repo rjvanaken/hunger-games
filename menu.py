@@ -189,6 +189,122 @@ def display_games(games):
         print(f" {game['game_number']:<12} | {game['tribute_count']:<20} | {str(game['start_date']):<12} | {str(game['end_date']):<12} | {victors:<30}")
     print("=" * 115 + "\n")
 
+    # VIEW GAMEMAKERS
+def display_view_gamemakers_menu():
+    """Displays the menu for viewing gamemakers"""
+    print("\n=== VIEW GAMEMAKERS ===")
+    print("1: View All Gamemakers")
+    print("2: Search Gamemaker by Name")
+    print("3: Search Gamemaker by Game Number")
+    print("-------------------------------------")
+    print("0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
+def display_gamemakers(gamemakers):
+    """Display formatted list of games"""
+    if not gamemakers:
+        print("\nNo gamemakers found.")
+        return
+        
+    print("\n" + "=" * 80)
+    print(" GAMEMAKERS")
+    print("=" * 80)
+    print(f" {'Gamemaker ID':<12} | {'Name':<20}")
+    print("-" * 80)
+    for gamemaker in gamemakers:
+        #victors = game['victor_names'] if game['victor_names'] else 'TBD'
+        print(f" {gamemaker['gamemaker_id']:<12} | {gamemaker['name']:<20} ")
+        # | {victors:<30}
+    print("=" * 80 + "\n")
+
+
+    # VIEW TEAM MEMBERS
+def display_view_team_members_menu():
+    """Displays the menu for viewing team members"""
+    print("\n=== VIEW TEAM MEMBERS ===")
+    print("1: View All Team Members")
+    print("2: Search Team Member by Name")
+    print("3: Search Team Member by Role Type")
+    print("4: Search Team Member by Tribute Name")
+    print("------------------------------------")
+    print("0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
+def display_member_types():
+    """Displays the menu for viewing member types"""
+    print("\n=== VIEW TEAM MEMBERS ===")
+    print("1: Escort")
+    print("2: Mentor")
+    print("3: Stylist")
+    print("4: Prep Team")
+    print("------------------------------------")
+    print("0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
+
+def display_team_members(team_members):
+    """Display formatted list of team members"""
+    if not team_members:
+        print("\nNo team members found.")
+        return
+        
+    print("\n" + "=" * 80)
+    print(" TEAM MEMBERS")
+    print("=" * 80)
+    print(f" {'Member ID':<12} | {'Name':<30} | {'Roles':<15}")
+    print("-" * 80)
+    for member in team_members:
+        roles = member['roles'].title() if member['roles'] else 'TBD'
+        print(f" {member['member_id']:<12} | {member['name']:<30} | {roles:<15}")
+    print("=" * 80 + "\n")
+
+    # VIEW PARTICIPANTS
+def display_view_participants_menu():
+    """Displays the menu for viewing participants"""
+    print("\n=== VIEW PARTICIPANTS ===")
+    print("1: View All Participants")
+    print("2: Search Participant by Name")
+    print("3: Search Participant by Games Age")
+    print("4: Search Participant by Game Number ")
+    print("5: Search Participant by Training Score")
+    print("------------------------------------")
+    print("0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
+
+
+    #VIEW VICTORS
+def display_view_victors_menu():
+    """Displays the menu for viewing victors"""
+    print("\n=== VIEW VICTORS ===")
+    print("1: View All Victors")
+    print("2: Search Victor by Name")
+    print("3: Search Victor by Game Number")
+    print("---------------------------------------")
+    print("0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
+
+def display_victors(victors):
+    """Display formatted list of victors"""
+    if not victors:
+        print("\nNo victors found.")
+        return
+        
+    print("\n" + "=" * 80)
+    print(" VICTORS")
+    print("=" * 80)
+    print(f" {'Tribute ID':<12} | {'Victor Name':<30} | {'Game Number(s)':<15}")
+    print("-" * 80)
+    for victor in victors:
+        games_won = victor['games_won'] if victor['games_won'] else 'TBD'
+        print(f" {victor['victor_id']:<12} | {victor['name']:<30} | {games_won:<15}")
+    print("=" * 80 + "\n")
 
 '''
 ANALYTICS
