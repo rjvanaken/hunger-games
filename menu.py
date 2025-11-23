@@ -33,7 +33,7 @@ def get_game_input(game_list):
     
     display_games(game_list)
     game_type_input = input("Enter a game number from the above list: ")
-    # Step 14: Validate | Step 15: Error message and repeat input request
+    # Step 14: Validate │ Step 15: Error message and repeat input request
     while game_type_input not in game_list:
         print("Invalid game number. Please try again.")
         display_games(game_list)
@@ -87,6 +87,7 @@ def display_view_records_menu():
     choice = input("Enter choice: ")
     return choice
 
+
 # VIEW TRIBUTES
 def display_view_tributes_menu():
     """Displays the menu for viewing tributes"""
@@ -101,18 +102,23 @@ def display_view_tributes_menu():
 
 def display_tributes(tributes):
     """Display formatted list of tributes"""
+    length = 80
     if not tributes:
         print("\nNo tributes found.")
         return
         
-    print("\n" + "=" * 80)
+    print("\n" + "=" * length)
     print(" TRIBUTES")
-    print("=" * 80)
-    print(f" {'ID':<5} | {'Name':<25} | {'District':<8} | {'Gender':<8} | {'Birth Date':<12}")
-    print("-" * 80)
+    print("=" * length)
+    print(f" {'ID':<5} │ {'Name':<25} │ {'District':<8} │ {'Gender':<8} │ {'Birth Date':<12}")
     for tribute in tributes:
-        print(f" {tribute['tribute_id']:<5} | {tribute['name']:<25} | {tribute['district']:<8} | {tribute['gender']:<8} | {str(tribute['dob']):<12}")
-    print("=" * 80 + "\n")
+        if tribute['gender'] == 'm':
+            gender = "Male"
+        else:
+            gender = "Female"
+        print("─" * length)
+        print(f" {tribute['tribute_id']:<5} │ {tribute['name']:<25} │ {tribute['district']:<8} │ {gender:<8} │ {str(tribute['dob']):<12}")
+    print("=" * length + "\n")
 
 
 
@@ -131,34 +137,38 @@ def display_view_sponsors_menu():
 
 def display_sponsors(connection, sponsors):
     """Display formatted list of sponsors"""
+    length = 70
     if not sponsors:
         print("\nNo sponsors found.")
         return
         
-    print("\n" + "=" * 70)
+    print("\n" + "=" * length)
     print(" SPONSORS")
-    print("=" * 70)
-    print(f" {'ID':<5} | {'Name':<35} | {'Total Contributions':<10}")
-    print("-" * 70)
+    print("=" * length)
+    print(f" {'ID':<5} │ {'Name':<35} │ {'Total Contributions':<10}")
     for sponsor in sponsors:
         total_contributions = ops.get_sponsor_total(connection, sponsor['sponsor_id'])
-        print(f" {sponsor['sponsor_id']:<5} | {sponsor['name']:<35} | ${total_contributions:<10,.2f}")
-    print("=" * 70 + "\n")
+        print("─" * length)
+        print(f" {sponsor['sponsor_id']:<5} │ {sponsor['name']:<35} │ ${total_contributions:<10,.2f}")
+    print("=" * length + "\n")
 
 def display_sponsorships(sponsorships):
     """Display formatted list of sponsorships"""
+    length = 130
     if not sponsorships:
         print("\nNo sponsorships found.")
         return
         
-    print("\n" + "=" * 130)
+    print("\n" + "=" * length)
     print(" SPONSORSHIPS")
-    print("=" * 130)
-    print(f" {'Sponsor ID':<12} | {'Participant ID':<15} | {'Sponsor Name':<30} | {'Tribute Name':<30} | {'Game Number':<12} | {'Amount':<10}")
-    print("-" * 130)
+    print("=" * length)
+    print(f" {'Sponsor ID':<12} │ {'Participant ID':<15} │ {'Sponsor Name':<30} │ {'Tribute Name':<30} │ {'Game Number':<12} │ {'Amount':<10}")
     for sponsorship in sponsorships:
-        print(f" {sponsorship['sponsor_id']:<12} | {sponsorship['participant_id']:<15} | {sponsorship['sponsor_name']:<30} | {sponsorship['tribute_name']:<30} | {sponsorship['game_number']:<12} | ${sponsorship['amount']:<10,.2f}")
-    print("=" * 130 + "\n")
+        print("─" * length)
+        print(f" {sponsorship['sponsor_id']:<12} │ {sponsorship['participant_id']:<15} │ {sponsorship['sponsor_name']:<30} │ {sponsorship['tribute_name']:<30} │ {sponsorship['game_number']:<12} │ ${sponsorship['amount']:<10,.2f}")
+    print("=" * length + "\n")
+
+
 
     # VIEW GAMES
 def display_view_games_menu():
@@ -175,19 +185,22 @@ def display_view_games_menu():
 
 def display_games(games):
     """Display formatted list of games"""
+    length = 115
     if not games:
         print("\nNo games found.")
         return
         
-    print("\n" + "=" * 115)
+    print("\n" + "=" * length)
     print(" GAMES")
-    print("=" * 115)
-    print(f" {'Game Number':<12} | {'Number of Tributes':<20} | {'Start Date':<12} | {'End Date':<12} | {'Victor(s)':<}")
-    print("-" * 115)
+    print("=" * length)
+    print(f" {'Game Number':<12} │ {'Number of Tributes':<20} │ {'Start Date':<12} │ {'End Date':<12} │ {'Victor(s)':<}")
     for game in games:
         victors = game['victor_names'] if game['victor_names'] else 'TBD'
-        print(f" {game['game_number']:<12} | {game['tribute_count']:<20} | {str(game['start_date']):<12} | {str(game['end_date']):<12} | {victors:<30}")
-    print("=" * 115 + "\n")
+        print("─" * length)
+        print(f" {game['game_number']:<12} │ {game['tribute_count']:<20} │ {str(game['start_date']):<12} │ {str(game['end_date']):<12} │ {victors:<30}")
+    print("=" * length + "\n")
+
+
 
     # VIEW GAMEMAKERS
 def display_view_gamemakers_menu():
@@ -203,20 +216,21 @@ def display_view_gamemakers_menu():
 
 def display_gamemakers(gamemakers):
     """Display formatted list of games"""
+    length = 80
     if not gamemakers:
         print("\nNo gamemakers found.")
         return
         
-    print("\n" + "=" * 80)
+    print("\n" + "=" * length)
     print(" GAMEMAKERS")
-    print("=" * 80)
-    print(f" {'Gamemaker ID':<12} | {'Name':<20}")
-    print("-" * 80)
+    print("=" * length)
+    print(f" {'Gamemaker ID':<12} │ {'Name':<20}")
     for gamemaker in gamemakers:
+        print("─" * length)
         #victors = game['victor_names'] if game['victor_names'] else 'TBD'
-        print(f" {gamemaker['gamemaker_id']:<12} | {gamemaker['name']:<20} ")
-        # | {victors:<30}
-    print("=" * 80 + "\n")
+        print(f" {gamemaker['gamemaker_id']:<12} │ {gamemaker['name']:<20} ")
+        # │ {victors:<30}
+    print("=" * length + "\n")
 
 
     # VIEW TEAM MEMBERS
@@ -244,38 +258,65 @@ def display_member_types():
     choice = input("Enter choice: ")
     return choice
 
-
 def display_team_members(team_members):
     """Display formatted list of team members"""
+    length = 80
     if not team_members:
         print("\nNo team members found.")
         return
         
-    print("\n" + "=" * 80)
+    print("\n" + "=" * length)
     print(" TEAM MEMBERS")
-    print("=" * 80)
-    print(f" {'Member ID':<12} | {'Name':<30} | {'Roles':<15}")
-    print("-" * 80)
+    print("=" * length)
+    print(f" {'Member ID':<12} │ {'Name':<30} │ {'Roles':<15}")
     for member in team_members:
         roles = member['roles'].title() if member['roles'] else 'TBD'
-        print(f" {member['member_id']:<12} | {member['name']:<30} | {roles:<15}")
-    print("=" * 80 + "\n")
+        print("─" * length)
+        print(f" {member['member_id']:<12} │ {member['name']:<30} │ {roles:<15}")
+    print("=" * length + "\n")
+
+
 
     # VIEW PARTICIPANTS
 def display_view_participants_menu():
+    length = 42
     """Displays the menu for viewing participants"""
-    print("\n=== VIEW PARTICIPANTS ===")
-    print("1: View All Participants")
-    print("2: Search Participant by Name")
-    print("3: Search Participant by Games Age")
-    print("4: Search Participant by Game Number ")
-    print("5: Search Participant by Training Score")
-    print("------------------------------------")
-    print("0: RETURN\n")
+    print("\n" + "=" * length)
+    print(" VIEW PARTICIPANTS")
+    print("=" * length)
+    print(" 1: View All Participants")
+    print(" 2: Search Participant by Name")
+    print(" 3: Search Participant by Age")
+    print(" 4: Search Participant by Game Number")
+    print(" 5: Search Participant by Training Score")
+    print("─" * length)
+    print(" 0: RETURN")
+    print("\n")
     choice = input("Enter choice: ")
     return choice
 
 
+def display_participants(participants):
+    """Display formatted list of sponsors"""
+    length = 175
+    if not participants:
+        print("\nNo participants found.")
+        return
+        
+    print("\n" + "=" * length)
+    print(" PARTICIPANTS")
+    print("=" * length)
+    print(f" {'ID':<12} │ {'Name':<30} │ {'District':<8} │ {'Gender':<8} │ {'Game Number':<12} │ {'Age During Games':<20} │ {'Training Score':<20} │ {'Interview Score':<20} │ {'Final Placement':<10}")
+    # print("─" * length)
+    for participant in participants:
+        if participant['gender'] == 'M':
+            gender = "Male"
+        else:
+            gender = "Female"
+        print("─" * length)
+        print(f" {participant['participant_id']:<12} │ {participant['name']:<30} │ {participant['district']:<8} │ {gender:<8} │ {participant['game_number']:<12} │ {participant['age_during_games']:<20} │ {str(participant['training_score']):<20} │ {str(participant['interview_score']):<20} │ {str(participant['final_placement']):<10}")
+        
+    print("=" * length + "\n")
 
     #VIEW VICTORS
 def display_view_victors_menu():
@@ -292,19 +333,20 @@ def display_view_victors_menu():
 
 def display_victors(victors):
     """Display formatted list of victors"""
+    length = 80
     if not victors:
         print("\nNo victors found.")
         return
         
-    print("\n" + "=" * 80)
+    print("\n" + "=" * length)
     print(" VICTORS")
-    print("=" * 80)
-    print(f" {'Tribute ID':<12} | {'Victor Name':<30} | {'Game Number(s)':<15}")
-    print("-" * 80)
+    print("=" * length)
+    print(f" {'Tribute ID':<12} │ {'Victor Name':<30} │ {'Game Number(s)':<15}")
+    print("─" * length)
     for victor in victors:
         games_won = victor['games_won'] if victor['games_won'] else 'TBD'
-        print(f" {victor['victor_id']:<12} | {victor['name']:<30} | {games_won:<15}")
-    print("=" * 80 + "\n")
+        print(f" {victor['victor_id']:<12} │ {victor['name']:<30} │ {games_won:<15}")
+    print("=" * length + "\n")
 
 '''
 ANALYTICS

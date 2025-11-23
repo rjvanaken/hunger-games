@@ -14,13 +14,19 @@ def get_sponsor_total(connection, sponsor_id):
     cursor.close()
     return result['total'] if result else 0
 
-
-def get_gamemaker_score(connection, participant_id, ):
+def get_training_score(connection, participant_id):
     cursor = connection.cursor()
     cursor.execute("SELECT get_training_score(%s) AS score", (participant_id,))
     result = cursor.fetchone()
     cursor.close()
     return result['score'] if result else 0
+
+def get_age_during_games(connection, participant_id):
+    cursor = connection.cursor()
+    cursor.execute("SELECT get_participant_age(%s) AS age", (participant_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['age'] if result else 0
 
 '''
 ==============================
@@ -241,14 +247,9 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
 
 
 # View Participants
-def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None): # TODO: calculate age function needed
+def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None):
     cursor = connection.cursor()
-    query = """SELECT *
-            FROM participant p
-            JOIN game g ON participant
-            JOIN tribute t
-            WHERE 1=1"
-            """
+    query = "SELECT * FROM participant_details WHERE 1=1"
     params = []
     
     if tribute_name:
@@ -256,7 +257,7 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
         params.append(f"%{tribute_name}%")
     
     if age_during_games:
-        query += " AND age_during_games = %s"
+        query += " AND age_during_game = %s"
         params.append(age_during_games)
 
     if game_number:
@@ -267,6 +268,7 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
         query += " AND training_score = %s"
         params.append(training_score)
 
+    query += " ORDER BY game_number, district, gender"
 
     cursor.execute(query, params)
     participants = cursor.fetchall()
