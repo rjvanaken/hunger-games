@@ -53,20 +53,17 @@ VIEW OPERATIONS
 '''
 # Generic View Table (with no foreign keys needed)
 def view_table(connection, table_name):
-    print("trying to view")
     """Get all tributes from database"""
     cursor = connection.cursor()
     query = f"SELECT * FROM {table_name}"
     cursor.execute(query)
     rows = cursor.fetchall()
     cursor.close()
-    print("ready to return")
     return rows
 
 
 # View Tributes
 def view_tributes(connection, name=None, district=None):
-    print("entering view tribute handle function")
     cursor = connection.cursor()
     query = "SELECT * FROM tribute WHERE 1=1"
     params = []
@@ -181,9 +178,9 @@ def view_games(connection, game_number=None, tribute_name=None, victor_name=None
 def view_gamemakers(connection, name=None, game_number=None):
     cursor = connection.cursor()
     query = """
-    SELECT g.gamemaker_id as gamemaker_id, g.name as name
+    SELECT DISTINCT g.gamemaker_id as gamemaker_id, g.name as name
     FROM gamemaker g
-    JOIN game_creator gc ON g.gamemaker_id = gc.gamemaker_id
+    LEFT JOIN game_creator gc ON g.gamemaker_id = gc.gamemaker_id
     WHERE 1=1
     """
     params = []
@@ -207,7 +204,7 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
     cursor = connection.cursor()
     query = """SELECT tm.member_id, tm.name, GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ', ') as roles
             FROM team_member tm
-            JOIN team_role tr ON tm.member_id = tr.member_id
+            LEFTJOIN team_role tr ON tm.member_id = tr.member_id
             WHERE 1=1
             """
     params = []

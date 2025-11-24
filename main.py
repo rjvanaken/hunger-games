@@ -7,14 +7,17 @@ def main():
     """Main application loop"""
     connection = None
     
-    print("====================================")
-    print(" THE HUNGER GAMES MANAGEMENT SYSTEM ")
-    print("====================================")
+    print("\n Welcome to:")
+    print("=" * 42)
+    print(" THE HUNGER GAMES MANAGEMENT SYSTEM")
+    print("=" * 42)
 
     # Get database credentials and connect
     while True:
-        # username, password = database.get_credentials()
-        username, password = "root", "test"
+        print("\nYOUR CAPITOL CREDENTIALS:")
+        username, password = database.get_credentials()
+        # username, password = "root", "test"
+        print("\nVerifying identity...\n")
         connection = database.connect_to_database(username, password)
         if connection is not None:
             break  
@@ -22,7 +25,6 @@ def main():
 
     # Successful Connection - Main menu loop
     while True:
-        print("menu display")
         choice = menu.display_menu()  # ← menu.py not operations
         
         if choice == '1':
@@ -56,6 +58,7 @@ def handle_select_game(connection):
     game_num = menu.get_game_input(games)     # ← Display/input from menu
     # Then handle game-specific operations...
     
+
 def handle_manage_records(connection):
     """Handle manage records submenu"""
     # Your submenu routing here
@@ -259,7 +262,7 @@ def handle_view_participants(connection):
 
         elif choice == '4':
             game = menu.get_number_input("Enter game number")
-            rows = ops.view_partipants(connection, game=game)
+            rows = ops.view_partipants(connection, game_number=game)
             menu.display_participants(rows)
 
         elif choice == '5':

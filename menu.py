@@ -2,13 +2,16 @@ import operations as ops
 
 def display_menu():
     """Top menu options"""
-    print("\n=== MENU ===")
-    print("1: Select Game")
-    print("2: Manage Capitol Records")
-    print("3: View Capitol Records")
-    print("4: Get Stats & Analytics")
-    print("------------------------------")
-    print("0: DISCONNECT FROM DATABASE\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" MENU")
+    print("=" * length)
+    print(" 1: Select Game")
+    print(" 2: Manage Capitol Records")
+    print(" 3: View Capitol Records")
+    print(" 4: Get Stats & Analytics")
+    print("─" * length)
+    print(" 0: DISCONNECT FROM DATABASE\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -53,16 +56,19 @@ MANAGE RECORDS
 
 def display_manage_records_menu():
     """Display menu for records"""
-    print("\n=== MANAGE CAPITOL RECORDS ===")
-    print("1: Manage Tributes")
-    print("2: Manage Sponsors")
-    print("3: Manage Games")
-    print("4: Manage Gamemakers")
-    print("5: Manage Team Members")
-    print("6: Manage Participants")
-    print("7: Manage Victors")
-    print("------------------------------------")
-    print("0: RETURN TO MAIN MENU\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" MANAGE CAPITOL RECORDS")
+    print("=" * length)
+    print(" 1: Manage Tributes")
+    print(" 2: Manage Sponsors")
+    print(" 3: Manage Games")
+    print(" 4: Manage Gamemakers")
+    print(" 5: Manage Team Members")
+    print(" 6: Manage Participants")
+    print(" 7: Manage Victors")
+    print("─" * length)
+    print(" 0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -74,16 +80,19 @@ VIEW RECORDS
 
 def display_view_records_menu():
     """Display menu for viewing records"""
-    print("\n=== MANAGE CAPITOL RECORDS ===")
-    print("1: View Tributes")
-    print("2: View Sponsors")
-    print("3: View Games")
-    print("4: View Gamemakers")
-    print("5: View Team Members")
-    print("6: View Participants")
-    print("7: View Victors")
-    print("------------------------------------")
-    print("0: RETURN TO MAIN MENU\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW CAPITOL RECORDS")
+    print("=" * length)
+    print(" 1: View Tributes")
+    print(" 2: View Sponsors")
+    print(" 3: View Games")
+    print(" 4: View Gamemakers")
+    print(" 5: View Team Members")
+    print(" 6: View Participants")
+    print(" 7: View Victors")
+    print("─" * length)
+    print(" 0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -91,12 +100,15 @@ def display_view_records_menu():
 # VIEW TRIBUTES
 def display_view_tributes_menu():
     """Displays the menu for viewing tributes"""
-    print("\n=== VIEW TRIBUTES ===")
-    print("1: View All Tributes")
-    print("2: Search Tribute by Name")
-    print("3: View Tributes From District")
-    print("------------------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW TRIBUTES")
+    print("=" * length)
+    print(" 1: View All Tributes")
+    print(" 2: Search Tribute by Name")
+    print(" 3: View Tributes From District")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -125,13 +137,16 @@ def display_tributes(tributes):
     # VIEW SPONSORS
 def display_view_sponsors_menu():
     """Displays the menu for viewing sponsors"""
-    print("\n=== VIEW SPONSORS ===")
-    print("1: View All Sponsors")
-    print("2: Search Sponsor by Name")
-    print("3: View All Sponsorships")
-    print("4: View Sponsorships by Game and/or Tribute") 
-    print("----------------------------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW SPONSORS")
+    print("=" * length)
+    print(" 1: View All Sponsors")
+    print(" 2: Search Sponsor by Name")
+    print(" 3: View All Sponsorships")
+    print(" 4: View Sponsorships by Game and/or Tribute")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -151,6 +166,7 @@ def display_sponsors(connection, sponsors):
         print("─" * length)
         print(f" {sponsor['sponsor_id']:<5} │ {sponsor['name']:<35} │ ${total_contributions:<10,.2f}")
     print("=" * length + "\n")
+
 
 def display_sponsorships(sponsorships):
     """Display formatted list of sponsorships"""
@@ -173,13 +189,16 @@ def display_sponsorships(sponsorships):
     # VIEW GAMES
 def display_view_games_menu():
     """Displays the menu for viewing games"""
-    print("\n=== VIEW GAMES ===")
-    print("1: View All Games")
-    print("2: Search Game by Number")
-    print("3: Search Game by Tribute")
-    print("4: Search Game by Victor")
-    print("---------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW GAMES")
+    print("=" * length)
+    print(" 1: View All Games")
+    print(" 2: Search Game by Number")
+    print(" 3: Search Game by Tribute")
+    print(" 4: Search Game by Victor")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -205,12 +224,15 @@ def display_games(games):
     # VIEW GAMEMAKERS
 def display_view_gamemakers_menu():
     """Displays the menu for viewing gamemakers"""
-    print("\n=== VIEW GAMEMAKERS ===")
-    print("1: View All Gamemakers")
-    print("2: Search Gamemaker by Name")
-    print("3: Search Gamemaker by Game Number")
-    print("-------------------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW GAMEMAKERS")
+    print("=" * length)
+    print(" 1: View All Gamemakers")
+    print(" 2: Search Gamemaker by Name")
+    print(" 3: Search Gamemaker by Game Number")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -236,25 +258,31 @@ def display_gamemakers(gamemakers):
     # VIEW TEAM MEMBERS
 def display_view_team_members_menu():
     """Displays the menu for viewing team members"""
-    print("\n=== VIEW TEAM MEMBERS ===")
-    print("1: View All Team Members")
-    print("2: Search Team Member by Name")
-    print("3: Search Team Member by Role Type")
-    print("4: Search Team Member by Tribute Name")
-    print("------------------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW TEAM MEMBERS")
+    print("=" * length)
+    print(" 1: View All Team Members")
+    print(" 2: Search Team Member by Name")
+    print(" 3: Search Team Member by Role Type")
+    print(" 4: Search Team Member by Tribute Name")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
 def display_member_types():
     """Displays the menu for viewing member types"""
-    print("\n=== VIEW TEAM MEMBERS ===")
-    print("1: Escort")
-    print("2: Mentor")
-    print("3: Stylist")
-    print("4: Prep Team")
-    print("------------------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW TEAM MEMBERS")
+    print("=" * length)
+    print(" 1: Escort")
+    print(" 2: Mentor")
+    print(" 3: Stylist")
+    print(" 4: Prep Team")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -321,12 +349,15 @@ def display_participants(participants):
     #VIEW VICTORS
 def display_view_victors_menu():
     """Displays the menu for viewing victors"""
-    print("\n=== VIEW VICTORS ===")
-    print("1: View All Victors")
-    print("2: Search Victor by Name")
-    print("3: Search Victor by Game Number")
-    print("---------------------------------------")
-    print("0: RETURN\n")
+    length = 42
+    print("\n" + "=" * length)
+    print(" VIEW VICTORS")
+    print("=" * length)
+    print(" 1: View All Victors")
+    print(" 2: Search Victor by Name")
+    print(" 3: Search Victor by Game Number")
+    print("─" * length)
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 

@@ -2,8 +2,8 @@ import pymysql
 
 def get_credentials():
     """Prompt for username and password"""
-    username = input("Enter database username: ")
-    password = input("Enter database password: ")
+    username = input("username: ")
+    password = input("password: ")
     return username, password
 
 def connect_to_database(username, password) :
@@ -18,7 +18,7 @@ def connect_to_database(username, password) :
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-        print("Successfully connected to database!")
+        print("Successfully connected to the capitol database!")
         return connection
     except pymysql.Error as e:
         print(f"Error connecting to database: {e}")
