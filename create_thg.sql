@@ -487,8 +487,41 @@ DELIMITER $$
 CREATE PROCEDURE view_team_members(p_name VARCHAR(64), p_member_type VARCHAR(64), p_tribute_name VARCHAR(64))
 
 BEGIN
-    SELECT * from team_member; -- placeholder
-
+    SET @sql = 'SELECT tm.member_id, tm.name, 
+                GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ", ") as roles
+                FROM team_member tm
+                LEFT JOIN team_role tr ON tm.member_id = tr.member_id
+                WHERE 1=1';
+    
+    -- Add name filter
+    IF p_name IS NOT NULL THEN
+        SET @sql = CONCAT(@sql, ' AND tm.name LIKE "%', p_name, '%"');
+    END IF;
+    
+    -- Add member_type filter
+    IF p_member_type IS NOT NULL THEN
+        SET @sql = CONCAT(@sql, ' AND tm.member_id IN (
+            SELECT DISTINCT tr2.member_id
+            FROM team_role tr2
+            WHERE tr2.member_type = "', p_member_type, '")');
+    END IF;
+    
+    -- Add tribute_name filter
+    IF p_tribute_name IS NOT NULL THEN
+        SET @sql = CONCAT(@sql, ' AND tm.member_id IN (
+            SELECT DISTINCT tr2.member_id
+            FROM team_role tr2
+            JOIN participant p ON tr2.participant_id = p.participant_id
+            JOIN tribute t ON p.tribute_id = t.tribute_id
+            WHERE t.name LIKE "%', p_tribute_name, '%")');
+    END IF;
+    
+    SET @sql = CONCAT(@sql, ' GROUP BY tm.member_id, tm.name
+                              ORDER BY tm.member_id ASC');
+    
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
 END $$
 
 DELIMITER ; 

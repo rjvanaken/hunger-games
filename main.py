@@ -93,7 +93,7 @@ def handle_view_tributes(connection):
     while True:
         choice = menu.display_view_tributes_menu()
         if choice == "1":
-            rows = ops.view_table(connection, 'tribute')
+            rows = ops.view_tributes(connection)
             menu.display_tributes(rows) 
 
         elif choice == "2":
@@ -119,7 +119,7 @@ def handle_view_sponsors(connection):
     while True:
         choice = menu.display_view_sponsors_menu()
         if choice == "1":
-            rows = ops.view_table(connection, 'sponsor')
+            rows = ops.view_sponsors(connection)
             menu.display_sponsors(connection, rows)
         
         elif choice == "2":
