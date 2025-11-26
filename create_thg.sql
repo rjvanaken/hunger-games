@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS district (
     industry VARCHAR(64),
     size ENUM ('Small', 'Medium', 'Large'), -- add to diagram
     wealth ENUM('Poor', 'Working Class', 'Middle Class', 'Wealthy') -- add to diagram
+
 );
 
 CREATE TABLE IF NOT EXISTS tribute (
@@ -21,7 +22,8 @@ CREATE TABLE IF NOT EXISTS tribute (
         ON UPDATE CASCADE ON DELETE RESTRICT,
         
     CONSTRAINT prevent_dupe_tributes
-        UNIQUE (name, dob, gender, district) -- keep or leave out?
+        UNIQUE (name, dob, gender, district)
+    CONSTRAINT check_district CHECK (district_num < 13 AND district_num > 0)
 );
 
 CREATE TABLE IF NOT EXISTS victor (
@@ -62,11 +64,13 @@ CREATE TABLE IF NOT EXISTS participant(
 	participant_id VARCHAR(64) PRIMARY KEY,
 	tribute_id INT NOT NULL,
     game_number INT NOT NULL,
-    final_placement INT, -- add logic -- limit based on number of tributes - trigger
-    interview_score INT, -- decide on how this is calculated
+    final_placement INT DEFAULT NULL, -- add logic -- limit based on number of tributes - trigger
+    interview_score INT DEFAULT NULL
     
     CONSTRAINT check_interview_score CHECK (interview_score BETWEEN 1 AND 10),
-    
+    -- CONSTRAINT check_tribute_id_exists CHECK (BETWEEN 1 AND 10),
+
+
     FOREIGN KEY (tribute_id) REFERENCES tribute(tribute_id)
 		ON UPDATE CASCADE ON DELETE RESTRICT,
     FOREIGN KEY (game_number) REFERENCES game(game_number)
@@ -583,6 +587,146 @@ BEGIN
     AND (p_game_number is NULL OR games_won LIKE p_game_number)
     GROUP BY v.victor_id, t.name, t.district
     ORDER BY v.victor_id ASC;
+END $$
+
+DELIMITER ;
+
+-- ============================
+-- CRUD PROCEDURE: CREATE tribute
+-- ============================
+DROP PROCEDURE create_tribute()
+DELIMITER $$
+
+CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
+BEGIN
+
+    INSERT INTO tribute(name, dob, gender, district)
+    VALUES (p_name, p_dob, p_gender, p_district);
+END $$
+
+DELIMITER ;
+
+-- ============================
+-- CRUD PROCEDURE: CREATE tribute
+-- ============================
+DROP PROCEDURE create_tribute()
+DELIMITER $$
+
+CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
+BEGIN
+
+    INSERT INTO tribute(name, dob, gender, district)
+    VALUES (p_name, p_dob, p_gender, p_district);
+END $$
+
+-- ===============================
+-- CRUD PROCEDURE: CREATE sponsor
+-- ===============================
+DROP PROCEDURE create_sponsor()
+DELIMITER $$
+
+CREATE PROCEDURE create_sponsor(p_name VARCHAR(64))
+BEGIN
+
+    INSERT INTO sponsor(name)
+    VALUES (name);
+END $$
+
+DELIMITER ;
+
+-- ===============================
+-- CRUD PROCEDURE: CREATE game
+-- ===============================
+DROP PROCEDURE create_game();
+DELIMITER $$
+
+CREATE PROCEDURE create_game(p_game_number INT, p_required_tribute_count INT, p_start_date DATE)
+
+DECLARE status_option VARCHAR(64);
+BEGIN
+    INSERT INTO game(game_number, required_tribute_count, start_date)
+    VALUES (p_game_number, p_required_tribute_count, start_date);
+END $$
+
+DELIMITER ;
+
+-- =================================
+-- CRUD PROCEDURE: CREATE gamemaker
+-- =================================
+DROP PROCEDURE create_gamemaker();
+DELIMITER $$
+
+CREATE PROCEDURE create_gamemaker(p_name VARCHAR(64))
+BEGIN
+    INSERT INTO gamemaker(name)
+    VALUES (name);
+END $$
+
+DELIMITER ;
+
+-- ===================================
+-- CRUD PROCEDURE: CREATE team member
+-- ===================================
+DROP PROCEDURE create_team_member();
+DELIMITER $$
+
+CREATE PROCEDURE create_team_member(p_name VARCHAR(64), p_member_type VARCHAR(64), victor_id INT)
+BEGIN
+    INSERT INTO team_member(name, member_type VARCHAR(64), victor_id INT)
+    -- SHOULD ADD A TRIGGER TO CHECK THAT THE VICTOR_ID EXISTS IN THE VICTOR TABLE BEFORE IT IS ENTERED
+    -- I GUESS ANY VALIDATION FOR THE ENTERING OF FOREIGN KEYS IN ANY TABLE NEEDS THIS
+    VALUES (p_name, p_member_type, p_victor_id);
+END $$
+
+DELIMITER ;
+
+-- ===================================
+-- CRUD PROCEDURE: CREATE participant
+-- ===================================
+DROP PROCEDURE create_participant();
+DELIMITER $$
+
+CREATE PROCEDURE create_participant(p_tribute_id INT, p_game_number INT)
+BEGIN
+    INSERT INTO participant(tribute_id, game_number)
+    -- SHOULD ADD A TRIGGER TO CHECK THAT THE VICTOR_ID EXISTS IN THE VICTOR TABLE BEFORE IT IS ENTERED
+    -- I GUESS ANY VALIDATION FOR THE ENTERING OF FOREIGN KEYS IN ANY TABLE NEEDS THIS
+    VALUES (p_tribute_id, p_game_number);
+END $$
+
+DELIMITER ;
+
+-- ==============================
+-- CRUD PROCEDURE: CREATE victor
+-- ==============================
+DROP PROCEDURE create_victor();
+DELIMITER $$
+
+CREATE PROCEDURE create_victor(p_tribute_id INT)
+BEGIN
+    INSERT INTO victor(tribute_id)
+    -- SHOULD ADD A TRIGGER TO CHECK THAT THE VICTOR_ID EXISTS IN THE VICTOR TABLE BEFORE IT IS ENTERED
+    -- I GUESS ANY VALIDATION FOR THE ENTERING OF FOREIGN KEYS IN ANY TABLE NEEDS THIS
+    VALUES(p_tribute_id)
+END $$
+
+DELIMITER ;
+
+-- ============================
+-- CRUD PROCEDURE: EDIT tribute
+-- ============================
+DROP PROCEDURE edit_tribute();
+DELIMITER $$
+
+CREATE PROCEDURE edit_tribute(p_tribute_id INT, p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
+BEGIN
+
+    UPDATE tribute
+    SET name = COALESCE(p_name, name),
+        dob = COALESCE(p_dob, dob),
+        gender = COALESCE(p_gender, gender)
+        district = COALESCE(p_district, district)
+    WHERE tribute_id = p_tribute_id;
 END $$
 
 DELIMITER ;
