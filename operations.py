@@ -23,10 +23,48 @@ def get_training_score(connection, participant_id):
 
 def get_age_during_games(connection, participant_id):
     cursor = connection.cursor()
-    cursor.execute("SELECT get_participant_age(%s) AS age", (participant_id,))
+    cursor.execute("SELECT get_participant_age(%s) AS age", (participant_id))
     result = cursor.fetchone()
     cursor.close()
     return result['age'] if result else 0
+
+def get_likeability(connection, participant_id):
+    cursor = connection.cursor()
+    cursor.execute("", (participant_id))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['likeability'] if result else 0
+
+def get_intelligence(connection, participant_id):
+    cursor = connection.cursor()
+    cursor.execute("", (participant_id))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['intelligence'] if result else 0
+
+def get_chances_of_winning(connection, participant_id, training_score, intelligence_score, likeability_score):
+    """_summary_
+
+    Args:
+        connection (??): sql connection
+        participant_id (string): the unique participant id 
+        training_score (integer): the training score based on individual gamemaker scores
+        intelligence_score (integer): how intelligent the participant is: 1-10
+        likeability_score (integer): how likeable the participant is: 1-10
+
+    Returns: (float)
+        the participant's chances of winning, with 2 decimal places
+    """
+    training_score = get_training_score(connection, participant_id) * 0.5
+    intelligence_score = get_intelligence(connection, participant_id) * 0.3
+    likeability_score = get_likeability(connection, participant_id) * 0.2
+
+    chances = (training_score + intelligence_score + likeability_score / 11) * 100
+    return (f"{str(chances)}.2f")
+
+# likeability = 0.20
+# training = 0.5
+# intelligence = 0.3
 
 '''
 ==============================
