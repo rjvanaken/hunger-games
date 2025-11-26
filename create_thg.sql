@@ -337,6 +337,23 @@ DELIMITER ;
 
 -- VIEW PROCEDURES
 
+
+-- ======================================
+-- View districts
+-- ======================================
+DROP PROCEDURE view_districts;
+DELIMITER $$
+
+CREATE PROCEDURE view_districts()
+
+BEGIN
+    SELECT * FROM district
+END $$
+
+DELIMITER ;
+
+
+
 -- ====================================
 -- View tributes with optional filters
 -- ====================================

@@ -90,6 +90,15 @@ VIEW OPERATIONS
 ==============================
 '''
 
+# Generic View Table (with no foreign keys needed)
+def view_table(connection, table_name):
+    """View full table"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('view_table', [table_name])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
+
 # View Tributes
 def view_tributes(connection, name=None, district=None):
     """View tributes with optional filters"""
@@ -164,6 +173,15 @@ def view_victors(connection, tribute_name=None, game_number=None):
     victors = next(cursor.stored_results()).fetchall()
     cursor.close()
     return victors
+
+# View Districts
+def view_districts(connection):
+    """View districts"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('view_districts')
+    districts = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return districts
 
 
 '''

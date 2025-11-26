@@ -91,6 +91,7 @@ def display_view_records_menu():
     print(" 5: View Team Members")
     print(" 6: View Participants")
     print(" 7: View Victors")
+    print(" 8: View Districts")
     print("─" * length)
     print(" 0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")

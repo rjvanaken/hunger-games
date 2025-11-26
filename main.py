@@ -58,12 +58,63 @@ def handle_select_game(connection):
     game_num = menu.get_game_input(games)     # ← Display/input from menu
     # Then handle game-specific operations...
     
-
+#-----------------------------------
+# HANDLE MANAGE RECORDS
+#-----------------------------------
 def handle_manage_records(connection):
     """Handle manage records submenu"""
-    # Your submenu routing here
-    pass
+    while True:
+        manage_choice = menu.display_manage_records_menu()
+        if manage_choice == '1':
+            handle_manage_tributes(connection)
+        elif manage_choice == '2':
+            handle_manage_sponsors(connection)
+        elif manage_choice == '3':
+            handle_manage_games(connection)
+        elif manage_choice == '4':
+            handle_manage_gamemakers(connection)
+        elif manage_choice == '5':
+            handle_manage_team_members(connection)
+        elif manage_choice == '6':
+            handle_manage_participants(connection)
+        elif manage_choice == '7':
+            handle_manage_victors(connection)
+        elif manage_choice == '0':
+            break
+        else:
+            print("Invalid entry")
+            
+# MANAGE TRIBUTES
+def handle_manage_tributes(connection):
+    choice = menu.display_manage_entity_menu('tribute')
+    while True:
+        if choice == '1':
+            ops.view_table(connection, 'tribute')
+            ops.display_tributes_full()
+        elif choice == '2': # CREATE
+            pass
+            # ADD CREATE FUNCTION THINGY
+        elif choice == '3': # EDIT
+            ops.view_table(connection, 'tribute')
+            ops.display_tributes_full()
+            id = menu.get_number_input('Enter ID of tribute to edit:')
+            # ADD EDIT FUNCTION THINGY
+        elif choice == '4': # DELETE
+            ops.view_table(connection, 'tribute')
+            ops.display_tributes_full()
+            id = menu.get_number_input('Enter ID of tribute to edit:')
+            # ADD DELETE FUNCTION THINGY
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
 
+
+
+
+#-------------------------------------
+# HANDLE VIEW RECORDS
+#-------------------------------------
 def handle_view_records(connection):
     """Handle view records submenu"""
     while True:
@@ -82,6 +133,8 @@ def handle_view_records(connection):
             handle_view_participants(connection)
         elif view_choice == '7':
             handle_view_victors(connection)
+        elif view_choice == '8':
+            handle_view_districts(connection)
         elif view_choice == '0':
             break
         else:
@@ -240,8 +293,6 @@ def handle_view_team_members(connection):
         else:
             print("Invalid entry")
         
-
-
 # VIEW PARTICIPANTS
 def handle_view_participants(connection):
     while True:
@@ -275,9 +326,6 @@ def handle_view_participants(connection):
         else:
             print("Invalid entry")
 
-
-
-
 #VIEW-VICTORS
 def handle_view_victors(connection):
     while True:
@@ -301,8 +349,9 @@ def handle_view_victors(connection):
         else:
             print("Invalid entry")
 
-
-
+def handle_view_districts(connection):
+    rows = ops.view_districts()
+    menu.display_districts(rows)
 
 
 
