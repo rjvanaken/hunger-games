@@ -855,6 +855,10 @@ BEGIN
         gender = COALESCE(p_gender, gender)
         district = COALESCE(p_district, district)
     WHERE tribute_id = p_tribute_id;
+END $$
+
+DELIMITER ;
+
 
 -- ===============================
 -- CRUD PROCEDURE: EDIT sponsor
