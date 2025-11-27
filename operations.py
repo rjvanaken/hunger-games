@@ -230,14 +230,35 @@ def delete_tribute(connection, tribute_id):
 '''MANAGE SPONSORS'''
 
 # CREATE SPONSOR
-def create_sponsor(name):
-
+def create_sponsor(connection, name):
+# verify exists before action
+    """Create sponsor"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('create_sponsor', [name])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
 # EDIT SPONSOR
 
-
+def edit_sponsor(connection, name):
+    """Edit sponsor"""
+# verify exists before action
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('edit_sponsor', [name])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
 
 # DELETE SPONSOR
+def delete_sponsor(connection, sponsor_id):
+    """Delete sponsor"""
+# verify exists before action
 
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('delete_sponsor', [sponsor_id])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
 
 
 

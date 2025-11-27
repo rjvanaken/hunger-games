@@ -608,8 +608,10 @@ END $$
 DELIMITER ;
 
 -- ============================
--- CRUD PROCEDURE: CREATE tribute
+-- CRUD PROCEDURES: MANAGE tribute
 -- ============================
+
+-- create tribute
 DROP PROCEDURE create_tribute();
 DELIMITER $$
 
@@ -628,10 +630,44 @@ END $$
 DELIMITER ;
 
 
+-- edit tribute
+DROP PROCEDURE edit_tribute();
+DELIMITER $$
+
+CREATE PROCEDURE edit_tribute(p_tribute_id INT, p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
+BEGIN
+
+    UPDATE tribute
+    SET name = COALESCE(p_name, name),
+        dob = COALESCE(p_dob, dob),
+        gender = COALESCE(p_gender, gender)
+        district = COALESCE(p_district, district)
+    WHERE tribute_id = p_tribute_id;
+END $$
+
+DELIMITER ;
+
+
+-- delete tribute
+DELIMITER $$
+
+CREATE PROCEDURE delete_tribute(
+    IN p_tribute_id INT
+)
+BEGIN
+    DELETE FROM tribute
+    WHERE tribute_id = p_tribute_id;
+END $$
+
+DELIMITER ;
+
+
 
 -- ===============================
--- CRUD PROCEDURE: CREATE sponsor
+-- CRUD PROCEDURES: MANAGE sponsors
 -- ===============================
+
+-- create sponsor
 DROP PROCEDURE create_sponsor()
 DELIMITER $$
 
@@ -643,9 +679,39 @@ END $$
 
 DELIMITER ;
 
+-- edit sponsor
+DROP PROCEDURE edit_sponsor()
+DELIMITER $$
+
+CREATE PROCEDURE edit_sponsor(p_name VARCHAR(64))
+BEGIN
+    UPDATE sponsor,
+    SET name = COALESCE(p_name, name),
+    WHERE sponsor_id = p_sponsor_id;
+END $$
+
+DELIMITER ;
+
+
+-- delete sponsor
+
+DELIMITER $$
+
+CREATE PROCEDURE delete_sponsor(
+    IN p_sponsor_id INT
+)
+BEGIN
+    DELETE FROM sponsor
+    WHERE sponsor_id = p_sponsor_id;
+END $$
+
+DELIMITER ;
+
 -- ===============================
--- CRUD PROCEDURE: CREATE game
+-- CRUD PROCEDURES: MANAGE games
 -- ===============================
+
+-- create game
 DROP PROCEDURE create_game();
 DELIMITER $$
 
@@ -658,8 +724,10 @@ END $$
 DELIMITER ;
 
 -- =================================
--- CRUD PROCEDURE: CREATE gamemaker
+-- CRUD PROCEDURES: MANAGE gamemakers
 -- =================================
+
+-- create gamemaker
 DROP PROCEDURE create_gamemaker();
 DELIMITER $$
 
@@ -672,8 +740,10 @@ END $$
 DELIMITER ;
 
 -- ===================================
--- CRUD PROCEDURE: CREATE team member
+-- CRUD PROCEDURES: MANAGE team members
 -- ===================================
+
+-- create team member
 DROP PROCEDURE create_team_member();
 DELIMITER $$
 
@@ -691,8 +761,10 @@ END $$
 DELIMITER ;
 
 -- ===================================
--- CRUD PROCEDURE: CREATE participant
+-- CRUD PROCEDURE: MANAGE participant
 -- ===================================
+
+-- create participant
 DROP PROCEDURE create_participant();
 DELIMITER $$
 
@@ -710,8 +782,10 @@ END $$
 DELIMITER ;
 
 -- ==============================
--- CRUD PROCEDURE: CREATE victor
+-- CRUD PROCEDURES: MANAGE victors
 -- ==============================
+
+-- create victor
 DROP PROCEDURE create_victor();
 DELIMITER $$
 
@@ -730,9 +804,11 @@ DELIMITER ;
 
 
 -- =================================
--- CRUD PROCEDURE: CREATE team_role
+-- CRUD PROCEDURES: MANAGE team_role
 -- =================================
-DROP PROCEDURE create_team_member();
+
+-- create team role
+DROP PROCEDURE create_team_role();
 DELIMITER $$
 
 CREATE PROCEDURE create_team_role(p_member_id INT, p_member_type VARCHAR(64), participant_id INT)
@@ -756,9 +832,10 @@ END $$
 DELIMITER ;
 
 -- ===================================
--- CRUD PROCEDURE: CREATE sponsorship
+-- CRUD PROCEDURES: MANAGE sponsorships
 -- ===================================
 
+-- create sponsorship
 DROP PROCEDURE create_sponsorship();
 DELIMITER $$
 
@@ -782,9 +859,13 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
 -- ====================================
--- CRUD PROCEDURE: CREATE game_creator
+-- CRUD PROCEDURES: MANAGE game_creators
 -- ====================================
+
+-- create game creator
 DROP PROCEDURE create_game_creator();
 DELIMITER $$
 
@@ -808,8 +889,10 @@ END $$
 DELIMITER ;
 
 -- ===================================
--- CRUD PROCEDURE: CREATE game_victor
+-- CRUD PROCEDURES: MANAGE game_victor
 -- ===================================
+
+-- create game victor
 DROP PROCEDURE create_game_victor();
 DELIMITER $$
 
@@ -833,8 +916,10 @@ END $$
 
 
 -- =======================================
--- CRUD PROCEDURE: CREATE gamemaker_score
+-- CRUD PROCEDURES: MANAGE gamemaker_scores
 -- =======================================
+
+-- create gamemaker score
 DROP PROCEDURE create_gamemaker_score();
 DELIMITER $$
 
@@ -856,154 +941,6 @@ BEGIN
 
 
 
--- ============================
--- CRUD PROCEDURE: EDIT tribute
--- ============================
-DROP PROCEDURE edit_tribute();
-DELIMITER $$
-
-CREATE PROCEDURE edit_tribute(p_tribute_id INT, p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
-BEGIN
-
-    UPDATE tribute
-    SET name = COALESCE(p_name, name),
-        dob = COALESCE(p_dob, dob),
-        gender = COALESCE(p_gender, gender)
-        district = COALESCE(p_district, district)
-    WHERE tribute_id = p_tribute_id;
-END $$
-
-DELIMITER ;
-
-
--- ===============================
--- CRUD PROCEDURE: EDIT sponsor
--- ===============================
-
-
--- ===============================
--- CRUD PROCEDURE: EDIT game
--- ===============================
-
--- =================================
--- CRUD PROCEDURE: EDIT gamemaker
--- =================================
-
--- ===================================
--- CRUD PROCEDURE: EDIT team member
--- ===================================
-
-
--- ===================================
--- CRUD PROCEDURE: EDIT participant
--- ===================================
-
--- ==============================
--- CRUD PROCEDURE: EDIT victor
--- ==============================
-
--- =================================
--- CRUD PROCEDURE: EDIT team_role
--- =================================
-
-
--- ===================================
--- CRUD PROCEDURE: EDIT sponsorship
--- ===================================
-
-
--- ====================================
--- CRUD PROCEDURE: EDIT game_creator
--- ====================================
-
-
--- ===================================
--- CRUD PROCEDURE: EDIT game_victor
--- ===================================
-
-
--- =======================================
--- CRUD PROCEDURE: EDIT gamemaker_score
--- =======================================
-
-
-
--- ===============================
--- CRUD PROCEDURE: DELETE tribute
--- ===============================
-
-DELIMITER $$
-
-CREATE PROCEDURE delete_tribute(
-    IN p_tribute_id INT
-)
-BEGIN
-    DELETE FROM tribute
-    WHERE tribute_id = p_tribute_id;
-END $$
-
-DELIMITER ;
-
--- ===============================
--- CRUD PROCEDURE: DELETE sponsor
--- ===============================
-
-DELIMITER $$
-
-CREATE PROCEDURE delete_sponsor(
-    IN p_sponsor_id INT
-)
-BEGIN
-    DELETE FROM sponsor
-    WHERE sponsor_id = p_sponsor_id;
-END $$
-
-DELIMITER ;
-
--- ===============================
--- CRUD PROCEDURE: DELETE game
--- ===============================
-
--- =================================
--- CRUD PROCEDURE: DELETE gamemaker
--- =================================
-
--- ===================================
--- CRUD PROCEDURE: DELETE team member
--- ===================================
-
-
--- ===================================
--- CRUD PROCEDURE: DELETE participant
--- ===================================
-
--- ==============================
--- CRUD PROCEDURE: DELETE victor
--- ==============================
-
--- =================================
--- CRUD PROCEDURE: DELETE team_role
--- =================================
-
-
--- ===================================
--- CRUD PROCEDURE: DELETE sponsorship
--- ===================================
-
-
--- ====================================
--- CRUD PROCEDURE: DELETE game_creator
--- ====================================
-
-
--- ===================================
--- CRUD PROCEDURE: DELETE game_victor
--- ===================================
-
-
--- =======================================
--- CRUD PROCEDURE: DELETE gamemaker_score
--- =======================================
 
 -- ===========================================================================
 -- TRIGGER: adds the intended start date based on the game number
