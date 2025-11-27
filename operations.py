@@ -265,10 +265,34 @@ def delete_sponsor(connection, sponsor_id):
 '''MANAGE GAMES'''
 
 # CREATE GAME
-def create_game(game_number, required_tribute_count=24, start_date)
-
+def create_game(connection, game_number, start_date, required_tribute_count=24):
+# verify exists before action
+    """Create game"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
 
 # EDIT GAME
+def edit_game(connection, game_number, start_date, required_tribute_count):
+# verify exists before action
+    """Create game"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('edit_game', [game_number, start_date, required_tribute_count])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
+
+# DELETE GAME
+def delete_game(connection, game_number):
+    """Delete sponsor"""
+# verify exists before action
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('delete_game', [game_number])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
 
 '''MANAGE GAMEMAKERS'''
 
@@ -277,6 +301,8 @@ def create_gamemaker(name):
 
 
 # EDIT GAMEMAKER
+
+# DELETE GAMEMAKER
 
 
 '''MANAGE TEAM MEMBERS'''

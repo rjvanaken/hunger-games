@@ -651,9 +651,7 @@ DELIMITER ;
 -- delete tribute
 DELIMITER $$
 
-CREATE PROCEDURE delete_tribute(
-    IN p_tribute_id INT
-)
+CREATE PROCEDURE delete_tribute(p_tribute_id INT)
 BEGIN
     DELETE FROM tribute
     WHERE tribute_id = p_tribute_id;
@@ -697,9 +695,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE delete_sponsor(
-    IN p_sponsor_id INT
-)
+CREATE PROCEDURE delete_sponsor(p_sponsor_id INT)
 BEGIN
     DELETE FROM sponsor
     WHERE sponsor_id = p_sponsor_id;
@@ -715,10 +711,35 @@ DELIMITER ;
 DROP PROCEDURE create_game();
 DELIMITER $$
 
-CREATE PROCEDURE create_game(p_game_number INT, p_required_tribute_count INT, p_start_date DATE)
+CREATE PROCEDURE create_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT)
 BEGIN
-    INSERT INTO game(game_number, required_tribute_count, start_date)
-    VALUES (p_game_number, p_required_tribute_count, start_date);
+    INSERT INTO game(game_number, start_date, required_tribute_count)
+    VALUES (p_game_number, p_start_date, p_required_tribute_count);
+END $$
+
+DELIMITER ;
+
+-- edit game
+DROP PROCEDURE edit_game();
+DELIMITER $$
+
+CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT, p_end_date DATE)
+BEGIN
+    UPDATE game,
+        SET start_date COALESCE(p_start_date, start_date),
+        SET end_date COALESCE(p_end_date, end_date),
+        SET required_tribute_count COALESCE(p_required_tribute_count, required_tribute_count)
+    WHERE game_number = p_game_number;
+END $$
+
+DELIMITER $$
+
+-- delete game
+CREATE PROCEDURE delete_game(p_game_number INT)
+
+BEGIN
+    DELETE FROM game
+    WHERE game_number = p_game_number;
 END $$
 
 DELIMITER ;
@@ -735,6 +756,29 @@ CREATE PROCEDURE create_gamemaker(p_name VARCHAR(64))
 BEGIN
     INSERT INTO gamemaker(name)
     VALUES (p_name);
+END $$
+
+DELIMITER ;
+
+-- edit gamemaker
+DROP PROCEDURE edit_gamemaker();
+DELIMITER $$
+
+CREATE PROCEDURE edit_gamemaker(p_name VARCHAR(64), p_gamemaker_id)
+BEGIN
+    UPDATE gamemaker,
+        SET name = COALESCE(p_name, name),
+    WHERE gamemaker_id = p_gamemaker_id;
+END $$
+
+DELIMITER ;
+
+-- delete gamemaker
+CREATE PROCEDURE delete_game(p_gamemaker_id INT)
+
+BEGIN
+    DELETE FROM game
+    WHERE gamemaker_id = p_gamemaker_id;
 END $$
 
 DELIMITER ;
