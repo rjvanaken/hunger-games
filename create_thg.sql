@@ -152,9 +152,9 @@ CREATE TABLE IF NOT EXISTS game_victor (
 -- ======================================
 
 
--- ===========================================================================
+-- ===================================================================
 -- FUNCTION: calculates and returns the training score
--- ===========================================================================
+-- ===================================================================
 DROP FUNCTION IF EXISTS get_training_score;
 DELIMITER $$
 
@@ -173,9 +173,9 @@ END $$
 
 DELIMITER ;
 
--- ===========================================================================
+-- ===================================================================
 -- FUNCTION: calculates and returns a sponsor's total contributions
--- ===========================================================================
+-- ===================================================================
 DROP FUNCTION IF EXISTS get_total_contributions;
 
 DELIMITER $$
@@ -198,9 +198,9 @@ END $$
 DELIMITER ;	
 
 
--- ===========================================================================
+-- ========================================================================
 -- FUNCTION: calculates and returns the participant's age during the games
--- ===========================================================================
+-- ========================================================================
 DROP FUNCTION IF EXISTS get_participant_age;
 
 DELIMITER $$
@@ -600,24 +600,18 @@ DELIMITER $$
 CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
 BEGIN
 
-    INSERT INTO tribute(name, dob, gender, district)
-    VALUES (p_name, p_dob, p_gender, p_district);
+    IF (SELECT COUNT(*) FROM district WHERE district_num = p_district) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'District does not exist';
+    ELSE
+        INSERT INTO tribute(name, dob, gender, district)
+        VALUES (p_name, p_dob, p_gender, p_district);
+    END IF;
 END $$
 
 DELIMITER ;
 
--- ============================
--- CRUD PROCEDURE: CREATE tribute
--- ============================
-DROP PROCEDURE create_tribute()
-DELIMITER $$
 
-CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
-BEGIN
-
-    INSERT INTO tribute(name, dob, gender, district)
-    VALUES (p_name, p_dob, p_gender, p_district);
-END $$
 
 -- ===============================
 -- CRUD PROCEDURE: CREATE sponsor
@@ -627,9 +621,8 @@ DELIMITER $$
 
 CREATE PROCEDURE create_sponsor(p_name VARCHAR(64))
 BEGIN
-
     INSERT INTO sponsor(name)
-    VALUES (name);
+    VALUES (p_name);
 END $$
 
 DELIMITER ;
@@ -641,8 +634,6 @@ DROP PROCEDURE create_game();
 DELIMITER $$
 
 CREATE PROCEDURE create_game(p_game_number INT, p_required_tribute_count INT, p_start_date DATE)
-
-DECLARE status_option VARCHAR(64);
 BEGIN
     INSERT INTO game(game_number, required_tribute_count, start_date)
     VALUES (p_game_number, p_required_tribute_count, start_date);
@@ -659,7 +650,7 @@ DELIMITER $$
 CREATE PROCEDURE create_gamemaker(p_name VARCHAR(64))
 BEGIN
     INSERT INTO gamemaker(name)
-    VALUES (name);
+    VALUES (p_name);
 END $$
 
 DELIMITER ;
@@ -670,12 +661,15 @@ DELIMITER ;
 DROP PROCEDURE create_team_member();
 DELIMITER $$
 
-CREATE PROCEDURE create_team_member(p_name VARCHAR(64), p_member_type VARCHAR(64), victor_id INT)
+CREATE PROCEDURE create_team_member(p_name VARCHAR(64), victor_id INT)
 BEGIN
-    INSERT INTO team_member(name, member_type VARCHAR(64), victor_id INT)
-    -- SHOULD ADD A TRIGGER TO CHECK THAT THE VICTOR_ID EXISTS IN THE VICTOR TABLE BEFORE IT IS ENTERED
-    -- I GUESS ANY VALIDATION FOR THE ENTERING OF FOREIGN KEYS IN ANY TABLE NEEDS THIS
-    VALUES (p_name, p_member_type, p_victor_id);
+
+    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Victor does not exist';
+    ELSE
+        INSERT INTO team_member(name, victor_id)
+        VALUES (p_name, p_victor_id);
 END $$
 
 DELIMITER ;
@@ -688,10 +682,13 @@ DELIMITER $$
 
 CREATE PROCEDURE create_participant(p_tribute_id INT, p_game_number INT)
 BEGIN
-    INSERT INTO participant(tribute_id, game_number)
-    -- SHOULD ADD A TRIGGER TO CHECK THAT THE VICTOR_ID EXISTS IN THE VICTOR TABLE BEFORE IT IS ENTERED
-    -- I GUESS ANY VALIDATION FOR THE ENTERING OF FOREIGN KEYS IN ANY TABLE NEEDS THIS
-    VALUES (p_tribute_id, p_game_number);
+
+    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Tribute does not exist';
+    ELSE
+        INSERT INTO participant(tribute_id, game_number)
+        VALUES (p_tribute_id, p_game_number);
 END $$
 
 DELIMITER ;
@@ -704,13 +701,144 @@ DELIMITER $$
 
 CREATE PROCEDURE create_victor(p_tribute_id INT)
 BEGIN
-    INSERT INTO victor(tribute_id)
-    -- SHOULD ADD A TRIGGER TO CHECK THAT THE VICTOR_ID EXISTS IN THE VICTOR TABLE BEFORE IT IS ENTERED
-    -- I GUESS ANY VALIDATION FOR THE ENTERING OF FOREIGN KEYS IN ANY TABLE NEEDS THIS
+
+    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Tribute does not exist';
+    ELSE
+        INSERT INTO victor(tribute_id)
     VALUES(p_tribute_id)
 END $$
 
 DELIMITER ;
+
+
+-- =================================
+-- CRUD PROCEDURE: CREATE team_role
+-- =================================
+DROP PROCEDURE create_team_member();
+DELIMITER $$
+
+CREATE PROCEDURE create_team_role(p_member_id INT, p_member_type VARCHAR(64), participant_id INT)
+BEGIN
+    IF 
+    (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Participant does not exist';
+    END IF;
+
+    IF 
+    (SELECT COUNT(*) FROM team_member WHERE member_id = p_member_id) IS 0
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Team Member does not exist';
+    END IF;
+    
+    INSERT INTO team_role(member_id, member_type, participant_id)
+    VALUES (p_member_id, p_member_type, p_participant_id);
+END $$
+
+DELIMITER ;
+
+-- ===================================
+-- CRUD PROCEDURE: CREATE sponsorship
+-- ===================================
+
+DROP PROCEDURE create_sponsorship();
+DELIMITER $$
+
+CREATE PROCEDURE create_sponsorship(p_participant_id VARCHAR(64), p_sponsor_id INT, p_sponsor_amount DECIMAL(10, 2))
+-- TEST THAT IT WORKS ENTERING IT WITHOUT .00
+BEGIN
+
+    IF (SELECT COUNT(*) FROM sponsor WHERE sponsor_id = p_sponsor_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sponsor does not exist';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Participant does not exist';
+    END IF;
+
+    INSERT INTO sponsorship(participant_id, sponsor_id, sponsor_amount)
+    VALUES (p_participant_id, p_sponsor_id, p_sponsor_amount)
+
+END $$
+
+DELIMITER ;
+-- ====================================
+-- CRUD PROCEDURE: CREATE game_creator
+-- ====================================
+DROP PROCEDURE create_game_creator();
+DELIMITER $$
+
+CREATE PROCEDURE create_game_creator(p_game_number INT, p_gamemaker_id INT)
+BEGIN
+
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game does not exist';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Gamemaker does not exist';
+    END IF;
+
+    INSERT INTO game_creator(game_number, gamemaker_id)
+    VALUES (p_game_number, p_gamemaker_id);
+END $$
+
+DELIMITER ;
+
+-- ===================================
+-- CRUD PROCEDURE: CREATE game_victor
+-- ===================================
+DROP PROCEDURE create_game_victor();
+DELIMITER $$
+
+CREATE PROCEDURE create_game_victor (p_game_number, p_victor_id)
+BEGIN
+
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game does not exist';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) IS 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Victor does not exist';
+    END IF;
+
+    INSERT INTO game_victor(game_number, victor_id)
+    VALUES (p_game_number, p_victor_id);
+END $$
+
+
+
+-- =======================================
+-- CRUD PROCEDURE: CREATE gamemaker_score
+-- =======================================
+DROP PROCEDURE create_gamemaker_score();
+DELIMITER $$
+
+CREATE PROCEDURE (p_gamemaker_id INT, p_participant_id VARCHAR(64), p_assessment_score INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Participant does not exist';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) IS 0
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Gamemaker does not exist';
+    END IF;
+
+    INSERT INTO gamemaker_score(gamemaker_id, participant_id, assessment_score)
+    VALUES (p_gamemaker_id, p_participant_id, p_assessment_score);
+
+
 
 -- ============================
 -- CRUD PROCEDURE: EDIT tribute
@@ -727,9 +855,56 @@ BEGIN
         gender = COALESCE(p_gender, gender)
         district = COALESCE(p_district, district)
     WHERE tribute_id = p_tribute_id;
-END $$
 
-DELIMITER ;
+-- ===============================
+-- CRUD PROCEDURE: EDIT sponsor
+-- ===============================
+
+
+-- ===============================
+-- CRUD PROCEDURE: EDIT game
+-- ===============================
+
+-- =================================
+-- CRUD PROCEDURE: EDIT gamemaker
+-- =================================
+
+-- ===================================
+-- CRUD PROCEDURE: EDIT team member
+-- ===================================
+
+
+-- ===================================
+-- CRUD PROCEDURE: EDIT participant
+-- ===================================
+
+-- ==============================
+-- CRUD PROCEDURE: EDIT victor
+-- ==============================
+
+-- =================================
+-- CRUD PROCEDURE: EDIT team_role
+-- =================================
+
+
+-- ===================================
+-- CRUD PROCEDURE: EDIT sponsorship
+-- ===================================
+
+
+-- ====================================
+-- CRUD PROCEDURE: EDIT game_creator
+-- ====================================
+
+
+-- ===================================
+-- CRUD PROCEDURE: EDIT game_victor
+-- ===================================
+
+
+-- =======================================
+-- CRUD PROCEDURE: EDIT gamemaker_score
+-- =======================================
 
 
 
@@ -917,6 +1092,7 @@ BEGIN
 END $$
 
 DELIMITER ;
+
 
 -- ===================================
 -- VIEW: Displays participant details
