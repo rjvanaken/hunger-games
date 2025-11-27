@@ -90,15 +90,6 @@ VIEW OPERATIONS
 ==============================
 '''
 
-# Generic View Table (with no foreign keys needed)
-def view_table(connection, table_name):
-    """View full table"""
-    cursor = connection.cursor(dictionary=True)
-    cursor.callproc('view_table', [table_name])
-    rows = next(cursor.stored_results()).fetchall()
-    cursor.close()
-    return rows
-
 # View Tributes
 def view_tributes(connection, name=None, district=None):
     """View tributes with optional filters"""
@@ -189,3 +180,111 @@ def view_districts(connection):
 MANAGE OPERATIONS
 ==============================
 '''
+
+# Generic View Table (FOR CRUD VIEW)
+def view_table(connection, table_name):
+    """View full table"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('view_table', [table_name])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
+
+
+'''MANAGE TRIBUTES'''
+
+# CREATE TRIBUTE
+def create_tribute(connection, name, dob, gender, district):
+    """Create tribute"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('create_tribute', [name, dob, gender, district])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
+
+# EDIT TRIBUTE
+def edit_tribute(connection, name, dob, gender, district):
+    """Edit tribute"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('edit_tribute', [name, dob, gender, district])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
+
+
+# DELETE TRIBUTE
+def delete_tribute(connection, tribute_id):
+    """Delete tribute"""
+    cursor = connection.cursor(dictionary=True)
+    cursor.callproc('delete_tribute', [tribute_id])
+    rows = next(cursor.stored_results()).fetchall()
+    cursor.close()
+    return rows
+
+
+
+
+
+
+
+'''MANAGE SPONSORS'''
+
+# CREATE SPONSOR
+def create_sponsor(name):
+
+# EDIT SPONSOR
+
+
+
+# DELETE SPONSOR
+
+
+
+
+'''MANAGE GAMES'''
+
+# CREATE GAME
+def create_game(game_number, required_tribute_count=24, start_date)
+
+
+# EDIT GAME
+
+'''MANAGE GAMEMAKERS'''
+
+# CREATE GAMEMAKER
+def create_gamemaker(name):
+
+
+# EDIT GAMEMAKER
+
+
+'''MANAGE TEAM MEMBERS'''
+
+# CREATE TEAM MEMBER
+def create_team_member(name, victor_id=None):
+
+
+# EDIT TEAM MEMBER
+
+
+# DELETE TEAM MEMBER
+
+'''MANAGE PARTICIPANTS'''
+
+# CREATE PARTICIPANT
+def create_participant(tribute_id, game_number):
+
+# EDIT PARTICIPANT
+
+
+# DELETE PARTICIPANT
+
+'''MANAGE VICTORS'''
+
+# CREATE VICTOR
+def create_victor(tribute_id):
+
+# EDIT VICTOR
+
+
+# DELETE VICTOR

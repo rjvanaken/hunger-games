@@ -591,10 +591,26 @@ END $$
 
 DELIMITER ;
 
+
+
+-- ============================
+-- CRUD PROCEDURE: VIEW full table
+-- ============================
+
+DROP PROCEDURE view_table();
+DELIMITER $$
+
+CREATE PROCEDURE view_table (p_table_name VARCHAR(64))
+BEGIN
+    SELECT * FROM p_table_name;
+END $$
+
+DELIMITER ;
+
 -- ============================
 -- CRUD PROCEDURE: CREATE tribute
 -- ============================
-DROP PROCEDURE create_tribute()
+DROP PROCEDURE create_tribute();
 DELIMITER $$
 
 CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
@@ -911,6 +927,83 @@ DELIMITER ;
 -- =======================================
 
 
+
+-- ===============================
+-- CRUD PROCEDURE: DELETE tribute
+-- ===============================
+
+DELIMITER $$
+
+CREATE PROCEDURE delete_tribute(
+    IN p_tribute_id INT
+)
+BEGIN
+    DELETE FROM tribute
+    WHERE tribute_id = p_tribute_id;
+END $$
+
+DELIMITER ;
+
+-- ===============================
+-- CRUD PROCEDURE: DELETE sponsor
+-- ===============================
+
+DELIMITER $$
+
+CREATE PROCEDURE delete_sponsor(
+    IN p_sponsor_id INT
+)
+BEGIN
+    DELETE FROM sponsor
+    WHERE sponsor_id = p_sponsor_id;
+END $$
+
+DELIMITER ;
+
+-- ===============================
+-- CRUD PROCEDURE: DELETE game
+-- ===============================
+
+-- =================================
+-- CRUD PROCEDURE: DELETE gamemaker
+-- =================================
+
+-- ===================================
+-- CRUD PROCEDURE: DELETE team member
+-- ===================================
+
+
+-- ===================================
+-- CRUD PROCEDURE: DELETE participant
+-- ===================================
+
+-- ==============================
+-- CRUD PROCEDURE: DELETE victor
+-- ==============================
+
+-- =================================
+-- CRUD PROCEDURE: DELETE team_role
+-- =================================
+
+
+-- ===================================
+-- CRUD PROCEDURE: DELETE sponsorship
+-- ===================================
+
+
+-- ====================================
+-- CRUD PROCEDURE: DELETE game_creator
+-- ====================================
+
+
+-- ===================================
+-- CRUD PROCEDURE: DELETE game_victor
+-- ===================================
+
+
+-- =======================================
+-- CRUD PROCEDURE: DELETE gamemaker_score
+-- =======================================
 
 -- ===========================================================================
 -- TRIGGER: adds the intended start date based on the game number
