@@ -9,21 +9,20 @@ CREATE TABLE IF NOT EXISTS district (
     industry VARCHAR(64),
     size ENUM ('Small', 'Medium', 'Large'), -- add to diagram
     wealth ENUM('Poor', 'Working Class', 'Middle Class', 'Wealthy') -- add to diagram
-
+    
 );
 
 CREATE TABLE IF NOT EXISTS tribute (
 	tribute_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(64),
     dob DATE,
-    gender ENUM ('M', 'F') NOT NULL,
+    gender ENUM ('m', 'f') NOT NULL,
     district INT,
 	FOREIGN KEY (district) REFERENCES district(district_num)
         ON UPDATE CASCADE ON DELETE RESTRICT,
         
     CONSTRAINT prevent_dupe_tributes
         UNIQUE (name, dob, gender, district)
-    CONSTRAINT check_district CHECK (district_num < 13 AND district_num > 0)
 );
 
 CREATE TABLE IF NOT EXISTS victor (
@@ -65,7 +64,7 @@ CREATE TABLE IF NOT EXISTS participant(
 	tribute_id INT NOT NULL,
     game_number INT NOT NULL,
     final_placement INT DEFAULT NULL, -- add logic -- limit based on number of tributes - trigger
-    interview_score INT DEFAULT NULL
+    interview_score INT DEFAULT NULL,
     
     CONSTRAINT check_interview_score CHECK (interview_score BETWEEN 1 AND 10),
     -- CONSTRAINT check_tribute_id_exists CHECK (BETWEEN 1 AND 10),
@@ -244,9 +243,9 @@ BEGIN
 	IF p_tribute_id NOT IN (SELECT tribute_id FROM tribute) THEN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tribute does not exist';
-    
-    INSERT INTO victor(victor_id) VALUES (p_tribute_id);
     END IF;
+
+    INSERT INTO victor(victor_id) VALUES (p_tribute_id);
 END $$
 
 DELIMITER ;
@@ -292,7 +291,7 @@ BEGIN
     DECLARE v_member_id INT;
 
     SELECT member_id INTO v_member_id
-    FROM member
+    FROM team_member
     WHERE name = p_team_member_name
     LIMIT 1;
     
@@ -351,7 +350,7 @@ DELIMITER $$
 CREATE PROCEDURE view_districts()
 
 BEGIN
-    SELECT * FROM district
+    SELECT * FROM district;
 END $$
 
 DELIMITER ;
@@ -370,7 +369,7 @@ CREATE PROCEDURE view_tributes(p_name VARCHAR(64), p_district INT)
 BEGIN
     SELECT * FROM tribute WHERE 1=1
     AND (p_name is NULL OR name LIKE p_name)
-    AND (p_district is NULL OR district = p_district)
+    AND (p_district is NULL OR district = p_district);
 END $$
 
 DELIMITER ;
@@ -597,7 +596,7 @@ DELIMITER ;
 -- CRUD PROCEDURE: VIEW full table
 -- ============================
 
-DROP PROCEDURE view_table();
+DROP PROCEDURE view_table;
 DELIMITER $$
 
 CREATE PROCEDURE view_table (p_table_name VARCHAR(64))
@@ -612,7 +611,7 @@ DELIMITER ;
 -- ============================
 
 -- create tribute
-DROP PROCEDURE create_tribute();
+DROP PROCEDURE create_tribute;
 DELIMITER $$
 
 CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
@@ -631,7 +630,7 @@ DELIMITER ;
 
 
 -- edit tribute
-DROP PROCEDURE edit_tribute();
+DROP PROCEDURE edit_tribute;
 DELIMITER $$
 
 CREATE PROCEDURE edit_tribute(p_tribute_id INT, p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
@@ -640,7 +639,7 @@ BEGIN
     UPDATE tribute
     SET name = COALESCE(p_name, name),
         dob = COALESCE(p_dob, dob),
-        gender = COALESCE(p_gender, gender)
+        gender = COALESCE(p_gender, gender),
         district = COALESCE(p_district, district)
     WHERE tribute_id = p_tribute_id;
 END $$
@@ -649,6 +648,7 @@ DELIMITER ;
 
 
 -- delete tribute
+DROP PROCEDURE delete_tribute;
 DELIMITER $$
 
 CREATE PROCEDURE delete_tribute(p_tribute_id INT)
@@ -666,7 +666,7 @@ DELIMITER ;
 -- ===============================
 
 -- create sponsor
-DROP PROCEDURE create_sponsor()
+DROP PROCEDURE create_sponsor;
 DELIMITER $$
 
 CREATE PROCEDURE create_sponsor(p_name VARCHAR(64))
@@ -678,13 +678,13 @@ END $$
 DELIMITER ;
 
 -- edit sponsor
-DROP PROCEDURE edit_sponsor()
+DROP PROCEDURE edit_sponsor;
 DELIMITER $$
 
 CREATE PROCEDURE edit_sponsor(p_name VARCHAR(64))
 BEGIN
-    UPDATE sponsor,
-    SET name = COALESCE(p_name, name),
+    UPDATE sponsor
+        SET name = COALESCE(p_name, name)
     WHERE sponsor_id = p_sponsor_id;
 END $$
 
@@ -692,7 +692,7 @@ DELIMITER ;
 
 
 -- delete sponsor
-
+DROP PROCEDURE delete_sponsor;
 DELIMITER $$
 
 CREATE PROCEDURE delete_sponsor(p_sponsor_id INT)
@@ -708,7 +708,7 @@ DELIMITER ;
 -- ===============================
 
 -- create game
-DROP PROCEDURE create_game();
+DROP PROCEDURE create_game;
 DELIMITER $$
 
 CREATE PROCEDURE create_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT)
@@ -720,21 +720,24 @@ END $$
 DELIMITER ;
 
 -- edit game
-DROP PROCEDURE edit_game();
+DROP PROCEDURE edit_game;
 DELIMITER $$
 
 CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT, p_end_date DATE)
 BEGIN
-    UPDATE game,
-        SET start_date COALESCE(p_start_date, start_date),
-        SET end_date COALESCE(p_end_date, end_date),
-        SET required_tribute_count COALESCE(p_required_tribute_count, required_tribute_count)
+    UPDATE game
+        SET start_date = COALESCE(p_start_date, start_date),
+            end_date = COALESCE(p_end_date, end_date),
+            required_tribute_count = COALESCE(p_required_tribute_count, required_tribute_count)
     WHERE game_number = p_game_number;
 END $$
 
-DELIMITER $$
+DELIMITER ;
 
 -- delete game
+DROP PROCEDURE delete_game;
+DELIMITER $$
+
 CREATE PROCEDURE delete_game(p_game_number INT)
 
 BEGIN
@@ -749,7 +752,7 @@ DELIMITER ;
 -- =================================
 
 -- create gamemaker
-DROP PROCEDURE create_gamemaker();
+DROP PROCEDURE create_gamemaker;
 DELIMITER $$
 
 CREATE PROCEDURE create_gamemaker(p_name VARCHAR(64))
@@ -761,23 +764,26 @@ END $$
 DELIMITER ;
 
 -- edit gamemaker
-DROP PROCEDURE edit_gamemaker();
+DROP PROCEDURE edit_gamemaker;
 DELIMITER $$
 
-CREATE PROCEDURE edit_gamemaker(p_name VARCHAR(64), p_gamemaker_id)
+CREATE PROCEDURE edit_gamemaker(p_name VARCHAR(64), p_gamemaker_id INT)
 BEGIN
-    UPDATE gamemaker,
-        SET name = COALESCE(p_name, name),
+    UPDATE gamemaker
+        SET name = COALESCE(p_name, name)
     WHERE gamemaker_id = p_gamemaker_id;
 END $$
 
 DELIMITER ;
 
 -- delete gamemaker
-CREATE PROCEDURE delete_game(p_gamemaker_id INT)
+DROP PROCEDURE delete_gamemaker;
+DELIMITER $$
+
+CREATE PROCEDURE delete_gamemaker(p_gamemaker_id INT)
 
 BEGIN
-    DELETE FROM game
+    DELETE FROM gamemaker
     WHERE gamemaker_id = p_gamemaker_id;
 END $$
 
@@ -788,7 +794,7 @@ DELIMITER ;
 -- ===================================
 
 -- create team member
-DROP PROCEDURE create_team_member();
+DROP PROCEDURE create_team_member;
 DELIMITER $$
 
 CREATE PROCEDURE create_team_member(p_name VARCHAR(64), victor_id INT)
@@ -800,6 +806,7 @@ BEGIN
     ELSE
         INSERT INTO team_member(name, victor_id)
         VALUES (p_name, p_victor_id);
+    END IF;
 END $$
 
 DELIMITER ;
@@ -809,7 +816,7 @@ DELIMITER ;
 -- ===================================
 
 -- create participant
-DROP PROCEDURE create_participant();
+DROP PROCEDURE create_participant;
 DELIMITER $$
 
 CREATE PROCEDURE create_participant(p_tribute_id INT, p_game_number INT)
@@ -821,6 +828,7 @@ BEGIN
     ELSE
         INSERT INTO participant(tribute_id, game_number)
         VALUES (p_tribute_id, p_game_number);
+    END IF;
 END $$
 
 DELIMITER ;
@@ -830,7 +838,7 @@ DELIMITER ;
 -- ==============================
 
 -- create victor
-DROP PROCEDURE create_victor();
+DROP PROCEDURE create_victor;
 DELIMITER $$
 
 CREATE PROCEDURE create_victor(p_tribute_id INT)
@@ -841,7 +849,8 @@ BEGIN
         SET MESSAGE_TEXT = 'Tribute does not exist';
     ELSE
         INSERT INTO victor(tribute_id)
-    VALUES(p_tribute_id)
+        VALUES(p_tribute_id);
+    END IF;
 END $$
 
 DELIMITER ;
@@ -852,19 +861,19 @@ DELIMITER ;
 -- =================================
 
 -- create team role
-DROP PROCEDURE create_team_role();
+DROP PROCEDURE create_team_role;
 DELIMITER $$
 
 CREATE PROCEDURE create_team_role(p_member_id INT, p_member_type VARCHAR(64), participant_id INT)
 BEGIN
     IF 
-    (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0
+    (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
 
     IF 
-    (SELECT COUNT(*) FROM team_member WHERE member_id = p_member_id) IS 0
+    (SELECT COUNT(*) FROM team_member WHERE member_id = p_member_id) IS 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Team Member does not exist';
     END IF;
@@ -880,7 +889,7 @@ DELIMITER ;
 -- ===================================
 
 -- create sponsorship
-DROP PROCEDURE create_sponsorship();
+DROP PROCEDURE create_sponsorship;
 DELIMITER $$
 
 CREATE PROCEDURE create_sponsorship(p_participant_id VARCHAR(64), p_sponsor_id INT, p_sponsor_amount DECIMAL(10, 2))
@@ -898,7 +907,7 @@ BEGIN
     END IF;
 
     INSERT INTO sponsorship(participant_id, sponsor_id, sponsor_amount)
-    VALUES (p_participant_id, p_sponsor_id, p_sponsor_amount)
+    VALUES (p_participant_id, p_sponsor_id, p_sponsor_amount);
 
 END $$
 
@@ -910,7 +919,7 @@ DELIMITER ;
 -- ====================================
 
 -- create game creator
-DROP PROCEDURE create_game_creator();
+DROP PROCEDURE create_game_creator;
 DELIMITER $$
 
 CREATE PROCEDURE create_game_creator(p_game_number INT, p_gamemaker_id INT)
@@ -937,10 +946,10 @@ DELIMITER ;
 -- ===================================
 
 -- create game victor
-DROP PROCEDURE create_game_victor();
+DROP PROCEDURE create_game_victor;
 DELIMITER $$
 
-CREATE PROCEDURE create_game_victor (p_game_number, p_victor_id)
+CREATE PROCEDURE create_game_victor (p_game_number INT, p_victor_id INT)
 BEGIN
 
     IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) IS 0 THEN
@@ -957,25 +966,25 @@ BEGIN
     VALUES (p_game_number, p_victor_id);
 END $$
 
-
+DELIMITER ;
 
 -- =======================================
 -- CRUD PROCEDURES: MANAGE gamemaker_scores
 -- =======================================
 
 -- create gamemaker score
-DROP PROCEDURE create_gamemaker_score();
+DROP PROCEDURE create_gamemaker_score;
 DELIMITER $$
 
-CREATE PROCEDURE (p_gamemaker_id INT, p_participant_id VARCHAR(64), p_assessment_score INT)
+CREATE PROCEDURE create_gamemaker_score(p_gamemaker_id INT, p_participant_id VARCHAR(64), p_assessment_score INT)
 
 BEGIN
-    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) IS 0
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) IS 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Gamemaker does not exist';
     END IF;
@@ -983,7 +992,9 @@ BEGIN
     INSERT INTO gamemaker_score(gamemaker_id, participant_id, assessment_score)
     VALUES (p_gamemaker_id, p_participant_id, p_assessment_score);
 
+END $$
 
+DELIMITER ;
 
 
 -- ===========================================================================
@@ -1638,10 +1649,10 @@ INSERT INTO sponsorship (sponsor_id, participant_id, sponsor_amount) VALUES
 -- SCORES
 -- Game 10 (24 tributes, 1 gamemaker each)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
-('10.1.F.1', 1, 8), ('10.1.M.1', 1, 10), ('10.2.F.1', 1, 9), ('10.2.M.1', 1, 8), ('10.3.F.1', 1, 7), ('10.3.M.1', 1, 6), ('10.4.F.1', 1, 10), ('10.4.M.1', 1, 11), ('10.5.F.1', 1, 7), ('10.5.M.1', 1, 8), ('10.6.F.1', 1, 9), ('10.6.M.1', 1, 5), ('10.7.F.1', 1, 2), ('10.7.M.1', 1, 11), ('10.8.F.1', 1, 9), ('10.8.M.1', 1, 9), ('10.9.F.1', 1, 4), ('10.9.M.1', 1, 5), ('10.10.F.1', 1, 2), ('10.10.M.1', 1, 8), ('10.11.F.1', 1, 1), ('10.11.M.1', 1, 9), ('10.12.F.1', 1, 10), ('10.12.M.1', 1, 6);
+('10.1.F.1', 4, 8), ('10.1.M.1', 4, 10), ('10.2.F.1', 4, 9), ('10.2.M.1', 4, 8), ('10.3.F.1', 4, 7), ('10.3.M.1', 4, 6), ('10.4.F.1', 4, 10), ('10.4.M.1', 4, 11), ('10.5.F.1', 4, 7), ('10.5.M.1', 4, 8), ('10.6.F.1', 4, 9), ('10.6.M.1', 4, 5), ('10.7.F.1', 4, 2), ('10.7.M.1', 4, 11), ('10.8.F.1', 4, 9), ('10.8.M.1', 4, 9), ('10.9.F.1', 4, 4), ('10.9.M.1', 4, 5), ('10.10.F.1', 4, 2), ('10.10.M.1', 4, 8), ('10.11.F.1', 4, 1), ('10.11.M.1', 4, 9), ('10.12.F.1', 4, 10), ('10.12.M.1', 4, 6);
 -- Game 11 (1 tribute, 1 gamemaker)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
-('11.4.F.1', 1, 7);
+('11.4.F.1', 4, 7);
 -- Game 34 (1 tribute, 4 gamemakers)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
 ('34.3.M.1', 14, 8), ('34.3.M.1', 15, 7), ('34.3.M.1', 16, 5), ('34.3.M.1', 17, 8);

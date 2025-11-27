@@ -388,7 +388,7 @@ ANALYTICS
 '''
 INPUT FUNCTIONS
 '''
-def get_name_input(prompt):
+def get_string_input(prompt):
     """Get name from user for:
     - tribute
     - sponsor

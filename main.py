@@ -92,18 +92,29 @@ def handle_manage_tributes(connection):
             ops.view_table(connection, 'tribute')
             ops.display_tributes_full()
         elif choice == '2': # CREATE
-            pass
-            # ADD CREATE FUNCTION THINGY
+            name = menu.get_string_input("Enter the tribute's full name")
+            dob = menu.get_string_input("Enter the tribute's date of birth in the format yyyy-mm-dd")
+            # add validation for date entering
+            gender = menu.get_string_input("Enter the tribute's gender (M or F)")
+            district = menu.get_number_input("Enter the tribute's district number (1-12)")
+            ops.create_tribute(connection, name, dob, gender, district)
+            # add create validation and rollback
         elif choice == '3': # EDIT
             ops.view_table(connection, 'tribute')
             ops.display_tributes_full()
             id = menu.get_number_input('Enter ID of tribute to edit:')
+            name = menu.get_string_input("Enter the tribute's full name")
+            dob = menu.get_string_input("Enter the tribute's date of birth in the format yyyy-mm-dd")
+            # add validation for date entering
+            gender = menu.get_string_input("Enter the tribute's gender (M or F)")
+            district = menu.get_number_input("Enter the tribute's district number (1-12)")
+            ops.edit_tribute(id)
             # ADD EDIT FUNCTION THINGY
         elif choice == '4': # DELETE
             ops.view_table(connection, 'tribute')
             ops.display_tributes_full()
-            id = menu.get_number_input('Enter ID of tribute to edit:')
-            # ADD DELETE FUNCTION THINGY
+            id = menu.get_number_input('Enter ID of tribute to delete:')
+            ops.delete_tribute(id)
         elif choice == '0':
             break
         else:
@@ -150,7 +161,7 @@ def handle_view_tributes(connection):
             menu.display_tributes(rows) 
 
         elif choice == "2":
-            name = menu.get_name_input("Enter tribute name")
+            name = menu.get_string_input("Enter tribute name")
             rows =  ops.view_tributes(connection, name, None)
             menu.display_tributes(rows)
 
@@ -176,7 +187,7 @@ def handle_view_sponsors(connection):
             menu.display_sponsors(connection, rows)
         
         elif choice == "2":
-            name = menu.get_name_input("Enter sponsor name")
+            name = menu.get_string_input("Enter sponsor name")
             rows = ops.search_sponsor_by_name(connection, name)
             menu.display_sponsors(connection, rows)
         
@@ -188,7 +199,7 @@ def handle_view_sponsors(connection):
             game = menu.get_number_input("Enter game number (0 to skip)")
             if game == "0":
                 game = None
-            name = menu.get_name_input("Enter tribute name (0 to skip)")
+            name = menu.get_string_input("Enter tribute name (0 to skip)")
             if name == "0":
                 name = None
             rows =  ops.view_sponsorships(connection, game, name)
@@ -214,12 +225,12 @@ def handle_view_games(connection):
             menu.display_games(rows)
 
         elif choice == "3":
-            name = menu.get_name_input("Enter tribute name")
+            name = menu.get_string_input("Enter tribute name")
             rows = ops.view_games(connection, None, name)
             menu.display_games(rows)
 
         elif choice == "4":
-            name = menu.get_name_input("Enter victor name")
+            name = menu.get_string_input("Enter victor name")
             rows = ops.view_games(connection, None, None, name)
             menu.display_games(rows)
 
@@ -237,7 +248,7 @@ def handle_view_gamemakers(connection):
             menu.display_gamemakers(rows)
         
         elif choice == "2":
-            name = menu.get_name_input("Enter gamemaker name")
+            name = menu.get_string_input("Enter gamemaker name")
             rows = ops.view_gamemakers(connection, name)
             menu.display_gamemakers(rows)
 
@@ -260,7 +271,7 @@ def handle_view_team_members(connection):
             menu.display_team_members(rows) #TODO
         
         elif choice == "2":
-            name = menu.get_name_input("Enter team member name")
+            name = menu.get_string_input("Enter team member name")
             rows = ops.view_team_members(connection, name) #TODO
             menu.display_team_members(rows) #TODO
 
@@ -284,7 +295,7 @@ def handle_view_team_members(connection):
                 print("Invalid entry")
 
         elif choice == "4":
-            tribute_name = menu.get_name_input("Enter tribute name")
+            tribute_name = menu.get_string_input("Enter tribute name")
             rows = ops.view_team_members(connection, None, None, tribute_name) #TODO
             menu.display_team_members(rows) #TODO
 
@@ -302,7 +313,7 @@ def handle_view_participants(connection):
             menu.display_participants(rows)
 
         elif choice == '2':
-            tribute_name = menu.get_name_input("Enter participant name")
+            tribute_name = menu.get_string_input("Enter participant name")
             rows = ops.view_partipants(connection, tribute_name)
             menu.display_participants(rows)
 
@@ -335,7 +346,7 @@ def handle_view_victors(connection):
             menu.display_victors(rows)
 
         elif choice == '2':
-            tribute_name = menu.get_name_input("Enter tribute name")
+            tribute_name = menu.get_string_input("Enter tribute name")
             rows = ops.view_victors(connection, tribute_name)
             menu.display_victors(rows)
 

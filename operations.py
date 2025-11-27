@@ -296,42 +296,42 @@ def delete_game(connection, game_number):
 
 '''MANAGE GAMEMAKERS'''
 
-# CREATE GAMEMAKER
-def create_gamemaker(name):
+# # CREATE GAMEMAKER
+# def create_gamemaker(name):
 
 
-# EDIT GAMEMAKER
+# # EDIT GAMEMAKER
 
-# DELETE GAMEMAKER
-
-
-'''MANAGE TEAM MEMBERS'''
-
-# CREATE TEAM MEMBER
-def create_team_member(name, victor_id=None):
+# # DELETE GAMEMAKER
 
 
-# EDIT TEAM MEMBER
+# '''MANAGE TEAM MEMBERS'''
+
+# # CREATE TEAM MEMBER
+# def create_team_member(name, victor_id=None):
 
 
-# DELETE TEAM MEMBER
-
-'''MANAGE PARTICIPANTS'''
-
-# CREATE PARTICIPANT
-def create_participant(tribute_id, game_number):
-
-# EDIT PARTICIPANT
+# # EDIT TEAM MEMBER
 
 
-# DELETE PARTICIPANT
+# # DELETE TEAM MEMBER
 
-'''MANAGE VICTORS'''
+# '''MANAGE PARTICIPANTS'''
 
-# CREATE VICTOR
-def create_victor(tribute_id):
+# # CREATE PARTICIPANT
+# def create_participant(tribute_id, game_number):
 
-# EDIT VICTOR
+# # EDIT PARTICIPANT
 
 
-# DELETE VICTOR
+# # DELETE PARTICIPANT
+
+# '''MANAGE VICTORS'''
+
+# # CREATE VICTOR
+# def create_victor(tribute_id):
+
+# # EDIT VICTOR
+
+
+# # DELETE VICTOR
