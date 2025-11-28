@@ -103,7 +103,7 @@ def view_tributes(connection, name=None, district=None):
 # View Sponsors / Sponsorships
 def view_sponsors(connection, name=None):
     """View sponsors by optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_sponsors', [name])
     sponsors = cursor.fetchall()
     cursor.close()
@@ -111,7 +111,7 @@ def view_sponsors(connection, name=None):
 
 def view_sponsorships(connection, game_number=None, tribute_name=None):
     """View sponsorships with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_sponsorships', [game_number, tribute_name])
     sponsorships = cursor.fetchall()
     cursor.close()
@@ -120,7 +120,7 @@ def view_sponsorships(connection, game_number=None, tribute_name=None):
 #VIEW-GAMES
 def view_games(connection, game_number=None, tribute_name=None, victor_name=None):
     """View games with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_games', [game_number, tribute_name, victor_name])
     games = cursor.fetchall()
     cursor.close()
@@ -130,7 +130,7 @@ def view_games(connection, game_number=None, tribute_name=None, victor_name=None
 # View Gamemakers
 def view_gamemakers(connection, name=None, game_number=None):
     """View gamemakers with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_gamemakers', [name, game_number])
     gamemakers = cursor.fetchall()
     cursor.close()
@@ -140,7 +140,7 @@ def view_gamemakers(connection, name=None, game_number=None):
 # View Team Member
 def view_team_members(connection, name=None, member_type=None, tribute_name=None):
     """View team members with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_team_members', [name, member_type, tribute_name])
     team_members = cursor.fetchall()
     cursor.close()
@@ -150,7 +150,7 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
 # View Participants
 def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None):
     """view participants with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_participants', [tribute_name, age_during_games, game_number, training_score])
     participants = cursor.fetchall()
     cursor.close()
@@ -160,7 +160,7 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
 # View Victors
 def view_victors(connection, tribute_name=None, game_number=None):
     """View victors with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_victors', tribute_name, game_number)
     victors = cursor.fetchall()
     cursor.close()
@@ -169,7 +169,7 @@ def view_victors(connection, tribute_name=None, game_number=None):
 # View Districts
 def view_districts(connection):
     """View districts"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_districts')
     districts = cursor.fetchall()
     cursor.close()
@@ -197,26 +197,77 @@ def view_table(connection, table_name):
 # CREATE TRIBUTE
 def create_tribute(connection, name, dob, gender, district):
     """Create tribute"""
-    cursor = connection.cursor()
-    cursor.callproc('create_tribute', [name, dob, gender, district])
-    connection.commit()
-    cursor.close()
-    print("Tribute created successfully!")
+
+    # Validate name
+    if not name or len(name) > 64:
+        print("Invalid name")
+        return False
+    
+    # Validate gender
+    if gender.lower() not in ['m', 'f']:
+        print("Gender must be 'm' or 'f'")
+        return False
+    
+    # Validate district
+    if district < 1 or district > 12:
+        print("District must be between 1-12")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_tribute', [name, dob, gender.lower(), district])
+        connection.commit()
+        print("Tribute created successfully!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
 # EDIT TRIBUTE
-def edit_tribute(connection, name, dob, gender, district):
+def edit_tribute(connection, tribute_id, name, dob, gender, district):
     """Edit tribute"""
-    cursor = connection.cursor()
-    cursor.callproc('edit_tribute', [id, name, dob, gender, district])
-    connection.commit()
-    cursor.close()
-    print("Tribute edited successfully")
+    
+    # Validate name (only if provided - not None and not empty)
+    if name is not None and name != '' and len(name) > 64:
+        print("Invalid name")
+        return False
+    
+    # Validate gender (only if provided)
+    if gender is not None and gender != '' and gender.lower() not in ['m', 'f']:
+        print("Gender must be 'm' or 'f'")
+        return False
+    
+    # Validate district (only if provided - 0 means skip in your design)
+    if district is not None and district != 0 and (district < 1 or district > 12):
+        print("District must be between 1-12")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        # Convert to proper values for SQL
+        gender_lower = gender.lower() if gender else None
+        district_val = district if district != 0 else None  # 0 means NULL
+        
+        cursor.callproc('edit_tribute', [tribute_id, name, dob, gender_lower, district_val])
+        connection.commit()
+        print("Tribute edited successfully!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 
 # DELETE TRIBUTE
 def delete_tribute(connection, tribute_id):
     """Delete tribute"""
-    cursor = connection.cursor(dictionary=True)
-    cursor.callproc('edit_tribute', [id])
+    cursor = connection.cursor()
+    cursor.callproc('delete_tribute', [tribute_id])
     connection.commit()
     cursor.close()
     print("Tribute deleted")
@@ -233,7 +284,7 @@ def delete_tribute(connection, tribute_id):
 def create_sponsor(connection, name):
 # verify exists before action
     """Create sponsor"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('create_sponsor', [name])
     rows = cursor.fetchall()
     cursor.close()
@@ -243,7 +294,7 @@ def create_sponsor(connection, name):
 def edit_sponsor(connection, name):
     """Edit sponsor"""
 # verify exists before action
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('edit_sponsor', [name])
     rows = cursor.fetchall()
     cursor.close()
@@ -254,7 +305,7 @@ def delete_sponsor(connection, sponsor_id):
     """Delete sponsor"""
 # verify exists before action
 
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('delete_sponsor', [sponsor_id])
     rows = cursor.fetchall()
     cursor.close()
@@ -268,7 +319,7 @@ def delete_sponsor(connection, sponsor_id):
 def create_game(connection, game_number, start_date, required_tribute_count=24):
 # verify exists before action
     """Create game"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
     rows = cursor.fetchall()
     cursor.close()
@@ -278,7 +329,7 @@ def create_game(connection, game_number, start_date, required_tribute_count=24):
 def edit_game(connection, game_number, start_date, required_tribute_count):
 # verify exists before action
     """Create game"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('edit_game', [game_number, start_date, required_tribute_count])
     rows = cursor.fetchall()
     cursor.close()
@@ -288,7 +339,7 @@ def edit_game(connection, game_number, start_date, required_tribute_count):
 def delete_game(connection, game_number):
     """Delete sponsor"""
 # verify exists before action
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('delete_game', [game_number])
     rows = cursor.fetchall()
     cursor.close()

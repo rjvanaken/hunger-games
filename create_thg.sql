@@ -7,8 +7,8 @@ use hunger_games;
 CREATE TABLE IF NOT EXISTS district (
 	district_num INT PRIMARY KEY,
     industry VARCHAR(64),
-    size ENUM ('Small', 'Medium', 'Large'), -- add to diagram
-    wealth ENUM('Poor', 'Working Class', 'Middle Class', 'Wealthy') -- add to diagram
+    size ENUM ('Small', 'Medium', 'Large'), 
+    wealth ENUM('Poor', 'Working Class', 'Middle Class', 'Wealthy') 
     
 );
 
@@ -606,31 +606,31 @@ DELIMITER $$
 CREATE PROCEDURE view_table (p_table_name VARCHAR(64))
 BEGIN
     IF p_table_name = 'tribute' THEN 
-        SELECT * FROM tribute;
+        SELECT * FROM tribute ORDER BY tribute_id;
     ELSEIF p_table_name = 'district' THEN 
-        SELECT * FROM district;
+        SELECT * FROM district ORDER BY district_num;
     ELSEIF p_table_name = 'sponsor' THEN 
-        SELECT * FROM sponsor;
+        SELECT * FROM sponsor ORDER BY sponsor_id;
     ELSEIF p_table_name = 'gamemaker' THEN 
-        SELECT * FROM gamemaker;
+        SELECT * FROM gamemaker ORDER BY gamemaker_id;
     ELSEIF p_table_name = 'game' THEN 
-        SELECT * FROM game;
+        SELECT * FROM game ORDER BY game_number;
     ELSEIF p_table_name = 'participant' THEN 
-        SELECT * FROM participant;
+        SELECT * FROM participant ORDER BY participant_id;
     ELSEIF p_table_name = 'team_member' THEN 
-        SELECT * FROM team_member;
+        SELECT * FROM team_member ORDER BY member_id;
     ELSEIF p_table_name = 'victor' THEN 
-        SELECT * FROM victor;
+        SELECT * FROM victor ORDER BY victor_id;
     ELSEIF p_table_name = 'team_role' THEN 
-        SELECT * FROM team_role;
+        SELECT * FROM team_role ORDER BY member_id, participant_id;
     ELSEIF p_table_name = 'game_creator' THEN 
-        SELECT * FROM game_creator;
+        SELECT * FROM game_creator ORDER BY game_number, gamemaker_id;
     ELSEIF p_table_name = 'gamemaker_score' THEN 
-        SELECT * FROM gamemaker_score;
+        SELECT * FROM gamemaker_score ORDER BY participant_id;
     ELSEIF p_table_name = 'sponsorship' THEN 
-        SELECT * FROM sponsorship;
+        SELECT * FROM sponsorship ORDER BY sponsor_id, participant_id;
     ELSEIF p_table_name = 'game_victor' THEN 
-        SELECT * FROM game_victor;
+        SELECT * FROM game_victor ORDER BY game_number, victor_id;
     ELSE
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Invalid table name';

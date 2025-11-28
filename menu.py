@@ -76,9 +76,9 @@ def display_manage_entity_menu(entity):
     """Display menu for managing entity records"""
     length = 42
     print("\n" + "=" * length)
-    print(f" MANAGE {entity.upper()}")
+    print(f" MANAGE {entity.upper()}S")
     print("=" * length)
-    print(f" 1: View {entity.title()}")
+    print(f" 1: View {entity.title()}s")
     print(f" 2: CREATE {entity.title()}")
     print(f" 3: UPDATE {entity.title()}")
     print(f" 4: DELETE {entity.title()}")
@@ -103,7 +103,7 @@ def display_tributes_full(tributes):
     name_width = max(name_width, len('name'))
     
     dob_width = max(len(str(t['dob'])) for t in tributes)
-    dob_width = max(dob_width, len('dob'))
+    dob_width = max(dob_width, len('birth_date'))
     
     gender_width = max(len(str(t['gender'])) for t in tributes)
     gender_width = max(gender_width, len('gender'))
@@ -117,7 +117,7 @@ def display_tributes_full(tributes):
     print("\n" + "=" * length)
     print(" TRIBUTES")
     print("=" * length)
-    print(f" {'tribute_id':<{id_width}} │ {'name':<{name_width}} │ {'dob':<{dob_width}} │ {'gender':<{gender_width}} │ {'district':<{district_width}}")
+    print(f" {'tribute_id':<{id_width}} │ {'name':<{name_width}} │ {'birth_date':<{dob_width}} │ {'gender':<{gender_width}} │ {'district':<{district_width}}")
     
     for tribute in tributes:
         print("─" * length)
@@ -451,13 +451,15 @@ def get_string_input(prompt):
     name = input(f"{prompt}: ")
     return name
 
-def get_number_input(prompt):
+def get_number_input(prompt, is_update=False):
     """Get and validate number from user for:
     - game
     - district
     """
     while True:
         number = input(f"{prompt}: ").strip()
+        if is_update == True and number == 0:
+            return str(int(number))
         if number.isdigit():
             return int(number)
         print("Invalid input. Please enter a number.")
