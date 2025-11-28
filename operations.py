@@ -1,6 +1,6 @@
 import pymysql
 from datetime import datetime
-
+import utils
 
 '''
 ==============================
@@ -232,38 +232,18 @@ def create_tribute(connection, name, birth_date, gender, district):
 
 # EDIT TRIBUTE
 def edit_tribute(connection, tribute_id, name, birth_date, gender, district):
-    """Edit tribute"""
-    if district == '' or district == 0:
-        district = None
-    elif district is not None:
-        district = int(district)
-    
     # Validate name or set to None if empty
-    if name == '' or not name:
-        name = None
-    elif len(name) > 64:
-        print("\nInvalid name")
-        return False
-
-    # Validate gender or set to None if empty
-    if gender is not None and gender != '':
-        gender = gender.lower()
-        if gender not in ['m', 'f']:
-            print("\nGender must be 'm' or 'f'")
-            return False
-    else:
-        gender = None;
-    
-    # Validate district or set to None if empty
-    if district is not None and (district < 1 or district > 12):
-        print("\nDistrict must be between 1-12")
-        return False
+    name = utils.prepare_name_for_update(name, 64, 'name')
     
     # Validate dob or set to None if empty
-    if birth_date is not None and birth_date != '':
-        dob = validate_and_convert_date(birth_date)
-    else:
-        dob = None
+    dob = utils.prepare_date_for_update(dob)
+
+    # Validate gender or set to None if empty
+    gender_list = ['m', 'f']
+    gender = utils.prepare_enum_for_update(gender, gender_list, 'gender')
+    
+    # Validate district or set to None if empty
+    district = utils.prepare_number_for_update(district, 1, 12, 'district')
 
     try:
         cursor = connection.cursor()
