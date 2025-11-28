@@ -343,7 +343,7 @@ def delete_sponsor(connection, sponsor_id):
         cursor.callproc('delete_sponsor', [sponsor_id])
         connection.commit()
         cursor.close()
-        print("Sponsor successfully deleted!")
+        print("\nSponsor successfully deleted!")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -358,7 +358,7 @@ def delete_sponsor(connection, sponsor_id):
 
 # CREATE GAME
 def create_game(connection, game_number, start_date, required_tribute_count=24):
-# verify exists before action
+
     """Create game"""
     cursor = connection.cursor()
     cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
@@ -367,24 +367,54 @@ def create_game(connection, game_number, start_date, required_tribute_count=24):
     return rows
 
 # EDIT GAME
-def edit_game(connection, game_number, start_date, required_tribute_count):
-# verify exists before action
-    """Create game"""
-    cursor = connection.cursor()
-    cursor.callproc('edit_game', [game_number, start_date, required_tribute_count])
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
+def edit_game(connection, game_number, start, end, game_status, required_tribute_count):
+    """edit game"""
+    start_date = utils.prepare_date_for_update(start)
+    end_date = utils.prepare_date_for_update(end)
+
+    status_list = ['planned', 'in progress', 'completed']
+    game_status = utils.prepare_enum_for_update(game_status, status_list, 'game')
+    
+    required_tribute_count = utils.prepare_num_for_update(required_tribute_count, 'required_tribute_count', 1)
+
+    failures = 0
+    attributes = [start_date, end_date, required_tribute_count, game_status]
+    for attribute in attributes:
+        if attribute == False:
+            failures = failures + 1
+    if failures > 0:
+        print('\nUpdate failed')
+        return False
+
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_game', [game_number, start_date, end_date, game_status, required_tribute_count])
+        connection.commit()
+        print("\nGame successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 # DELETE GAME
 def delete_game(connection, game_number):
-    """Delete sponsor"""
-# verify exists before action
-    cursor = connection.cursor()
-    cursor.callproc('delete_game', [game_number])
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
+    """Delete game"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_game', [game_number])
+        connection.commit()
+        cursor.close()
+        print("\nGame successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 '''MANAGE GAMEMAKERS'''
 

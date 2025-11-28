@@ -109,7 +109,7 @@ def handle_manage_tributes(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
-            id = menu.get_number_input('Enter ID of tribute to delete:')
+            id = menu.get_number_input('Enter ID of tribute to delete')
             ops.delete_tribute(connection, id)
         elif choice == '0':
             break
@@ -139,8 +139,38 @@ def handle_manage_sponsors(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'sponsor')
             menu.display_sponsors_full(rows)
-            id = menu.get_number_input('Enter ID of sponsor to delete:')
+            id = menu.get_number_input('Enter ID of sponsor to delete')
             ops.delete_sponsor(connection, id)
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
+
+# MANAGE GAMES
+def handle_manage_games(connection):
+    while True:
+        choice = menu.display_manage_entity_menu('game')
+        if choice == '1':
+            rows = ops.view_table(connection, 'game')
+            menu.display_games_full(rows)
+        elif choice == '2': # CREATE
+            game_number, start_date, game_status, required_tribute_count = menu.get_games_inputs()
+            ops.create_game(connection, game_number, start_date, required_tribute_count)
+            
+        elif choice == '3': # EDIT
+            rows = ops.view_table(connection, 'game')
+            menu.display_games_full(rows)
+            game_number = menu.get_number_input('Enter the number of the game to edit')
+            print(f"\nUpdating Game {game_number}")
+            print("─" * 42)
+            start_date, end_date, game_status, required_tribute_count = menu.get_games_inputs(True)
+            ops.edit_game(connection, game_number, start_date, end_date, game_status, required_tribute_count)
+            
+        elif choice == '4': # DELETE
+            rows = ops.view_table(connection, 'game')
+            menu.display_games_full(rows)
+            game_number = menu.get_number_input('Enter the number of the game to delete')
+            ops.games_tribute(connection, game_number)
         elif choice == '0':
             break
         else:

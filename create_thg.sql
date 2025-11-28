@@ -742,7 +742,6 @@ BEGIN
     IF (SELECT COUNT(*) FROM sponsor WHERE sponsor_id = p_sponsor_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Sponsor does not exist';
-    END IF;
     ELSE
         UPDATE sponsor
             SET name = COALESCE(p_name, name)
@@ -780,9 +779,13 @@ DELIMITER $$
 
 CREATE PROCEDURE create_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT)
 BEGIN
-
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game already exists';
+    END IF;
     INSERT INTO game(game_number, start_date, required_tribute_count)
     VALUES (p_game_number, p_start_date, p_required_tribute_count);
+
 END $$
 
 DELIMITER ;
@@ -791,7 +794,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS edit_game;
 DELIMITER $$
 
-CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT, p_end_date DATE)
+CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_end_date DATE, p_game_status VARCHAR(64), p_required_tribute_count INT)
 BEGIN
     IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
         SIGNAL SQLSTATE '45000'
@@ -800,6 +803,7 @@ BEGIN
         UPDATE game
             SET start_date = COALESCE(p_start_date, start_date),
                 end_date = COALESCE(p_end_date, end_date),
+                game_status = COALESCE(p_game_status, game_status),
                 required_tribute_count = COALESCE(p_required_tribute_count, required_tribute_count)
             WHERE game_number = p_game_number;
     END IF;

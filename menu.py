@@ -83,7 +83,7 @@ def display_manage_entity_menu(entity):
     print(f" 3: UPDATE {entity.title()}")
     print(f" 4: DELETE {entity.title()}")
     print("─" * length)
-    print(" 0: RETURN TO MAIN MENU\n")
+    print(" 0: RETURN\n")
     choice = input("Enter choice: ")
     return choice
 
@@ -126,7 +126,7 @@ def display_tributes_full(tributes):
     
     print("=" * length + "\n")
 
-
+# DISPLAY SPONSORS FULL
 def display_sponsors_full(sponsors):
     """Display formatted list of sponsors"""
     if not sponsors:
@@ -134,10 +134,10 @@ def display_sponsors_full(sponsors):
         return
     
     # Calculate column widths
-    id_width = max(len(str(t['sponsor_id'])) for t in sponsors)
+    id_width = max(len(str(s['sponsor_id'])) for s in sponsors)
     id_width = max(id_width, len('sponsor_id'))
     
-    name_width = max(len(str(t['name'])) for t in sponsors)
+    name_width = max(len(str(s['name'])) for s in sponsors)
     name_width = max(name_width, len('name'))
     
     # Calculate total length
@@ -153,6 +153,48 @@ def display_sponsors_full(sponsors):
         print(f" {sponsor['sponsor_id']:<{id_width}} │ {sponsor['name']:<{name_width}}")
     
     print("=" * length + "\n")
+
+
+# DISPLAY GAMES FULL
+def display_games_full(games):
+    """Display formatted list of games"""
+    if not games:
+        print("\nNo games found.")
+        return
+    
+    # Calculate column widths
+    id_width = max(len(str(g['game_number'])) for g in games)
+    id_width = max(id_width, len('game_number'))
+
+    required_tributes_width = max(len(str(g['required_tribute_count'])) for g in games)
+    required_tributes_width = max(required_tributes_width, len('required_tribute_count'))
+    
+    start_date_width = max(len(str(g['start_date'])) for g in games)
+    start_date_width = max(start_date_width, len('start_date'))
+
+    end_date_width = max(len(str(g['end_date'])) for g in games)
+    end_date_width = max(end_date_width, len('end_date'))
+    
+    game_status_width = max(len(str(g['game_status'])) for g in games)
+    game_status_width = max(game_status_width, len('game_status'))
+    
+    # Calculate total length
+    length = id_width + required_tributes_width + start_date_width + end_date_width + game_status_width + 16 
+    
+    print("\n" + "=" * length)
+    print(" GAMES")
+    print("=" * length)
+    print(f" {'game_number':<{id_width}} │ {'required_tribute_count':<{required_tributes_width}} │ {'start_date':<{start_date_width}} │ {'end_date':<{end_date_width}} │ {'game_status':<{game_status_width}}")
+    
+
+    for game in games:
+        print("─" * length)
+        sd_str = str(game['start_date']) if isinstance(game['start_date'], str) else game['start_date'].strftime('%Y-%m-%d')
+        ed_str = game['end_date'].strftime('%Y-%m-%d') if game['end_date'] else 'N/A'
+        print(f" {game['game_number']:<{id_width}} │ {game['required_tribute_count']:<{required_tributes_width}} │ {sd_str:<{start_date_width}} │ {ed_str:<{end_date_width}} │ {game['game_status']:<{game_status_width}}")
+    
+    print("=" * length + "\n")
+
 
 '''
 VIEW RECORDS
@@ -493,8 +535,8 @@ def get_number_input(prompt, update=False):
         print("Invalid input. Please enter a number.")
 
 
-def get_tribute_inputs(update=False):
-    if update:
+def get_tribute_inputs(on_update=False):
+    if on_update:
         name = get_string_input("Enter the tribute's full name or ENTER to skip")
         dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd' or ENTER to skip")
         gender = get_string_input("Enter the tribute's gender (M or F) or ENTER to skip")
@@ -509,6 +551,22 @@ def get_tribute_inputs(update=False):
 
     return name, dob, gender, district
 
+
+def get_games_inputs(on_update=False):
+    if on_update:
+        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd' or ENTER to skip")
+        end_date = get_string_input("Enter game's end date in the format 'yyyy-mm-dd' or ENTER to skip")
+        game_status = get_string_input("Enter the game status (planned, in progress, or completed) or ENTER to skip")
+        required_tribute_count = get_number_input("Enter the required number of tributes or ENTER to skip", True)
+        
+        return start_date, end_date, game_status, required_tribute_count
+    else:
+
+        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd'")
+        game_number = get_number_input("Enter the game number")
+        required_tribute_count = get_number_input("Enter the required number of tributes")
+
+        return game_number, start_date, required_tribute_count
 
 
 
