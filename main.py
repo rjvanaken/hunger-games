@@ -101,7 +101,8 @@ def handle_manage_tributes(connection):
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
             id = menu.get_number_input('Enter ID of tribute to edit')
-            
+            print(f"\nUpdating Tribute with ID of {id}")
+            print("─" * 42)
             name, dob, gender, district = menu.get_tribute_inputs(True)
             ops.edit_tribute(connection, id, name, dob, gender, district)
             
@@ -115,7 +116,35 @@ def handle_manage_tributes(connection):
         else:
             print("Invalid entry")
 
-
+# MANAGE SPONSORS
+def handle_manage_sponsors(connection):
+    while True:
+        choice = menu.display_manage_entity_menu('sponsor')
+        if choice == '1':
+            rows = ops.view_table(connection, 'sponsor')
+            menu.display_sponsors_full(rows)
+        elif choice == '2': # CREATE
+            name = menu.get_string_input("Enter the full name of the sponsor")
+            ops.create_sponsor(connection, name)
+            
+        elif choice == '3': # UPDATE
+            rows = ops.view_table(connection, 'sponsor')
+            menu.display_sponsors_full(rows)
+            id = menu.get_number_input('Enter ID of sponsor to edit')
+            print(f"\nUpdating Sponsor with ID of {id}")
+            print("─" * 42)
+            name = menu.get_string_input("Enter the new full name of the sponsor or ENTER to skip")
+            ops.edit_sponsor(connection, id, name)
+            
+        elif choice == '4': # DELETE
+            rows = ops.view_table(connection, 'sponsor')
+            menu.display_sponsors_full(rows)
+            id = menu.get_number_input('Enter ID of sponsor to delete:')
+            ops.delete_sponsor(connection, id)
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
 
 
 #-------------------------------------

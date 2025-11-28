@@ -127,6 +127,33 @@ def display_tributes_full(tributes):
     print("=" * length + "\n")
 
 
+def display_sponsors_full(sponsors):
+    """Display formatted list of sponsors"""
+    if not sponsors:
+        print("\nNo sponsors found.")
+        return
+    
+    # Calculate column widths
+    id_width = max(len(str(t['sponsor_id'])) for t in sponsors)
+    id_width = max(id_width, len('sponsor_id'))
+    
+    name_width = max(len(str(t['name'])) for t in sponsors)
+    name_width = max(name_width, len('name'))
+    
+    # Calculate total length
+    length = id_width + name_width + 16
+    
+    print("\n" + "=" * length)
+    print(" SPONSORS")
+    print("=" * length)
+    print(f" {'sponsor_id':<{id_width}} │ {'name':<{name_width}}")
+    
+    for sponsor in sponsors:
+        print("─" * length)
+        print(f" {sponsor['sponsor_id']:<{id_width}} │ {sponsor['name']:<{name_width}}")
+    
+    print("=" * length + "\n")
+
 '''
 VIEW RECORDS
 '''

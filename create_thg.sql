@@ -668,13 +668,26 @@ DELIMITER $$
 
 CREATE PROCEDURE edit_tribute(p_tribute_id INT, p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
 BEGIN
+    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Tribute does not exist';
+    END IF;
 
-    UPDATE tribute
-    SET name = COALESCE(p_name, name),
-        dob = COALESCE(p_dob, dob),
-        gender = COALESCE(p_gender, gender),
-        district = COALESCE(p_district, district)
-    WHERE tribute_id = p_tribute_id;
+    IF (SELECT COUNT(*) FROM district WHERE district_num = p_district) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'District does not exist';
+    END IF;
+
+    IF p_gender IS NOT NULL AND p_gender NOT IN ('m', 'f') THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Invalid gender value';
+    END IF;
+        UPDATE tribute
+        SET name = COALESCE(p_name, name),
+            dob = COALESCE(p_dob, dob),
+            gender = COALESCE(p_gender, gender),
+            district = COALESCE(p_district, district)
+        WHERE tribute_id = p_tribute_id;
 END $$
 
 DELIMITER ;
@@ -686,12 +699,22 @@ DELIMITER $$
 
 CREATE PROCEDURE delete_tribute(p_tribute_id INT)
 BEGIN
-    DELETE FROM tribute
-    WHERE tribute_id = p_tribute_id;
+    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Tribute does not exist';
+    ELSE
+        DELETE FROM tribute
+        WHERE tribute_id = p_tribute_id;
 END $$
 
 DELIMITER ;
 
+
+
+
+-- --     IF (SELECT COUNT(*) FROM x WHERE xn = pxn) = 0 THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'x does not exist';
 
 
 -- ===============================
@@ -714,11 +737,17 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS edit_sponsor;
 DELIMITER $$
 
-CREATE PROCEDURE edit_sponsor(p_name VARCHAR(64))
+CREATE PROCEDURE edit_sponsor(p_name VARCHAR(64), p_sponsor_id INT)
 BEGIN
-    UPDATE sponsor
-        SET name = COALESCE(p_name, name)
-    WHERE sponsor_id = p_sponsor_id;
+    IF (SELECT COUNT(*) FROM sponsor WHERE sponsor_id = p_sponsor_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sponsor does not exist';
+    END IF;
+    ELSE
+        UPDATE sponsor
+            SET name = COALESCE(p_name, name)
+        WHERE sponsor_id = p_sponsor_id;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -730,8 +759,13 @@ DELIMITER $$
 
 CREATE PROCEDURE delete_sponsor(p_sponsor_id INT)
 BEGIN
-    DELETE FROM sponsor
-    WHERE sponsor_id = p_sponsor_id;
+    IF (SELECT COUNT(*) FROM sponsor WHERE sponsor_id = p_sponsor_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sponsor does not exist';
+    ELSE
+        DELETE FROM sponsor
+        WHERE sponsor_id = p_sponsor_id;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -746,6 +780,7 @@ DELIMITER $$
 
 CREATE PROCEDURE create_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT)
 BEGIN
+
     INSERT INTO game(game_number, start_date, required_tribute_count)
     VALUES (p_game_number, p_start_date, p_required_tribute_count);
 END $$
@@ -758,11 +793,16 @@ DELIMITER $$
 
 CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT, p_end_date DATE)
 BEGIN
-    UPDATE game
-        SET start_date = COALESCE(p_start_date, start_date),
-            end_date = COALESCE(p_end_date, end_date),
-            required_tribute_count = COALESCE(p_required_tribute_count, required_tribute_count)
-    WHERE game_number = p_game_number;
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game does not exist';
+    ELSE
+        UPDATE game
+            SET start_date = COALESCE(p_start_date, start_date),
+                end_date = COALESCE(p_end_date, end_date),
+                required_tribute_count = COALESCE(p_required_tribute_count, required_tribute_count)
+            WHERE game_number = p_game_number;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -774,8 +814,13 @@ DELIMITER $$
 CREATE PROCEDURE delete_game(p_game_number INT)
 
 BEGIN
-    DELETE FROM game
-    WHERE game_number = p_game_number;
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game does not exist';
+    ELSE
+        DELETE FROM game
+        WHERE game_number = p_game_number;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -802,9 +847,14 @@ DELIMITER $$
 
 CREATE PROCEDURE edit_gamemaker(p_name VARCHAR(64), p_gamemaker_id INT)
 BEGIN
-    UPDATE gamemaker
-        SET name = COALESCE(p_name, name)
-    WHERE gamemaker_id = p_gamemaker_id;
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id= p_gamemaker_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Gamemaker does not exist';
+    ELSE 
+        UPDATE gamemaker
+            SET name = COALESCE(p_name, name)
+            WHERE gamemaker_id = p_gamemaker_id;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -816,8 +866,13 @@ DELIMITER $$
 CREATE PROCEDURE delete_gamemaker(p_gamemaker_id INT)
 
 BEGIN
-    DELETE FROM gamemaker
-    WHERE gamemaker_id = p_gamemaker_id;
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id= p_gamemaker_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Gamemaker does not exist';
+    ELSE 
+        DELETE FROM gamemaker
+        WHERE gamemaker_id = p_gamemaker_id;
+    END IF;
 END $$
 
 DELIMITER ;

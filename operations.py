@@ -221,7 +221,7 @@ def create_tribute(connection, name, birth_date, gender, district):
         cursor = connection.cursor()
         cursor.callproc('create_tribute', [name, dob, gender.lower(), district])
         connection.commit()
-        print("\nTribute created successfully!")
+        print("\nTribute successfully created!")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -236,20 +236,30 @@ def edit_tribute(connection, tribute_id, name, birth_date, gender, district):
     name = utils.prepare_name_for_update(name, 64, 'name')
     
     # Validate dob or set to None if empty
-    dob = utils.prepare_date_for_update(dob)
+
+    dob = utils.prepare_date_for_update(birth_date)
 
     # Validate gender or set to None if empty
     gender_list = ['m', 'f']
     gender = utils.prepare_enum_for_update(gender, gender_list, 'gender')
     
     # Validate district or set to None if empty
-    district = utils.prepare_number_for_update(district, 1, 12, 'district')
+    district = utils.prepare_num_for_update(district, 'district', 1, 12)
+
+    failures = 0
+    attributes = [name, dob, gender, district]
+    for attribute in attributes:
+        if attribute == False:
+            failures = failures + 1
+    if failures > 0:
+        print('\nUpdate failed')
+        return False
 
     try:
         cursor = connection.cursor()
         cursor.callproc('edit_tribute', [tribute_id, name, dob, gender, district])
         connection.commit()
-        print("\nTribute updated successfully!")
+        print("\nTribute successfully updated!")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -258,17 +268,15 @@ def edit_tribute(connection, tribute_id, name, birth_date, gender, district):
     finally:
         cursor.close()
 
-
 # DELETE TRIBUTE
 def delete_tribute(connection, tribute_id):
     """Delete tribute"""
-
     try: 
         cursor = connection.cursor()
         cursor.callproc('delete_tribute', [tribute_id])
         connection.commit()
         cursor.close()
-        print("Tribute deleted")
+        print("Tribute successfully deleted")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -287,32 +295,62 @@ def delete_tribute(connection, tribute_id):
 def create_sponsor(connection, name):
 # verify exists before action
     """Create sponsor"""
-    cursor = connection.cursor()
-    cursor.callproc('create_sponsor', [name])
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
-# EDIT SPONSOR
+    
+    name = utils.prepare_name_for_update(name, 64, 'name')
 
-def edit_sponsor(connection, name):
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_sponsor', [name])
+        connection.commit()
+        print("\nSponsor successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# EDIT SPONSOR
+def edit_sponsor(connection, id, name):
     """Edit sponsor"""
-# verify exists before action
-    cursor = connection.cursor()
-    cursor.callproc('edit_sponsor', [name])
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
+    # Validate name or set to None if empty
+    name = utils.prepare_name_for_update(name, 64, 'name')
+
+    if name == False:
+        print('\nUpdate failed')
+        return False
+
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_sponsor', [name, id])
+        connection.commit()
+        print("\nSponsor successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
 
 # DELETE SPONSOR
 def delete_sponsor(connection, sponsor_id):
     """Delete sponsor"""
-# verify exists before action
-
-    cursor = connection.cursor()
-    cursor.callproc('delete_sponsor', [sponsor_id])
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_sponsor', [sponsor_id])
+        connection.commit()
+        cursor.close()
+        print("Sponsor successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 
 
