@@ -72,6 +72,59 @@ def display_manage_records_menu():
     choice = input("Enter choice: ")
     return choice
 
+def display_manage_entity_menu(entity):
+    """Display menu for managing entity records"""
+    length = 42
+    print("\n" + "=" * length)
+    print(f" MANAGE {entity.upper()}")
+    print("=" * length)
+    print(f" 1: View {entity.title()}")
+    print(f" 2: CREATE {entity.title()}")
+    print(f" 3: UPDATE {entity.title()}")
+    print(f" 4: DELETE {entity.title()}")
+    print("─" * length)
+    print(" 0: RETURN TO MAIN MENU\n")
+    choice = input("Enter choice: ")
+    return choice
+
+
+# VIEW TRIBUTES FULL
+def display_tributes_full(tributes):
+    """Display formatted list of tributes"""
+    if not tributes:
+        print("\nNo tributes found.")
+        return
+    
+    # Calculate column widths
+    id_width = max(len(str(t['tribute_id'])) for t in tributes)
+    id_width = max(id_width, len('tribute_id'))
+    
+    name_width = max(len(str(t['name'])) for t in tributes)
+    name_width = max(name_width, len('name'))
+    
+    dob_width = max(len(str(t['dob'])) for t in tributes)
+    dob_width = max(dob_width, len('dob'))
+    
+    gender_width = max(len(str(t['gender'])) for t in tributes)
+    gender_width = max(gender_width, len('gender'))
+    
+    district_width = max(len(str(t['district'])) for t in tributes)
+    district_width = max(district_width, len('district'))
+    
+    # Calculate total length
+    length = id_width + name_width + dob_width + gender_width + district_width + 16  # +16 for separators
+    
+    print("\n" + "=" * length)
+    print(" TRIBUTES")
+    print("=" * length)
+    print(f" {'tribute_id':<{id_width}} │ {'name':<{name_width}} │ {'dob':<{dob_width}} │ {'gender':<{gender_width}} │ {'district':<{district_width}}")
+    
+    for tribute in tributes:
+        print("─" * length)
+        dob_str = str(tribute['dob']) if isinstance(tribute['dob'], str) else tribute['dob'].strftime('%Y-%m-%d')
+        print(f" {tribute['tribute_id']:<{id_width}} │ {tribute['name']:<{name_width}} │ {dob_str:<{dob_width}} │ {tribute['gender']:<{gender_width}} │ {tribute['district']:<{district_width}}")
+    
+    print("=" * length + "\n")
 
 
 '''

@@ -1,4 +1,5 @@
 import pymysql
+import pymysql.cursors
 
 
 '''
@@ -93,9 +94,9 @@ VIEW OPERATIONS
 # View Tributes
 def view_tributes(connection, name=None, district=None):
     """View tributes with optional filters"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_tributes', [name, district])
-    tributes = next(cursor.stored_results()).fetchall()
+    tributes = cursor.fetchall()
     cursor.close()
     return tributes
 
@@ -104,7 +105,7 @@ def view_sponsors(connection, name=None):
     """View sponsors by optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_sponsors', [name])
-    sponsors = next(cursor.stored_results()).fetchall()
+    sponsors = cursor.fetchall()
     cursor.close()
     return sponsors
 
@@ -112,7 +113,7 @@ def view_sponsorships(connection, game_number=None, tribute_name=None):
     """View sponsorships with optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_sponsorships', [game_number, tribute_name])
-    sponsorships = next(cursor.stored_results()).fetchall()
+    sponsorships = cursor.fetchall()
     cursor.close()
     return sponsorships
 
@@ -121,7 +122,7 @@ def view_games(connection, game_number=None, tribute_name=None, victor_name=None
     """View games with optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_games', [game_number, tribute_name, victor_name])
-    games = next(cursor.stored_results()).fetchall()
+    games = cursor.fetchall()
     cursor.close()
     return games
 
@@ -131,7 +132,7 @@ def view_gamemakers(connection, name=None, game_number=None):
     """View gamemakers with optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_gamemakers', [name, game_number])
-    gamemakers = next(cursor.stored_results()).fetchall()
+    gamemakers = cursor.fetchall()
     cursor.close()
     return gamemakers
 
@@ -141,7 +142,7 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
     """View team members with optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_team_members', [name, member_type, tribute_name])
-    team_members = next(cursor.stored_results()).fetchall()
+    team_members = cursor.fetchall()
     cursor.close()
     return team_members
 
@@ -151,7 +152,7 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
     """view participants with optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_participants', [tribute_name, age_during_games, game_number, training_score])
-    participants = next(cursor.stored_results()).fetchall()
+    participants = cursor.fetchall()
     cursor.close()
     return participants
 
@@ -161,7 +162,7 @@ def view_victors(connection, tribute_name=None, game_number=None):
     """View victors with optional filters"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_victors', tribute_name, game_number)
-    victors = next(cursor.stored_results()).fetchall()
+    victors = cursor.fetchall()
     cursor.close()
     return victors
 
@@ -170,7 +171,7 @@ def view_districts(connection):
     """View districts"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('view_districts')
-    districts = next(cursor.stored_results()).fetchall()
+    districts = cursor.fetchall()
     cursor.close()
     return districts
 
@@ -184,9 +185,9 @@ MANAGE OPERATIONS
 # Generic View Table (FOR CRUD VIEW)
 def view_table(connection, table_name):
     """View full table"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('view_table', [table_name])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 
@@ -196,30 +197,29 @@ def view_table(connection, table_name):
 # CREATE TRIBUTE
 def create_tribute(connection, name, dob, gender, district):
     """Create tribute"""
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.callproc('create_tribute', [name, dob, gender, district])
-    rows = next(cursor.stored_results()).fetchall()
+    connection.commit()
     cursor.close()
-    return rows
-
+    print("Tribute created successfully!")
 # EDIT TRIBUTE
 def edit_tribute(connection, name, dob, gender, district):
     """Edit tribute"""
-    cursor = connection.cursor(dictionary=True)
-    cursor.callproc('edit_tribute', [name, dob, gender, district])
-    rows = next(cursor.stored_results()).fetchall()
+    cursor = connection.cursor()
+    cursor.callproc('edit_tribute', [id, name, dob, gender, district])
+    connection.commit()
     cursor.close()
-    return rows
+    print("Tribute edited successfully")
 
 
 # DELETE TRIBUTE
 def delete_tribute(connection, tribute_id):
     """Delete tribute"""
     cursor = connection.cursor(dictionary=True)
-    cursor.callproc('delete_tribute', [tribute_id])
-    rows = next(cursor.stored_results()).fetchall()
+    cursor.callproc('edit_tribute', [id])
+    connection.commit()
     cursor.close()
-    return rows
+    print("Tribute deleted")
 
 
 
@@ -235,7 +235,7 @@ def create_sponsor(connection, name):
     """Create sponsor"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('create_sponsor', [name])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 # EDIT SPONSOR
@@ -245,7 +245,7 @@ def edit_sponsor(connection, name):
 # verify exists before action
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('edit_sponsor', [name])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 
@@ -256,7 +256,7 @@ def delete_sponsor(connection, sponsor_id):
 
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('delete_sponsor', [sponsor_id])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 
@@ -270,7 +270,7 @@ def create_game(connection, game_number, start_date, required_tribute_count=24):
     """Create game"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 
@@ -280,7 +280,7 @@ def edit_game(connection, game_number, start_date, required_tribute_count):
     """Create game"""
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('edit_game', [game_number, start_date, required_tribute_count])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 
@@ -290,7 +290,7 @@ def delete_game(connection, game_number):
 # verify exists before action
     cursor = connection.cursor(dictionary=True)
     cursor.callproc('delete_game', [game_number])
-    rows = next(cursor.stored_results()).fetchall()
+    rows = cursor.fetchall()
     cursor.close()
     return rows
 

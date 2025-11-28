@@ -344,7 +344,7 @@ DELIMITER ;
 -- ======================================
 -- View districts
 -- ======================================
-DROP PROCEDURE view_districts;
+DROP PROCEDURE IF EXISTS view_districts;
 DELIMITER $$
 
 CREATE PROCEDURE view_districts()
@@ -360,7 +360,7 @@ DELIMITER ;
 -- ====================================
 -- View tributes with optional filters
 -- ====================================
-DROP PROCEDURE view_tributes;
+DROP PROCEDURE IF EXISTS view_tributes;
 
 DELIMITER $$
 
@@ -378,7 +378,7 @@ DELIMITER ;
 -- ======================================
 -- View sponsors with optional filters
 -- ======================================
-DROP PROCEDURE view_sponsors;
+DROP PROCEDURE IF EXISTS view_sponsors;
 DELIMITER $$
 
 CREATE PROCEDURE view_sponsor(p_name VARCHAR(64))
@@ -394,7 +394,7 @@ DELIMITER ;
 -- ========================================
 -- View sponsorships with optional filters
 -- ========================================
-DROP PROCEDURE view_sponsorships;
+DROP PROCEDURE IF EXISTS view_sponsorships;
 DELIMITER $$
 
 CREATE PROCEDURE view_sponsorships(p_game_number INT, p_tribute_name VARCHAR(64))
@@ -418,7 +418,7 @@ DELIMITER ;
 -- ==================================
 -- View games with optional filters
 -- ==================================
-DROP PROCEDURE view_games;
+DROP PROCEDURE IF EXISTS view_games;
 DELIMITER $$
 
 CREATE PROCEDURE view_games(
@@ -479,7 +479,7 @@ DELIMITER ;
 -- ======================================
 -- View gamemakers with optional filters
 -- ======================================
-DROP PROCEDURE view_gamemakers;
+DROP PROCEDURE IF EXISTS view_gamemakers;
 DELIMITER $$
 
 CREATE PROCEDURE view_gamemakers(p_name VARCHAR(64), p_game_number INT)
@@ -501,7 +501,7 @@ DELIMITER ;
 -- ========================================
 -- View team_members with optional filters
 -- ========================================
-DROP PROCEDURE view_team_members;
+DROP PROCEDURE IF EXISTS view_team_members;
 DELIMITER $$
 
 CREATE PROCEDURE view_team_members(p_name VARCHAR(64), p_member_type VARCHAR(64), p_tribute_name VARCHAR(64))
@@ -550,7 +550,7 @@ DELIMITER ;
 -- ========================================
 -- View participants with optional filters
 -- ========================================
-DROP PROCEDURE view_participants;
+DROP PROCEDURE IF EXISTS view_participants;
 DELIMITER $$
 
 CREATE PROCEDURE view_participants(p_tribute_name VARCHAR(64), p_age_during_games INT, p_game_number INT, p_training_score INT)
@@ -571,7 +571,7 @@ DELIMITER ;
 -- ===================================
 -- View victors with optional filters
 -- ===================================
-DROP PROCEDURE view_victors;
+DROP PROCEDURE IF EXISTS view_victors;
 DELIMITER $$
 
 CREATE PROCEDURE view_victors(p_tribute_name VARCHAR(64), p_game_number INT)
@@ -596,12 +596,45 @@ DELIMITER ;
 -- CRUD PROCEDURE: VIEW full table
 -- ============================
 
-DROP PROCEDURE view_table;
+
+
+
+
+DROP PROCEDURE IF EXISTS view_table;
 DELIMITER $$
 
 CREATE PROCEDURE view_table (p_table_name VARCHAR(64))
 BEGIN
-    SELECT * FROM p_table_name;
+    IF p_table_name = 'tribute' THEN 
+        SELECT * FROM tribute;
+    ELSEIF p_table_name = 'district' THEN 
+        SELECT * FROM district;
+    ELSEIF p_table_name = 'sponsor' THEN 
+        SELECT * FROM sponsor;
+    ELSEIF p_table_name = 'gamemaker' THEN 
+        SELECT * FROM gamemaker;
+    ELSEIF p_table_name = 'game' THEN 
+        SELECT * FROM game;
+    ELSEIF p_table_name = 'participant' THEN 
+        SELECT * FROM participant;
+    ELSEIF p_table_name = 'team_member' THEN 
+        SELECT * FROM team_member;
+    ELSEIF p_table_name = 'victor' THEN 
+        SELECT * FROM victor;
+    ELSEIF p_table_name = 'team_role' THEN 
+        SELECT * FROM team_role;
+    ELSEIF p_table_name = 'game_creator' THEN 
+        SELECT * FROM game_creator;
+    ELSEIF p_table_name = 'gamemaker_score' THEN 
+        SELECT * FROM gamemaker_score;
+    ELSEIF p_table_name = 'sponsorship' THEN 
+        SELECT * FROM sponsorship;
+    ELSEIF p_table_name = 'game_victor' THEN 
+        SELECT * FROM game_victor;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid table name';
+    END IF;
 END $$
 
 DELIMITER ;
@@ -611,13 +644,13 @@ DELIMITER ;
 -- ============================
 
 -- create tribute
-DROP PROCEDURE create_tribute;
+DROP PROCEDURE IF EXISTS create_tribute;
 DELIMITER $$
 
 CREATE PROCEDURE create_tribute(p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
 BEGIN
 
-    IF (SELECT COUNT(*) FROM district WHERE district_num = p_district) IS 0 THEN
+    IF (SELECT COUNT(*) FROM district WHERE district_num = p_district) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'District does not exist';
     ELSE
@@ -630,7 +663,7 @@ DELIMITER ;
 
 
 -- edit tribute
-DROP PROCEDURE edit_tribute;
+DROP PROCEDURE IF EXISTS edit_tribute;
 DELIMITER $$
 
 CREATE PROCEDURE edit_tribute(p_tribute_id INT, p_name VARCHAR(64), p_dob DATE, p_gender VARCHAR(1), p_district INT)
@@ -648,7 +681,7 @@ DELIMITER ;
 
 
 -- delete tribute
-DROP PROCEDURE delete_tribute;
+DROP PROCEDURE IF EXISTS delete_tribute;
 DELIMITER $$
 
 CREATE PROCEDURE delete_tribute(p_tribute_id INT)
@@ -666,7 +699,7 @@ DELIMITER ;
 -- ===============================
 
 -- create sponsor
-DROP PROCEDURE create_sponsor;
+DROP PROCEDURE IF EXISTS create_sponsor;
 DELIMITER $$
 
 CREATE PROCEDURE create_sponsor(p_name VARCHAR(64))
@@ -678,7 +711,7 @@ END $$
 DELIMITER ;
 
 -- edit sponsor
-DROP PROCEDURE edit_sponsor;
+DROP PROCEDURE IF EXISTS edit_sponsor;
 DELIMITER $$
 
 CREATE PROCEDURE edit_sponsor(p_name VARCHAR(64))
@@ -692,7 +725,7 @@ DELIMITER ;
 
 
 -- delete sponsor
-DROP PROCEDURE delete_sponsor;
+DROP PROCEDURE IF EXISTS delete_sponsor;
 DELIMITER $$
 
 CREATE PROCEDURE delete_sponsor(p_sponsor_id INT)
@@ -708,7 +741,7 @@ DELIMITER ;
 -- ===============================
 
 -- create game
-DROP PROCEDURE create_game;
+DROP PROCEDURE IF EXISTS create_game;
 DELIMITER $$
 
 CREATE PROCEDURE create_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT)
@@ -720,7 +753,7 @@ END $$
 DELIMITER ;
 
 -- edit game
-DROP PROCEDURE edit_game;
+DROP PROCEDURE IF EXISTS edit_game;
 DELIMITER $$
 
 CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT, p_end_date DATE)
@@ -735,7 +768,7 @@ END $$
 DELIMITER ;
 
 -- delete game
-DROP PROCEDURE delete_game;
+DROP PROCEDURE IF EXISTS delete_game;
 DELIMITER $$
 
 CREATE PROCEDURE delete_game(p_game_number INT)
@@ -752,7 +785,7 @@ DELIMITER ;
 -- =================================
 
 -- create gamemaker
-DROP PROCEDURE create_gamemaker;
+DROP PROCEDURE IF EXISTS create_gamemaker;
 DELIMITER $$
 
 CREATE PROCEDURE create_gamemaker(p_name VARCHAR(64))
@@ -764,7 +797,7 @@ END $$
 DELIMITER ;
 
 -- edit gamemaker
-DROP PROCEDURE edit_gamemaker;
+DROP PROCEDURE IF EXISTS edit_gamemaker;
 DELIMITER $$
 
 CREATE PROCEDURE edit_gamemaker(p_name VARCHAR(64), p_gamemaker_id INT)
@@ -777,7 +810,7 @@ END $$
 DELIMITER ;
 
 -- delete gamemaker
-DROP PROCEDURE delete_gamemaker;
+DROP PROCEDURE IF EXISTS delete_gamemaker;
 DELIMITER $$
 
 CREATE PROCEDURE delete_gamemaker(p_gamemaker_id INT)
@@ -794,13 +827,13 @@ DELIMITER ;
 -- ===================================
 
 -- create team member
-DROP PROCEDURE create_team_member;
+DROP PROCEDURE IF EXISTS create_team_member;
 DELIMITER $$
 
 CREATE PROCEDURE create_team_member(p_name VARCHAR(64), victor_id INT)
 BEGIN
 
-    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Victor does not exist';
     ELSE
@@ -816,13 +849,13 @@ DELIMITER ;
 -- ===================================
 
 -- create participant
-DROP PROCEDURE create_participant;
+DROP PROCEDURE IF EXISTS create_participant;
 DELIMITER $$
 
 CREATE PROCEDURE create_participant(p_tribute_id INT, p_game_number INT)
 BEGIN
 
-    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tribute does not exist';
     ELSE
@@ -838,13 +871,13 @@ DELIMITER ;
 -- ==============================
 
 -- create victor
-DROP PROCEDURE create_victor;
+DROP PROCEDURE IF EXISTS create_victor;
 DELIMITER $$
 
 CREATE PROCEDURE create_victor(p_tribute_id INT)
 BEGIN
 
-    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tribute does not exist';
     ELSE
@@ -861,19 +894,19 @@ DELIMITER ;
 -- =================================
 
 -- create team role
-DROP PROCEDURE create_team_role;
+DROP PROCEDURE IF EXISTS create_team_role;
 DELIMITER $$
 
 CREATE PROCEDURE create_team_role(p_member_id INT, p_member_type VARCHAR(64), participant_id INT)
 BEGIN
     IF 
-    (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0 THEN
+    (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
 
     IF 
-    (SELECT COUNT(*) FROM team_member WHERE member_id = p_member_id) IS 0 THEN
+    (SELECT COUNT(*) FROM team_member WHERE member_id = p_member_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Team Member does not exist';
     END IF;
@@ -889,19 +922,19 @@ DELIMITER ;
 -- ===================================
 
 -- create sponsorship
-DROP PROCEDURE create_sponsorship;
+DROP PROCEDURE IF EXISTS create_sponsorship;
 DELIMITER $$
 
 CREATE PROCEDURE create_sponsorship(p_participant_id VARCHAR(64), p_sponsor_id INT, p_sponsor_amount DECIMAL(10, 2))
 -- TEST THAT IT WORKS ENTERING IT WITHOUT .00
 BEGIN
 
-    IF (SELECT COUNT(*) FROM sponsor WHERE sponsor_id = p_sponsor_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM sponsor WHERE sponsor_id = p_sponsor_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Sponsor does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
@@ -919,18 +952,18 @@ DELIMITER ;
 -- ====================================
 
 -- create game creator
-DROP PROCEDURE create_game_creator;
+DROP PROCEDURE IF EXISTS create_game_creator;
 DELIMITER $$
 
 CREATE PROCEDURE create_game_creator(p_game_number INT, p_gamemaker_id INT)
 BEGIN
 
-    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) IS 0 THEN
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Game does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Gamemaker does not exist';
     END IF;
@@ -946,18 +979,18 @@ DELIMITER ;
 -- ===================================
 
 -- create game victor
-DROP PROCEDURE create_game_victor;
+DROP PROCEDURE IF EXISTS create_game_victor;
 DELIMITER $$
 
 CREATE PROCEDURE create_game_victor (p_game_number INT, p_victor_id INT)
 BEGIN
 
-    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) IS 0 THEN
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Game does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Victor does not exist';
     END IF;
@@ -973,18 +1006,18 @@ DELIMITER ;
 -- =======================================
 
 -- create gamemaker score
-DROP PROCEDURE create_gamemaker_score;
+DROP PROCEDURE IF EXISTS create_gamemaker_score;
 DELIMITER $$
 
 CREATE PROCEDURE create_gamemaker_score(p_gamemaker_id INT, p_participant_id VARCHAR(64), p_assessment_score INT)
 
 BEGIN
-    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) IS 0 THEN
+    IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Gamemaker does not exist';
     END IF;
@@ -1250,33 +1283,34 @@ INSERT INTO tribute (name, dob, gender, district) VALUES
 ('Blight', '0055-03-15', 'm', 7),
 ('Cecelia', '0061-04-22', 'f', 8),
 
--- 10th games (year 28, so ages 12-18 means birth years 0010-0016)
-('Facet', '0012-09-15', 'm', 1),           -- 15 years old
-('Velvereen', '0013-02-20', 'f', 1),       -- 15 years old
-('Marcus', '0010-01-08', 'm', 2),          -- 18 years old
-('Sabyn', '0012-06-12', 'f', 2),           -- 16 years old
-('Circ', '0013-08-03', 'm', 3),            -- 14 years old
-('Teslee', '0012-11-18', 'f', 3),          -- 15 years old
-('Mizzen', '0015-04-22', 'm', 4),          -- 13 years old (young)
-('Coral', '0010-12-30', 'f', 4),           -- 17 years old (older, strong)
-('Hy', '0013-07-14', 'm', 5),              -- 14 years old
-('Sol', '0012-10-08', 'f', 5),             -- 15 years old
-('Otto', '0014-03-25', 'm', 6),            -- 14 years old
-('Ginnee', '0016-05-17', 'f', 6),          -- 12 years old (young)
-('Treech', '0011-09-20', 'm', 7),          -- 16 years old
-('Lamina', '0012-01-11', 'f', 7),          -- 16 years old
-('Bobbin', '0015-08-28', 'm', 8),          -- 12 years old (young)
-('Wovey', '0016-03-08', 'f', 8),           -- 12 years old at reaping
-('Panlo', '0013-12-05', 'm', 9),           -- 14 years old
-('Sheaf', '0013-04-19', 'f', 9),           -- 15 years old
-('Tanner', '0012-02-27', 'm', 10),         -- 16 years old
-('Brandy', '0011-06-30', 'f', 10),         -- 16 years old
-('Reaper Ash', '0010-05-05', 'm', 11),     -- 18 years old (as you noted)
-('Dill', '0016-06-22', 'f', 11),           -- 12 years old (sick/weak)
-('Jessup Diggs', '0010-03-14', 'm', 12),   -- 18 years old (mines worker)
-('Lucy Gray Baird', '0012-03-10', 'f', 12),-- 16 years old 
 
--- 50th games (year 68, Reaping Day July 4, 0068)
+('Facet', '0012-09-15', 'm', 1),           
+('Velvereen', '0013-02-20', 'f', 1),       
+('Marcus', '0010-01-08', 'm', 2),          
+('Sabyn', '0012-06-12', 'f', 2),           
+('Circ', '0013-08-03', 'm', 3),            
+('Teslee', '0012-11-18', 'f', 3),          
+('Mizzen', '0015-04-22', 'm', 4),          
+('Coral', '0010-12-30', 'f', 4),           
+('Hy', '0013-07-14', 'm', 5),              
+('Sol', '0012-10-08', 'f', 5),             
+('Otto', '0014-03-25', 'm', 6),            
+('Ginnee', '0016-05-17', 'f', 6),          
+('Treech', '0011-09-20', 'm', 7),          
+('Lamina', '0012-01-11', 'f', 7),          
+('Bobbin', '0015-08-28', 'm', 8),          
+('Wovey', '0016-03-08', 'f', 8),           
+('Panlo', '0013-12-05', 'm', 9),           
+('Sheaf', '0013-04-19', 'f', 9),           
+('Tanner', '0012-02-27', 'm', 10),         
+('Brandy', '0011-06-30', 'f', 10),         
+('Reaper Ash', '0010-05-05', 'm', 11),     
+('Dill', '0016-06-22', 'f', 11),           
+('Jessup Diggs', '0010-03-14', 'm', 12),   
+('Lucy Gray Baird', '0012-03-10', 'f', 12),
+
+
+
 ('Louella McCoy', '0055-10-09', 'f', 12),        
 ('Maysilee Donner', '0052-06-20', 'f', 12),
 ('Wyatt Callow', '0050-05-21', 'm', 12),           
@@ -1284,7 +1318,7 @@ INSERT INTO tribute (name, dob, gender, district) VALUES
 
 -- TEAM MEMBERS
 INSERT INTO team_member (name) VALUES
--- 74th-75th
+
 ('Effie Trinket'),
 ('Haymith Abernathy'),
 ('Cinna'),
@@ -1295,15 +1329,14 @@ INSERT INTO team_member (name) VALUES
 
 
 
--- unsure when but probably 74th and before
 ('Tigris'),
 
--- 50th
+
 ('Persephone Trinket'),
 ('Drusilla Sickle'),
 ('Magno Stift'),
 
--- 10th games mentors
+
 ('Sejanus Plinth'),
 ('Coriolanus Snow'),
 ('Lysistrata Vickers'),
@@ -1335,12 +1368,12 @@ INSERT INTO team_member (name) VALUES
 
 
 INSERT INTO gamemaker (name) VALUES
--- 75th games
+
 ('Plutarch Heavensbee'),
--- 71-74th games as head gamemaker
+
 ('Seneca Crane'),
-('Lucia'), -- 74th games working under seneca
--- 1-10th +
+('Lucia'), 
+
 ('Dr. Volumina Gaul'),
 
 ('Joe Shmoe'),
@@ -1348,7 +1381,7 @@ INSERT INTO gamemaker (name) VALUES
 ('Grapefruit Cornelius'),
 ('Coriolanus Snow'),
 
--- Random
+
 ('Fabricius Lavish'),
 ('Octavia Glimmerstone'),
 ('Aurelius Grandeur'),
@@ -1418,8 +1451,8 @@ INSERT INTO game_creator (gamemaker_id, game_number) VALUES
 -- Game 75 (5 gamemakers - Plutarch's Quarter Quell)
 (1, 75), (20, 75), (21, 75), (22, 75), (23, 75);
 
-# INSERT PARTICIPANTS
--- 10th Hunger Games (year 28)
+-- INSERT PARTICIPANTS
+
 CALL add_participant_by_name('Facet', 10);
 CALL add_participant_by_name('Velvereen', 10);
 CALL add_participant_by_name('Marcus', 10);
@@ -1554,31 +1587,33 @@ INSERT INTO team_role (member_id, member_type, participant_id) VALUES
 (11, 'stylist', '50.12.F.2'),
 (11, 'stylist', '50.12.M.2'),
 
--- 10TH GAMES MENTORS
-(18, 'mentor', '10.1.M.1'), -- Livia Cardew → Facet
-(30, 'mentor', '10.1.F.1'), -- Palmyra Monty → Velvereen
-(12, 'mentor', '10.2.M.1'), -- Sejanus Plinth → Marcus
-(29, 'mentor', '10.2.F.1'), -- Florus Friend → Sabyn
-(24, 'mentor', '10.3.M.1'), -- Io Jasper → Circ
-(27, 'mentor', '10.3.F.1'), -- Urban Canville → Teslee
-(32, 'mentor', '10.4.M.1'), -- Persephone Price → Mizzen
-(17, 'mentor', '10.4.F.1'), -- Festus Creed → Coral
-(28, 'mentor', '10.5.M.1'), -- Dennis Fling → Hy
-(31, 'mentor', '10.5.F.1'), -- Iphigenia Moss → Sol
-(33, 'mentor', '10.6.M.1'), -- Apollo Ring → Otto
-(34, 'mentor', '10.6.F.1'), -- Diana Ring → Ginnee
-(23, 'mentor', '10.7.M.1'), -- Vipsania Sickle → Treech
-(19, 'mentor', '10.7.F.1'), -- Pup Harrington → Lamina
-(21, 'mentor', '10.8.M.1'), -- Juno Phipps → Bobbin
-(20, 'mentor', '10.8.F.1'), -- Hilarius Heavensbee → Wovey
-(25, 'mentor', '10.9.M.1'), -- Androcles Anderson → Panlo
-(26, 'mentor', '10.9.F.1'), -- Gaius Breen → Sheaf
-(16, 'mentor', '10.10.F.1'), -- Arachne Crane → Brandy
-(35, 'mentor', '10.10.M.1'), -- Domitia Whimsiwick → Tanner
-(15, 'mentor', '10.11.M.1'), -- Clemensia Dovecote → Reaper
-(22, 'mentor', '10.11.F.1'), -- Felix Ravinstill → Dill
-(14, 'mentor', '10.12.M.1'), -- Lysistrata Vickers → Jessup
-(13, 'mentor', '10.12.F.1'); -- Coriolanus Snow → Lucy Gray
+
+(18, 'mentor', '10.1.M.1'), 
+(30, 'mentor', '10.1.F.1'), 
+(12, 'mentor', '10.2.M.1'), 
+(29, 'mentor', '10.2.F.1'), 
+(24, 'mentor', '10.3.M.1'), 
+(27, 'mentor', '10.3.F.1'), 
+(32, 'mentor', '10.4.M.1'), 
+(17, 'mentor', '10.4.F.1'), 
+(28, 'mentor', '10.5.M.1'), 
+(31, 'mentor', '10.5.F.1'), 
+(33, 'mentor', '10.6.M.1'), 
+(34, 'mentor', '10.6.F.1'), 
+(23, 'mentor', '10.7.M.1'), 
+(19, 'mentor', '10.7.F.1'), 
+(21, 'mentor', '10.8.M.1'), 
+(20, 'mentor', '10.8.F.1'), 
+(25, 'mentor', '10.9.M.1'), 
+(26, 'mentor', '10.9.F.1'), 
+(16, 'mentor', '10.10.F.1'), 
+(35, 'mentor', '10.10.M.1'), 
+(15, 'mentor', '10.11.M.1'), 
+(22, 'mentor', '10.11.F.1'), 
+(14, 'mentor', '10.12.M.1'), 
+(13, 'mentor', '10.12.F.1'); 
+
+
 
 INSERT INTO sponsorship (sponsor_id, participant_id, sponsor_amount) VALUES
 (2, '74.2.M.1', 7000),        -- Cato

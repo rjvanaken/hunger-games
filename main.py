@@ -15,8 +15,8 @@ def main():
     # Get database credentials and connect
     while True:
         print("\nYOUR CAPITOL CREDENTIALS:")
-        username, password = database.get_credentials()
-        # username, password = "root", "test"
+        # username, password = database.get_credentials()
+        username, password = "root", "test"
         print("\nVerifying identity...\n")
         connection = database.connect_to_database(username, password)
         if connection is not None:
@@ -86,11 +86,11 @@ def handle_manage_records(connection):
             
 # MANAGE TRIBUTES
 def handle_manage_tributes(connection):
-    choice = menu.display_manage_entity_menu('tribute')
     while True:
+        choice = menu.display_manage_entity_menu('tribute')
         if choice == '1':
-            ops.view_table(connection, 'tribute')
-            ops.display_tributes_full()
+            rows = ops.view_table(connection, 'tribute')
+            menu.display_tributes_full(rows)
         elif choice == '2': # CREATE
             name = menu.get_string_input("Enter the tribute's full name")
             dob = menu.get_string_input("Enter the tribute's date of birth in the format yyyy-mm-dd")
@@ -100,19 +100,19 @@ def handle_manage_tributes(connection):
             ops.create_tribute(connection, name, dob, gender, district)
             # add create validation and rollback
         elif choice == '3': # EDIT
-            ops.view_table(connection, 'tribute')
-            ops.display_tributes_full()
+            rows = ops.view_table(connection, 'tribute')
+            menu.display_tributes_full(rows)
             id = menu.get_number_input('Enter ID of tribute to edit:')
             name = menu.get_string_input("Enter the tribute's full name")
             dob = menu.get_string_input("Enter the tribute's date of birth in the format yyyy-mm-dd")
             # add validation for date entering
             gender = menu.get_string_input("Enter the tribute's gender (M or F)")
             district = menu.get_number_input("Enter the tribute's district number (1-12)")
-            ops.edit_tribute(id)
+            ops.edit_tribute(connection, id, name, dob, gender, district)
             # ADD EDIT FUNCTION THINGY
         elif choice == '4': # DELETE
-            ops.view_table(connection, 'tribute')
-            ops.display_tributes_full()
+            rows = ops.view_table(connection, 'tribute')
+            menu.display_tributes_full(rows)
             id = menu.get_number_input('Enter ID of tribute to delete:')
             ops.delete_tribute(id)
         elif choice == '0':
