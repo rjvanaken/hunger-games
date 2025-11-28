@@ -442,27 +442,45 @@ ANALYTICS
 INPUT FUNCTIONS
 '''
 def get_string_input(prompt):
-    """Get name from user for:
-    - tribute
-    - sponsor
-    - gamemaker
-    - team member
+    """Get string from user for:
+    - names (tribute, gamemaker, team_member)
+    - gender
+    - dates
     """
     name = input(f"{prompt}: ")
     return name
 
-def get_number_input(prompt, is_update=False):
+def get_number_input(prompt, update=False):
     """Get and validate number from user for:
     - game
     - district
+    - scores
     """
     while True:
         number = input(f"{prompt}: ").strip()
-        if is_update == True and number == 0:
-            return str(int(number))
+        if update and number == "":
+            return str(number)
+
         if number.isdigit():
             return int(number)
         print("Invalid input. Please enter a number.")
+
+
+def get_tribute_inputs(update=False):
+    if update:
+        name = get_string_input("Enter the tribute's full name or ENTER to skip")
+        dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd' or ENTER to skip")
+        gender = get_string_input("Enter the tribute's gender (M or F) or ENTER to skip")
+        district = get_number_input("Enter the tribute's district number (1-12) or ENTER to skip", True)
+    else:
+
+        name = get_string_input("Enter the tribute's full name")
+        dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd'")
+
+        gender = get_string_input("Enter the tribute's gender (M or F)")
+        district = get_number_input("Enter the tribute's district number (1-12)")
+
+    return name, dob, gender, district
 
 
 

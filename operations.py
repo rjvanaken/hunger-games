@@ -1,5 +1,5 @@
 import pymysql
-import pymysql.cursors
+from datetime import datetime
 
 
 '''
@@ -195,69 +195,85 @@ def view_table(connection, table_name):
 '''MANAGE TRIBUTES'''
 
 # CREATE TRIBUTE
-def create_tribute(connection, name, dob, gender, district):
+def create_tribute(connection, name, birth_date, gender, district):
     """Create tribute"""
 
     # Validate name
     if not name or len(name) > 64:
-        print("Invalid name")
+        print("\nInvalid name")
         return False
     
     # Validate gender
     if gender.lower() not in ['m', 'f']:
-        print("Gender must be 'm' or 'f'")
+        print("\nGender must be 'm' or 'f'")
         return False
     
     # Validate district
     if district < 1 or district > 12:
-        print("District must be between 1-12")
+        print("\nDistrict must be between 1-12")
         return False
+    
+    if birth_date is not None and birth_date != '':
+        dob = validate_and_convert_date(birth_date)
+    
     
     try:
         cursor = connection.cursor()
         cursor.callproc('create_tribute', [name, dob, gender.lower(), district])
         connection.commit()
-        print("Tribute created successfully!")
+        print("\nTribute created successfully!")
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
 
 # EDIT TRIBUTE
-def edit_tribute(connection, tribute_id, name, dob, gender, district):
+def edit_tribute(connection, tribute_id, name, birth_date, gender, district):
     """Edit tribute"""
+    if district == '' or district == 0:
+        district = None
+    elif district is not None:
+        district = int(district)
     
-    # Validate name (only if provided - not None and not empty)
-    if name is not None and name != '' and len(name) > 64:
-        print("Invalid name")
+    # Validate name or set to None if empty
+    if name == '' or not name:
+        name = None
+    elif len(name) > 64:
+        print("\nInvalid name")
+        return False
+
+    # Validate gender or set to None if empty
+    if gender is not None and gender != '':
+        gender = gender.lower()
+        if gender not in ['m', 'f']:
+            print("\nGender must be 'm' or 'f'")
+            return False
+    else:
+        gender = None;
+    
+    # Validate district or set to None if empty
+    if district is not None and (district < 1 or district > 12):
+        print("\nDistrict must be between 1-12")
         return False
     
-    # Validate gender (only if provided)
-    if gender is not None and gender != '' and gender.lower() not in ['m', 'f']:
-        print("Gender must be 'm' or 'f'")
-        return False
-    
-    # Validate district (only if provided - 0 means skip in your design)
-    if district is not None and district != 0 and (district < 1 or district > 12):
-        print("District must be between 1-12")
-        return False
-    
+    # Validate dob or set to None if empty
+    if birth_date is not None and birth_date != '':
+        dob = validate_and_convert_date(birth_date)
+    else:
+        dob = None
+
     try:
         cursor = connection.cursor()
-        # Convert to proper values for SQL
-        gender_lower = gender.lower() if gender else None
-        district_val = district if district != 0 else None  # 0 means NULL
-        
-        cursor.callproc('edit_tribute', [tribute_id, name, dob, gender_lower, district_val])
+        cursor.callproc('edit_tribute', [tribute_id, name, dob, gender, district])
         connection.commit()
-        print("Tribute edited successfully!")
+        print("\nTribute updated successfully!")
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -266,13 +282,20 @@ def edit_tribute(connection, tribute_id, name, dob, gender, district):
 # DELETE TRIBUTE
 def delete_tribute(connection, tribute_id):
     """Delete tribute"""
-    cursor = connection.cursor()
-    cursor.callproc('delete_tribute', [tribute_id])
-    connection.commit()
-    cursor.close()
-    print("Tribute deleted")
 
-
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_tribute', [tribute_id])
+        connection.commit()
+        cursor.close()
+        print("Tribute deleted")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 
 
@@ -386,3 +409,18 @@ def delete_game(connection, game_number):
 
 
 # # DELETE VICTOR
+
+
+
+'''
+==============
+UTILITIES
+==============
+'''
+def validate_and_convert_date(date_string):
+    try:
+        date_obj = datetime.strptime(date_string, "%Y-%m-%d").date()
+        return date_obj
+    except ValueError:
+        return None 
+    

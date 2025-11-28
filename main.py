@@ -2,7 +2,7 @@ import pymysql
 import database
 import operations as ops
 import menu
-from datetime import date
+from datetime import datetime
 
 def main():
     """Main application loop"""
@@ -93,41 +93,18 @@ def handle_manage_tributes(connection):
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
         elif choice == '2': # CREATE
-            name = menu.get_string_input("Enter the tribute's full name")
-            year = menu.get_number_input("Enter tribute's birth year (e.g., 2000)")
-            month = menu.get_number_input("Enter tribute's birth month (1-12)")
-            day = menu.get_number_input("Enter tribute's birth day (01-31)")
-            try:
-                dob_obj = date(year, month, day)
-                dob = dob_obj.strftime('%Y-%m-%d')  # Convert to MySQL format
-            except ValueError:
-                print("Invalid date")
-                continue 
-            gender = menu.get_string_input("Enter the tribute's gender (M or F)")
-            district = menu.get_number_input("Enter the tribute's district number (1-12)")
+
+            name, dob, gender, district = menu.get_tribute_inputs()
             ops.create_tribute(connection, name, dob, gender, district)
-            # add create validation and rollback
+            
         elif choice == '3': # EDIT
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
             id = menu.get_number_input('Enter ID of tribute to edit')
-            name = menu.get_string_input("Enter the tribute's full name")
-            year = menu.get_number_input("Enter tribute's birth year (e.g., 2000)")
-            month = menu.get_number_input("Enter tribute's birth month (1-12)")
-            day = menu.get_number_input("Enter tribute's birth day (01-31)")
-            try:
-                dob_obj = date(year, month, day)
-                dob = dob_obj.strftime('%Y-%m-%d')  # Convert to MySQL format
-            except ValueError:
-                print("Invalid date")
-                continue 
-
-            # TODO change back from splitting up dob in entering
             
-            gender = menu.get_string_input("Enter the tribute's gender (M or F)")
-            district = menu.get_number_input("Enter the tribute's district number (1-12)")
+            name, dob, gender, district = menu.get_tribute_inputs(True)
             ops.edit_tribute(connection, id, name, dob, gender, district)
-            # ADD EDIT FUNCTION THINGY
+            
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
