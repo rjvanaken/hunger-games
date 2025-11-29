@@ -510,14 +510,18 @@ ANALYTICS
 '''
 INPUT FUNCTIONS
 '''
-def get_string_input(prompt):
+def get_string_input(prompt, required=False):
     """Get string from user for:
     - names (tribute, gamemaker, team_member)
     - gender
     - dates
     """
-    name = input(f"{prompt}: ")
-    return name
+    while True:
+        string = input(f"{prompt}: ")
+        if required and string == '':
+            print("an entry is required")
+        else:
+            return string
 
 def get_number_input(prompt, update=False):
     """Get and validate number from user for:
@@ -537,16 +541,16 @@ def get_number_input(prompt, update=False):
 
 def get_tribute_inputs(on_update=False):
     if on_update:
-        name = get_string_input("Enter the tribute's full name or ENTER to skip")
+        name = get_string_input("Enter the tribute's full name or ENTER to skip", True)
         dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd' or ENTER to skip")
         gender = get_string_input("Enter the tribute's gender (M or F) or ENTER to skip")
         district = get_number_input("Enter the tribute's district number (1-12) or ENTER to skip", True)
     else:
 
-        name = get_string_input("Enter the tribute's full name")
-        dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd'")
+        name = get_string_input("Enter the tribute's full name", True)
+        dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd'", True)
 
-        gender = get_string_input("Enter the tribute's gender (M or F)")
+        gender = get_string_input("Enter the tribute's gender (M or F)", True)
         district = get_number_input("Enter the tribute's district number (1-12)")
 
     return name, dob, gender, district
@@ -561,8 +565,7 @@ def get_games_inputs(on_update=False):
         
         return start_date, end_date, game_status, required_tribute_count
     else:
-
-        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd'")
+        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd'", True)
         game_number = get_number_input("Enter the game number")
         required_tribute_count = get_number_input("Enter the required number of tributes")
 

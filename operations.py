@@ -295,9 +295,6 @@ def delete_tribute(connection, tribute_id):
 def create_sponsor(connection, name):
 # verify exists before action
     """Create sponsor"""
-    
-    name = utils.prepare_name_for_update(name, 64, 'name')
-
     try:
         cursor = connection.cursor()
         cursor.callproc('create_sponsor', [name])
@@ -358,13 +355,30 @@ def delete_sponsor(connection, sponsor_id):
 
 # CREATE GAME
 def create_game(connection, game_number, start_date, required_tribute_count=24):
-
     """Create game"""
-    cursor = connection.cursor()
-    cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
-    rows = cursor.fetchall()
-    cursor.close()
-    return rows
+    
+    # Validate game number
+    if game_number < 1:
+        print("\nGame number must be greater than 0")
+        return False
+    
+    start_date = validate_and_convert_date(start_date)
+    if start_date == None:
+        print("\nStart date is required")
+        False
+
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
+        connection.commit()
+        print("\nGame successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 # EDIT GAME
 def edit_game(connection, game_number, start, end, game_status, required_tribute_count):

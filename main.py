@@ -124,7 +124,7 @@ def handle_manage_sponsors(connection):
             rows = ops.view_table(connection, 'sponsor')
             menu.display_sponsors_full(rows)
         elif choice == '2': # CREATE
-            name = menu.get_string_input("Enter the full name of the sponsor")
+            name = menu.get_string_input("Enter the full name of the sponsor", True)
             ops.create_sponsor(connection, name)
             
         elif choice == '3': # UPDATE
@@ -154,7 +154,7 @@ def handle_manage_games(connection):
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
         elif choice == '2': # CREATE
-            game_number, start_date, game_status, required_tribute_count = menu.get_games_inputs()
+            game_number, start_date, required_tribute_count = menu.get_games_inputs()
             ops.create_game(connection, game_number, start_date, required_tribute_count)
             
         elif choice == '3': # EDIT
@@ -170,7 +170,7 @@ def handle_manage_games(connection):
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
             game_number = menu.get_number_input('Enter the number of the game to delete')
-            ops.games_tribute(connection, game_number)
+            ops.delete_game(connection, game_number)
         elif choice == '0':
             break
         else:
