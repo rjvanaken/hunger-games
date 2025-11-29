@@ -64,11 +64,11 @@ CREATE TABLE IF NOT EXISTS participant(
 	tribute_id INT NOT NULL,
     game_number INT NOT NULL,
     final_placement INT DEFAULT NULL, -- add logic -- limit based on number of tributes - trigger
-    interview_score INT DEFAULT NULL,
+    intelligence_score INT DEFAULT NULL,
+    likeability_score INT DEFAULT NULL,
     
-    CONSTRAINT check_interview_score CHECK (interview_score BETWEEN 1 AND 10),
-    -- CONSTRAINT check_tribute_id_exists CHECK (BETWEEN 1 AND 10),
-
+    CONSTRAINT check_intelligence_score CHECK (intelligence_score BETWEEN 1 AND 10),
+    CONSTRAINT check_likeability_score CHECK (likeability_score BETWEEN 1 AND 10)
 
     FOREIGN KEY (tribute_id) REFERENCES tribute(tribute_id)
 		ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -957,21 +957,91 @@ DELIMITER $$
 
 CREATE PROCEDURE create_participant(p_tribute_id INT, p_game_number INT)
 BEGIN
-
+    -- Check if tribute exists
     IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tribute does not exist';
+    END IF;
+    
+    -- Check if game exists
+    IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game does not exist';
+    END IF;
+    
+    -- Check if participant already exists for this tribute and game
+    IF (SELECT COUNT(*) FROM participant WHERE tribute_id = p_tribute_id AND game_number = p_game_number) > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Participant already exists for this tribute and game';
+    END IF;
+    
+    INSERT INTO participant(tribute_id, game_number)
+    VALUES (p_tribute_id, p_game_number);
+END $$
+
+DELIMITER ;
+
+
+
+-- edit participant
+DROP PROCEDURE IF EXISTS edit_participant;
+DELIMITER $$
+
+CREATE PROCEDURE edit_participant(
+    p_participant_id VARCHAR(64), 
+    p_final_placement INT, 
+    p_intelligence_score INT, 
+    p_likeability_score INT
+)
+BEGIN
+    -- Check if participant exists
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Participant does not exist';
     ELSE
-        INSERT INTO participant(tribute_id, game_number)
-        VALUES (p_tribute_id, p_game_number);
+        -- Validate scores if provided
+        IF p_intelligence_score IS NOT NULL AND (p_intelligence_score < 1 OR p_intelligence_score > 10) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Intelligence score must be between 1 and 10';
+        END IF;
+        
+        IF p_likeability_score IS NOT NULL AND (p_likeability_score < 1 OR p_likeability_score > 10) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Likeability score must be between 1 and 10';
+        END IF;
+        
+        UPDATE participant
+            SET final_placement = COALESCE(p_final_placement, final_placement),
+                intelligence_score = COALESCE(p_intelligence_score, intelligence_score),
+                likeability_score = COALESCE(p_likeability_score, likeability_score)
+            WHERE participant_id = p_participant_id;
     END IF;
 END $$
 
 DELIMITER ;
 
--- ==============================
+
+-- delete participant
+DROP PROCEDURE IF EXISTS delete_participant;
+DELIMITER $$
+
+CREATE PROCEDURE delete_participant(p_participant_id VARCHAR(64))
+BEGIN
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Participant does not exist';
+    ELSE 
+        DELETE FROM participant
+        WHERE participant_id = p_participant_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+-- ================================
 -- CRUD PROCEDURES: MANAGE victors
--- ==============================
+-- ================================
 
 
 -- delete victor
