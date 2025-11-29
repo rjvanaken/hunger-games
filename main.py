@@ -271,16 +271,39 @@ def handle_manage_team_members(connection):
 
 
 def handle_manage_participants(connection):
-    pass
+    while True:
+        choice = menu.display_manage_entity_menu('participant')
+        if choice == '1':
+            rows = ops.view_table(connection, 'participant')
+            menu.display_participants_full(rows)
+        elif choice == '2': # CREATE
+            tribute_id, game_number = menu.get_participant_inputs()
+            ops.create_participant(connection, tribute_id, game_number)
+            
+        elif choice == '3': # UPDATE
+            rows = ops.view_table(connection, 'participant')
+            menu.display_participants_full(rows)
+            participant_id = menu.get_string_input('Enter participant ID to edit')
+            print(f"\nUpdating Participant with ID of {participant_id}")
+            print("─" * 42)
+            final_placement, intelligence_score, likeability_score = menu.get_participant_inputs_edit()
+            ops.edit_participant(connection, participant_id, final_placement, intelligence_score, likeability_score)
+            
+        elif choice == '4': # DELETE
+            rows = ops.view_table(connection, 'participant')
+            menu.display_participants_full(rows)
+            participant_id = menu.get_string_input('Enter participant ID to delete')
+            ops.delete_participant(connection, participant_id)
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
 
 
 def handle_manage_victors(connection):
     while True:
-        choice = menu.display_manage_victors_menu('victor')
-        if choice == '1': # VIEW
-            rows = ops.view_table(connection, 'victor')
-            menu.display_victors(rows)
-        elif choice == '2': # DELETE
+        choice = menu.display_manage_victors_menu()
+        if choice == '1': # DELETE
             rows = ops.view_table(connection, 'victor')
             menu.display_victors(rows)
             victor_id = menu.get_number_input('Enter the victor ID to delete')

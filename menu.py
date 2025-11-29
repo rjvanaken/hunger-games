@@ -93,8 +93,7 @@ def display_manage_victors_menu():
     print("\n" + "=" * length)
     print(f" MANAGE VICTORS")
     print("=" * length)
-    print(f" 1: View Victors")
-    print(f" 2: DELETE Victor")
+    print(f" 1: DELETE Victor")
     print("─" * length)
     print(" 0: RETURN\n")
     choice = input("Enter choice: ")
@@ -270,11 +269,6 @@ def display_team_members_full(team_members):
         print(f" {tm['member_id']:<{id_width}} │ {tm['name']:<{name_width}} │ {victor_display:<{victor_width}}")
     
     print("=" * length + "\n")
-
-
-
-
-
 
 
 
@@ -572,7 +566,7 @@ def display_view_victors_menu():
 
 def display_victors(victors):
     """Display formatted list of victors"""
-    length = 80
+    length = 70
     if not victors:
         print("\nNo victors found.")
         return
@@ -580,11 +574,10 @@ def display_victors(victors):
     print("\n" + "=" * length)
     print(" VICTORS")
     print("=" * length)
-    print(f" {'Tribute ID':<12} │ {'Victor Name':<30} │ {'Games Won':<15}")
-    print("─" * length)
+    print(f" {'Victor ID':<12} │ {'Victor Name':<30} │ {'Games Won':<15}")
     for victor in victors:
-        print("─" * length)
         games_won = victor['games_won'] if victor['games_won'] else 'TBD'
+        print("─" * length)
         print(f" {victor['victor_id']:<12} │ {victor['name']:<30} │ {games_won:<15}")
     print("=" * length + "\n")
 
@@ -600,11 +593,12 @@ def display_districts(districts):
     print(" DISTRICTS")
     print("=" * length)
     print(f" {'District #':<12} │ {'Industry':<20} │ {'Size':<15} │ {'Wealth':<15}")
-    print("─" * length)
     for district in districts:
         print("─" * length)
         print(f" {district['district_num']:<12} │ {district['industry']:<20} │ {district['size']:<15} │ {district['wealth']:<15}")
     print("=" * length + "\n")
+
+
 '''
 ANALYTICS
 '''
@@ -690,6 +684,21 @@ def get_team_member_inputs(on_update=False):
         
     return name, victor_id
 
+
+def get_participant_inputs(on_update=False):
+    if on_update:
+
+        final_placement = get_number_input("Enter the tribute's final placement or ENTER to skip", True)
+        intelligence_score = get_number_input("Enter the tribute's intelligence score or ENTER to skip", True)
+        likeability_score = get_number_input("Enter the tribute's likeability score or ENTER to skip", True)
+         
+        return final_placement, intelligence_score, likeability_score
+    
+    else:
+        tribute_id = get_number_input("Enter the participant's tribute_id")
+        game_number = get_number_input("Enter the game number")
+
+        return tribute_id, game_number
 
 
 
