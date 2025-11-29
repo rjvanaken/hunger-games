@@ -287,13 +287,16 @@ def delete_tribute(connection, tribute_id):
 
 
 
-
-
 '''MANAGE SPONSORS'''
 
 # CREATE SPONSOR
 def create_sponsor(connection, name):
-# verify exists before action
+    
+    # Validate name
+    if not name or len(name) > 64:
+        print("\nInvalid name")
+        return False
+    
     """Create sponsor"""
     try:
         cursor = connection.cursor()
@@ -430,13 +433,19 @@ def delete_game(connection, game_number):
     finally:
         cursor.close()
 
-'''MANAGE GAMEMAKERS'''
 
+
+'''MANAGE GAMEMAKERS'''
 
 # CREATE GAMEMAKER
 def create_gamemaker(connection, name):
 # verify exists before action
-    """Create gamemaker"""
+    """Create gamemaker"""  
+    # Validate name
+    if not name or len(name) > 64:
+        print("\nInvalid name")
+        return False
+    
     try:
         cursor = connection.cursor()
         cursor.callproc('create_gamemaker', [name])
@@ -495,10 +504,20 @@ def delete_gamemaker(connection, gamemaker_id):
 '''MANAGE TEAM MEMBERS'''
 
 
-# CREATE GAMEMAKER
+# CREATE TEAM MEMBER
 def create_team_member(connection, name, victor_id=None):
-# verify exists before action
     """Create team member"""
+        
+    # Validate name
+    if not name or len(name) > 64:
+        print("\nInvalid name")
+        return False
+    
+    # Validate victor_id if provided
+    if victor_id is not None and victor_id < 1:
+        print("\nVictor ID must be greater than 0")
+        return False
+    
     try:
         cursor = connection.cursor()
         cursor.callproc('create_team_member', [name, victor_id])
@@ -512,12 +531,12 @@ def create_team_member(connection, name, victor_id=None):
     finally:
         cursor.close()
 
-# EDIT GAMEMAKER
+# EDIT TEAM MEMBER
 def edit_team_member(connection, id, name, victor_id=None):
     """Edit team member"""
-    # Validate name or set to None if empty
+    
     name = utils.prepare_name_for_update(name, 64, 'name')
-    # ADD VICTOR ID PREPARE NAME FOR UPDATE
+    victor_id = utils.prepare_num_for_update(victor_id, 'victor_id', 1)
 
     if name == False:
         print('\nUpdate failed')
@@ -536,8 +555,8 @@ def edit_team_member(connection, id, name, victor_id=None):
     finally:
         cursor.close()
 
-
-# DELETE GAMEMAKER
+    
+# DELETE TEAM MEMBER
 def delete_team_member(connection, member_id):
     """Delete team member"""
     try: 
@@ -555,26 +574,107 @@ def delete_team_member(connection, member_id):
         cursor.close()
 
 
+'''MANAGE PARTICIPANTS'''
 
-# '''MANAGE PARTICIPANTS'''
+# CREATE PARTICIPANT
+def create_participant(connection, tribute_id, game_number):
+    # Validate tribute_id
+    if tribute_id < 1:
+        print("\nTribute ID must be greater than 0")
+        return False
+    
+    # Validate game_number
+    if game_number < 1:
+        print("\nGame number must be greater than 0")
+        return False
+    
+    """Create participant"""
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_participant', [tribute_id, game_number])
+        connection.commit()
+        print("\nParticipant successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
 
-# # CREATE PARTICIPANT
-# def create_participant(tribute_id, game_number):
+# EDIT PARTICIPANT
+def edit_participant(connection, participant_id, final_placement, intelligence_score, likeability_score):
+    """Edit participant"""
+    
+    # Validate final_placement or set to None if empty
+    final_placement = utils.prepare_num_for_update(final_placement, 'final_placement', 1, 24)
+    
+    # Validate intelligence_score or set to None if empty
+    intelligence_score = utils.prepare_num_for_update(intelligence_score, 'intelligence_score', 1, 10)
+    
+    # Validate likeability_score or set to None if empty
+    likeability_score = utils.prepare_num_for_update(likeability_score, 'likeability_score', 1, 10)
 
-# # EDIT PARTICIPANT
+    failures = 0
+    attributes = [final_placement, intelligence_score, likeability_score]
+    for attribute in attributes:
+        if attribute == False:
+            failures = failures + 1
+    if failures > 0:
+        print('\nUpdate failed')
+        return False
+
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_participant', [participant_id, final_placement, intelligence_score, likeability_score])
+        connection.commit()
+        print("\nParticipant successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# DELETE PARTICIPANT
+def delete_participant(connection, participant_id):
+    """Delete participant"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_participant', [participant_id])
+        connection.commit()
+        cursor.close()
+        print("\nParticipant successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+'''MANAGE VICTORS'''
 
 
-# # DELETE PARTICIPANT
+# DELETE VICTOR
+def delete_victor(connection, victor_id):
+    """Delete team member"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_victor', [victor_id])
+        connection.commit()
+        cursor.close()
+        print("\nVictor successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
 
-# '''MANAGE VICTORS'''
 
-# # CREATE VICTOR
-# def create_victor(tribute_id):
-
-# # EDIT VICTOR
-
-
-# # DELETE VICTOR
 
 
 
