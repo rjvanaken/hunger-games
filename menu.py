@@ -196,6 +196,45 @@ def display_games_full(games):
     print("=" * length + "\n")
 
 
+
+    # DISPLAY GAMEMAKERS FULL
+def display_gamemakers_full(gamemakers):
+    """Display formatted list of gamemakers"""
+    if not gamemakers:
+        print("\nNo gamemakers found.")
+        return
+    
+    # Calculate column widths
+    id_width = max(len(str(s['gamemaker_id'])) for s in gamemakers)
+    id_width = max(id_width, len('gamemaker_id'))
+    
+    name_width = max(len(str(s['name'])) for s in gamemakers)
+    name_width = max(name_width, len('name'))
+    
+    # Calculate total length
+    length = id_width + name_width + 16
+    
+    print("\n" + "=" * length)
+    print(" GAMEMAKERS")
+    print("=" * length)
+    print(f" {'gamemaker_id':<{id_width}} │ {'name':<{name_width}}")
+    
+    for gamemaker in gamemakers:
+        print("─" * length)
+        print(f" {gamemaker['gamemaker_id']:<{id_width}} │ {gamemaker['name']:<{name_width}}")
+    
+    print("=" * length + "\n")
+
+
+
+
+
+
+
+
+
+    
+
 '''
 VIEW RECORDS
 '''

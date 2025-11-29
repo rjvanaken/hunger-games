@@ -891,14 +891,15 @@ DELIMITER $$
 
 CREATE PROCEDURE create_team_member(p_name VARCHAR(64), victor_id INT)
 BEGIN
-
-    IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Victor does not exist';
-    ELSE
+    IF p_victor_id IS NOT NULL THEN
+        IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Victor does not exist';
+        END IF;
+    END IF;
+    
         INSERT INTO team_member(name, victor_id)
         VALUES (p_name, p_victor_id);
-    END IF;
 END $$
 
 DELIMITER ;
@@ -956,7 +957,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS create_team_role;
 DELIMITER $$
 
-CREATE PROCEDURE create_team_role(p_member_id INT, p_member_type VARCHAR(64), participant_id INT)
+CREATE PROCEDURE create_team_role(p_member_id INT,  participant_id INT, p_member_type VARCHAR(64))
 BEGIN
     IF 
     (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
@@ -970,8 +971,8 @@ BEGIN
         SET MESSAGE_TEXT = 'Team Member does not exist';
     END IF;
     
-    INSERT INTO team_role(member_id, member_type, participant_id)
-    VALUES (p_member_id, p_member_type, p_participant_id);
+    INSERT INTO team_role(member_id, participant_id, member_type)
+    VALUES (p_member_id, p_participant_id, p_member_type);
 END $$
 
 DELIMITER ;

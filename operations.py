@@ -432,25 +432,70 @@ def delete_game(connection, game_number):
 
 '''MANAGE GAMEMAKERS'''
 
-# # CREATE GAMEMAKER
-# def create_gamemaker(name):
+
+# CREATE GAMEMAKER
+def create_gamemaker(connection, name):
+# verify exists before action
+    """Create gamemaker"""
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_gamemaker', [name])
+        connection.commit()
+        print("\nGamemaker successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# EDIT GAMEMAKER
+def edit_gamemaker(connection, id, name):
+    """Edit gamemaker"""
+    # Validate name or set to None if empty
+    name = utils.prepare_name_for_update(name, 64, 'name')
+
+    if name == False:
+        print('\nUpdate failed')
+        return False
+
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_gamemaker', [name, id])
+        connection.commit()
+        print("\nGamemaker successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
 
 
-# # EDIT GAMEMAKER
+# DELETE GAMEMAKER
+def delete_gamemaker(connection, gamemaker_id):
+    """Delete gamemaker"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_gamemaker', [gamemaker_id])
+        connection.commit()
+        cursor.close()
+        print("\nGamemaker successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
 
-# # DELETE GAMEMAKER
+
+'''MANAGE TEAM MEMBERS'''
 
 
-# '''MANAGE TEAM MEMBERS'''
 
-# # CREATE TEAM MEMBER
-# def create_team_member(name, victor_id=None):
-
-
-# # EDIT TEAM MEMBER
-
-
-# # DELETE TEAM MEMBER
 
 # '''MANAGE PARTICIPANTS'''
 
