@@ -647,8 +647,8 @@ def get_games_inputs(on_update=False):
 def get_team_member_inputs(on_update=False):
     if on_update:
 
-        name = get_string_input("Enter the team member's full name or ENTER to skip", True)
-        victor_id = get_number_input("Enter the team member's victor_id or ENTER to skip")
+        name = get_string_input("Enter the team member's full name or ENTER to skip")
+        victor_id = get_number_input("Enter the team member's victor_id or ENTER to skip", True)
     else:
         answer = get_string_input("Was this team member a past victor? (Y/N)")
         name = get_string_input("Enter the team_member's full name", True)

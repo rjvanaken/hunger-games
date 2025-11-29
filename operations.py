@@ -161,7 +161,7 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
 def view_victors(connection, tribute_name=None, game_number=None):
     """View victors with optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_victors', tribute_name, game_number)
+    cursor.callproc('view_victors', [tribute_name, game_number])
     victors = cursor.fetchall()
     cursor.close()
     return victors
@@ -503,7 +503,7 @@ def create_team_member(connection, name, victor_id=None):
         cursor = connection.cursor()
         cursor.callproc('create_team_member', [name, victor_id])
         connection.commit()
-        print("\nGamemaker successfully created!")
+        print("\Team member successfully created!")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -517,6 +517,7 @@ def edit_team_member(connection, id, name, victor_id=None):
     """Edit team member"""
     # Validate name or set to None if empty
     name = utils.prepare_name_for_update(name, 64, 'name')
+    # ADD VICTOR ID PREPARE NAME FOR UPDATE
 
     if name == False:
         print('\nUpdate failed')
@@ -526,7 +527,7 @@ def edit_team_member(connection, id, name, victor_id=None):
         cursor = connection.cursor()
         cursor.callproc('edit_team_member', [name, id, victor_id])
         connection.commit()
-        print("\nGamemaker successfully updated!")
+        print("\nTeam member successfully updated!")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -544,7 +545,7 @@ def delete_team_member(connection, member_id):
         cursor.callproc('delete_team_member', [member_id])
         connection.commit()
         cursor.close()
-        print("\nGamemaker successfully deleted!")
+        print("\nTeam member successfully deleted!")
         return True
     except pymysql.Error as err:
         connection.rollback()

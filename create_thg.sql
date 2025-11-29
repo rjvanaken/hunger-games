@@ -575,15 +575,14 @@ DROP PROCEDURE IF EXISTS view_victors;
 DELIMITER $$
 
 CREATE PROCEDURE view_victors(p_tribute_name VARCHAR(64), p_game_number INT)
-
 BEGIN
     SELECT v.victor_id, t.name, t.district, GROUP_CONCAT(DISTINCT gv.game_number ORDER BY gv.game_number SEPARATOR ', ') as games_won
     FROM victor v
     JOIN game_victor gv ON v.victor_id = gv.victor_id
     JOIN tribute t ON v.victor_id = t.tribute_id
     WHERE 1=1 
-    AND (p_tribute_name is NULL OR t.name = p_tribute_name)
-    AND (p_game_number is NULL OR games_won LIKE p_game_number)
+    AND (p_tribute_name IS NULL OR t.name = p_tribute_name)
+    AND (p_game_number IS NULL OR gv.game_number = p_game_number)
     GROUP BY v.victor_id, t.name, t.district
     ORDER BY v.victor_id ASC;
 END $$
@@ -889,7 +888,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS create_team_member;
 DELIMITER $$
 
-CREATE PROCEDURE create_team_member(p_name VARCHAR(64), victor_id INT)
+CREATE PROCEDURE create_team_member(p_name VARCHAR(64), p_victor_id INT)
 BEGIN
     IF p_victor_id IS NOT NULL THEN
         IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
@@ -922,9 +921,9 @@ BEGIN
         SET MESSAGE_TEXT = 'Team member does not exist';
     ELSE 
         UPDATE team_member
-            SET name = COALESCE(p_name, name)
-            SET name = COALESCE(p_victor_id, victor_id)
-            WHERE member_id = p_member_id;
+            SET name = COALESCE(p_name, name),
+                victor_id = COALESCE(p_victor_id, victor_id)
+                WHERE member_id = p_member_id;
     END IF;
 END $$
 
