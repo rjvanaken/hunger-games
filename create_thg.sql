@@ -904,6 +904,50 @@ END $$
 
 DELIMITER ;
 
+-- edit team_member
+DROP PROCEDURE IF EXISTS edit_team_member;
+DELIMITER $$
+
+CREATE PROCEDURE edit_team_member(p_name VARCHAR(64), p_member_id INT, p_victor_id INT)
+BEGIN
+    IF p_victor_id IS NOT NULL THEN
+        IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Victor does not exist';
+        END IF;
+    END IF;
+    
+    IF (SELECT COUNT(*) FROM team_member WHERE member_id= p_member_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Team member does not exist';
+    ELSE 
+        UPDATE team_member
+            SET name = COALESCE(p_name, name)
+            SET name = COALESCE(p_victor_id, victor_id)
+            WHERE member_id = p_member_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
+-- delete team_member
+DROP PROCEDURE IF EXISTS delete_team_member;
+DELIMITER $$
+
+CREATE PROCEDURE delete_team_member(p_member_id INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM team_member WHERE member_id= p_member_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Team member does not exist';
+    ELSE 
+        DELETE FROM team_member
+        WHERE member_id = p_member_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
 -- ===================================
 -- CRUD PROCEDURE: MANAGE participant
 -- ===================================

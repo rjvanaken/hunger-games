@@ -207,6 +207,68 @@ def handle_manage_gamemakers(connection):
             print("Invalid entry")
 
 
+# MANAGE GAMEMAKERS
+def handle_manage_gamemakers(connection):
+    while True:
+        choice = menu.display_manage_entity_menu('gamemaker')
+        if choice == '1':
+            rows = ops.view_table(connection, 'gamemaker')
+            menu.display_gamemakers_full(rows)
+        elif choice == '2': # CREATE
+            name = menu.get_string_input("Enter the full name of the gamemaker", True)
+            ops.create_gamemaker(connection, name)
+            
+        elif choice == '3': # UPDATE
+            rows = ops.view_table(connection, 'gamemaker')
+            menu.display_gamemakers_full(rows)
+            id = menu.get_number_input('Enter ID of gamemaker to edit')
+            print(f"\nUpdating Gamemaker with ID of {id}")
+            print("─" * 42)
+            name = menu.get_string_input("Enter the new full name of the gamemaker or ENTER to skip")
+            ops.edit_gamemaker(connection, id, name)
+            
+        elif choice == '4': # DELETE
+            rows = ops.view_table(connection, 'gamemaker')
+            menu.display_gamemakers_full(rows)
+            id = menu.get_number_input('Enter ID of gamemaker to delete')
+            ops.delete_gamemaker(connection, id)
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
+
+
+    # MANAGE TEAM MEMBERS
+def handle_manage_team_members(connection):
+    while True:
+        choice = menu.display_manage_entity_menu('team_member')
+        if choice == '1':
+            rows = ops.view_table(connection, 'team_member')
+            menu.display_team_members_full(rows)
+        elif choice == '2': # CREATE
+            name, victor_id = menu.get_team_member_inputs()
+            ops.create_team_member(connection, name, victor_id)
+            
+        elif choice == '3': # UPDATE
+            rows = ops.view_table(connection, 'team_member')
+            menu.display_team_members_full(rows)
+            id = menu.get_number_input('Enter ID of team_member to edit')
+            print(f"\nUpdating Team member with ID of {id}")
+            print("─" * 42)
+            name, victor_id = menu.get_team_member_inputs(True)
+            ops.edit_team_member(connection, id, name, victor_id)
+            
+        elif choice == '4': # DELETE
+            rows = ops.view_table(connection, 'team_member')
+            menu.display_team_members_full(rows)
+            id = menu.get_number_input('Enter ID of team_member to delete')
+            ops.delete_team_member(connection, id)
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
+
+
 #-------------------------------------
 # HANDLE VIEW RECORDS
 #-------------------------------------

@@ -197,7 +197,7 @@ def display_games_full(games):
 
 
 
-    # DISPLAY GAMEMAKERS FULL
+# DISPLAY GAMEMAKERS FULL
 def display_gamemakers_full(gamemakers):
     """Display formatted list of gamemakers"""
     if not gamemakers:
@@ -205,10 +205,10 @@ def display_gamemakers_full(gamemakers):
         return
     
     # Calculate column widths
-    id_width = max(len(str(s['gamemaker_id'])) for s in gamemakers)
+    id_width = max(len(str(gm['gamemaker_id'])) for gm in gamemakers)
     id_width = max(id_width, len('gamemaker_id'))
     
-    name_width = max(len(str(s['name'])) for s in gamemakers)
+    name_width = max(len(str(gm['name'])) for gm in gamemakers)
     name_width = max(name_width, len('name'))
     
     # Calculate total length
@@ -226,14 +226,47 @@ def display_gamemakers_full(gamemakers):
     print("=" * length + "\n")
 
 
-
-
-
-
-
-
-
+# DISPLAY TEAM_MEMBERS FULL
+def display_team_members_full(team_members):
+    """Display formatted list of team members"""
+    if not team_members:
+        print("\nNo team members found.")
+        return
     
+    # Calculate column widths
+    id_width = max(len(str(tm['member_id'])) for tm in team_members)
+    id_width = max(id_width, len('member_id'))
+    
+    name_width = max(len(str(tm['name'])) for tm in team_members)
+    name_width = max(name_width, len('name'))
+    
+    victor_width = max(len(str(tm['victor_id']) if tm['victor_id'] else 'N/A') for tm in team_members)
+    victor_width = max(victor_width, len('victor_id'))
+    
+    # Calculate total length (3 columns + 2 separators)
+    length = id_width + name_width + victor_width + 20
+    
+    print("\n" + "=" * length)
+    print(" TEAM MEMBERS")
+    print("=" * length)
+    print(f" {'member_id':<{id_width}} │ {'name':<{name_width}} │ {'victor_id':<{victor_width}}")
+    
+    for tm in team_members:
+        victor_display = str(tm['victor_id']) if tm['victor_id'] else 'N/A'
+        print("─" * length)
+        print(f" {tm['member_id']:<{id_width}} │ {tm['name']:<{name_width}} │ {victor_display:<{victor_width}}")
+    
+    print("=" * length + "\n")
+
+
+
+
+
+
+
+
+
+
 
 '''
 VIEW RECORDS
@@ -609,6 +642,22 @@ def get_games_inputs(on_update=False):
         required_tribute_count = get_number_input("Enter the required number of tributes")
 
         return game_number, start_date, required_tribute_count
+
+
+def get_team_member_inputs(on_update=False):
+    if on_update:
+
+        name = get_string_input("Enter the team member's full name or ENTER to skip", True)
+        victor_id = get_number_input("Enter the team member's victor_id or ENTER to skip")
+    else:
+        answer = get_string_input("Was this team member a past victor? (Y/N)")
+        name = get_string_input("Enter the team_member's full name", True)
+        if answer == 'Y' or answer == 'y':
+            victor_id = get_number_input("Enter the team member's victor_id")
+        else:
+            victor_id = None;
+        
+    return name, victor_id
 
 
 
