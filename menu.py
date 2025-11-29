@@ -372,27 +372,40 @@ def display_view_tributes_menu():
 
 def display_tributes(tributes):
     """Display formatted list of tributes"""
-    length = 80
     if not tributes:
         print("\nNo tributes found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(t['tribute_id'])) for t in tributes)
+    id_width = max(id_width, len('ID'))
+    
+    name_width = max(len(str(t['name'])) for t in tributes)
+    name_width = max(name_width, len('Name'))
+    
+    district_width = max(len(str(t['district'])) for t in tributes)
+    district_width = max(district_width, len('District'))
+    
+    gender_width = max(len('Male'), len('Female'))
+    gender_width = max(gender_width, len('Gender'))
+    
+    dob_width = max(len(str(t['dob'])) for t in tributes)
+    dob_width = max(dob_width, len('Birth Date'))
+    
+    length = id_width + name_width + district_width + gender_width + dob_width + 28
         
     print("\n" + "=" * length)
     print(" TRIBUTES")
     print("=" * length)
-    print(f" {'ID':<5} │ {'Name':<25} │ {'District':<8} │ {'Gender':<8} │ {'Birth Date':<12}")
+    print(f" {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Birth Date':<{dob_width}}")
     for tribute in tributes:
-        if tribute['gender'] == 'm':
-            gender = "Male"
-        else:
-            gender = "Female"
+        gender = "Male" if tribute['gender'] == 'm' else "Female"
         print("─" * length)
-        print(f" {tribute['tribute_id']:<5} │ {tribute['name']:<25} │ {tribute['district']:<8} │ {gender:<8} │ {str(tribute['dob']):<12}")
+        print(f" {tribute['tribute_id']:<{id_width}} │ {tribute['name']:<{name_width}} │ {tribute['district']:<{district_width}} │ {gender:<{gender_width}} │ {str(tribute['dob']):<{dob_width}}")
     print("=" * length + "\n")
 
 
-
-    # VIEW SPONSORS
+# VIEW SPONSORS
 def display_view_sponsors_menu():
     """Displays the menu for viewing sponsors"""
     length = 42
@@ -410,41 +423,72 @@ def display_view_sponsors_menu():
 
 def display_sponsors(connection, sponsors):
     """Display formatted list of sponsors"""
-    length = 70
     if not sponsors:
         print("\nNo sponsors found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(s['sponsor_id'])) for s in sponsors)
+    id_width = max(id_width, len('ID'))
+    
+    name_width = max(len(str(s['name'])) for s in sponsors)
+    name_width = max(name_width, len('Name'))
+    
+    # Calculate contribution amounts to determine width
+    contributions = [ops.get_sponsor_total(connection, s['sponsor_id']) for s in sponsors]
+    contrib_width = max(len(f"${c:,.2f}") for c in contributions)
+    contrib_width = max(contrib_width, len('Total Contributions'))
+    
+    length = id_width + name_width + contrib_width + 20
         
     print("\n" + "=" * length)
     print(" SPONSORS")
     print("=" * length)
-    print(f" {'ID':<5} │ {'Name':<35} │ {'Total Contributions':<10}")
-    for sponsor in sponsors:
-        total_contributions = ops.get_sponsor_total(connection, sponsor['sponsor_id'])
+    print(f" {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'Total Contributions':<{contrib_width}}")
+    for i, sponsor in enumerate(sponsors):
         print("─" * length)
-        print(f" {sponsor['sponsor_id']:<5} │ {sponsor['name']:<35} │ ${total_contributions:<10,.2f}")
+        print(f" {sponsor['sponsor_id']:<{id_width}} │ {sponsor['name']:<{name_width}} │ ${contributions[i]:<{contrib_width-1},.2f}")
     print("=" * length + "\n")
 
 
 def display_sponsorships(sponsorships):
     """Display formatted list of sponsorships"""
-    length = 130
     if not sponsorships:
         print("\nNo sponsorships found.")
         return
+    
+    # Calculate column widths
+    sponsor_id_width = max(len(str(s['sponsor_id'])) for s in sponsorships)
+    sponsor_id_width = max(sponsor_id_width, len('Sponsor ID'))
+    
+    participant_id_width = max(len(str(s['participant_id'])) for s in sponsorships)
+    participant_id_width = max(participant_id_width, len('Participant ID'))
+    
+    sponsor_name_width = max(len(str(s['sponsor_name'])) for s in sponsorships)
+    sponsor_name_width = max(sponsor_name_width, len('Sponsor Name'))
+    
+    tribute_name_width = max(len(str(s['tribute_name'])) for s in sponsorships)
+    tribute_name_width = max(tribute_name_width, len('Tribute Name'))
+    
+    game_width = max(len(str(s['game_number'])) for s in sponsorships)
+    game_width = max(game_width, len('Game Number'))
+    
+    amount_width = max(len(f"${s['amount']:,.2f}") for s in sponsorships)
+    amount_width = max(amount_width, len('Amount'))
+    
+    length = sponsor_id_width + participant_id_width + sponsor_name_width + tribute_name_width + game_width + amount_width + 38
         
     print("\n" + "=" * length)
     print(" SPONSORSHIPS")
     print("=" * length)
-    print(f" {'Sponsor ID':<12} │ {'Participant ID':<15} │ {'Sponsor Name':<30} │ {'Tribute Name':<30} │ {'Game Number':<12} │ {'Amount':<10}")
+    print(f" {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'Amount':<{amount_width}}")
     for sponsorship in sponsorships:
         print("─" * length)
-        print(f" {sponsorship['sponsor_id']:<12} │ {sponsorship['participant_id']:<15} │ {sponsorship['sponsor_name']:<30} │ {sponsorship['tribute_name']:<30} │ {sponsorship['game_number']:<12} │ ${sponsorship['amount']:<10,.2f}")
+        print(f" {sponsorship['sponsor_id']:<{sponsor_id_width}} │ {sponsorship['participant_id']:<{participant_id_width}} │ {sponsorship['sponsor_name']:<{sponsor_name_width}} │ {sponsorship['tribute_name']:<{tribute_name_width}} │ {sponsorship['game_number']:<{game_width}} │ ${sponsorship['amount']:<{amount_width-1},.2f}")
     print("=" * length + "\n")
 
 
-
-    # VIEW GAMES
+# VIEW GAMES
 def display_view_games_menu():
     """Displays the menu for viewing games"""
     length = 42
@@ -462,24 +506,40 @@ def display_view_games_menu():
 
 def display_games(games):
     """Display formatted list of games"""
-    length = 115
     if not games:
         print("\nNo games found.")
         return
+    
+    # Calculate column widths
+    game_width = max(len(str(g['game_number'])) for g in games)
+    game_width = max(game_width, len('Game Number'))
+    
+    tribute_count_width = max(len(str(g['tribute_count'])) for g in games)
+    tribute_count_width = max(tribute_count_width, len('Number of Tributes'))
+    
+    start_width = max(len(str(g['start_date'])) for g in games)
+    start_width = max(start_width, len('Start Date'))
+    
+    end_width = max(len(str(g['end_date'])) for g in games)
+    end_width = max(end_width, len('End Date'))
+    
+    victor_width = max(len(str(g['victor_names']) if g['victor_names'] else 'TBD') for g in games)
+    victor_width = max(victor_width, len('Victor(s)'))
+    
+    length = game_width + tribute_count_width + start_width + end_width + victor_width + 32
         
     print("\n" + "=" * length)
     print(" GAMES")
     print("=" * length)
-    print(f" {'Game Number':<12} │ {'Number of Tributes':<20} │ {'Start Date':<12} │ {'End Date':<12} │ {'Victor(s)':<}")
+    print(f" {'Game Number':<{game_width}} │ {'Number of Tributes':<{tribute_count_width}} │ {'Start Date':<{start_width}} │ {'End Date':<{end_width}} │ {'Victor(s)':<{victor_width}}")
     for game in games:
         victors = game['victor_names'] if game['victor_names'] else 'TBD'
         print("─" * length)
-        print(f" {game['game_number']:<12} │ {game['tribute_count']:<20} │ {str(game['start_date']):<12} │ {str(game['end_date']):<12} │ {victors:<30}")
+        print(f" {game['game_number']:<{game_width}} │ {game['tribute_count']:<{tribute_count_width}} │ {str(game['start_date']):<{start_width}} │ {str(game['end_date']):<{end_width}} │ {victors:<{victor_width}}")
     print("=" * length + "\n")
 
 
-
-    # VIEW GAMEMAKERS
+# VIEW GAMEMAKERS
 def display_view_gamemakers_menu():
     """Displays the menu for viewing gamemakers"""
     length = 42
@@ -495,25 +555,31 @@ def display_view_gamemakers_menu():
     return choice
 
 def display_gamemakers(gamemakers):
-    """Display formatted list of games"""
-    length = 80
+    """Display formatted list of gamemakers"""
     if not gamemakers:
         print("\nNo gamemakers found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(gm['gamemaker_id'])) for gm in gamemakers)
+    id_width = max(id_width, len('Gamemaker ID'))
+    
+    name_width = max(len(str(gm['name'])) for gm in gamemakers)
+    name_width = max(name_width, len('Name'))
+    
+    length = id_width + name_width + 16
         
     print("\n" + "=" * length)
     print(" GAMEMAKERS")
     print("=" * length)
-    print(f" {'Gamemaker ID':<12} │ {'Name':<20}")
+    print(f" {'Gamemaker ID':<{id_width}} │ {'Name':<{name_width}}")
     for gamemaker in gamemakers:
         print("─" * length)
-        #victors = game['victor_names'] if game['victor_names'] else 'TBD'
-        print(f" {gamemaker['gamemaker_id']:<12} │ {gamemaker['name']:<20} ")
-        # │ {victors:<30}
+        print(f" {gamemaker['gamemaker_id']:<{id_width}} │ {gamemaker['name']:<{name_width}}")
     print("=" * length + "\n")
 
 
-    # VIEW TEAM MEMBERS
+# VIEW TEAM MEMBERS
 def display_view_team_members_menu():
     """Displays the menu for viewing team members"""
     length = 42
@@ -546,24 +612,34 @@ def display_member_types():
 
 def display_team_members(team_members):
     """Display formatted list of team members"""
-    length = 80
     if not team_members:
         print("\nNo team members found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(tm['member_id'])) for tm in team_members)
+    id_width = max(id_width, len('Member ID'))
+    
+    name_width = max(len(str(tm['name'])) for tm in team_members)
+    name_width = max(name_width, len('Name'))
+    
+    roles_width = max(len(str(tm['roles']).title() if tm['roles'] else 'TBD') for tm in team_members)
+    roles_width = max(roles_width, len('Roles'))
+    
+    length = id_width + name_width + roles_width + 20
         
     print("\n" + "=" * length)
     print(" TEAM MEMBERS")
     print("=" * length)
-    print(f" {'Member ID':<12} │ {'Name':<30} │ {'Roles':<15}")
+    print(f" {'Member ID':<{id_width}} │ {'Name':<{name_width}} │ {'Roles':<{roles_width}}")
     for member in team_members:
         roles = member['roles'].title() if member['roles'] else 'TBD'
         print("─" * length)
-        print(f" {member['member_id']:<12} │ {member['name']:<30} │ {roles:<15}")
+        print(f" {member['member_id']:<{id_width}} │ {member['name']:<{name_width}} │ {roles:<{roles_width}}")
     print("=" * length + "\n")
 
 
-
-    # VIEW PARTICIPANTS
+# VIEW PARTICIPANTS
 def display_view_participants_menu():
     length = 42
     """Displays the menu for viewing participants"""
@@ -586,27 +662,56 @@ def display_view_participants_menu():
 
 def display_participants(participants):
     """Display formatted list of participants"""
-    length = 200
     if not participants:
         print("\nNo participants found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(p['participant_id'])) for p in participants)
+    id_width = max(id_width, len('ID'))
+    
+    name_width = max(len(str(p['name'])) for p in participants)
+    name_width = max(name_width, len('Name'))
+    
+    district_width = max(len(str(p['district'])) for p in participants)
+    district_width = max(district_width, len('District'))
+    
+    gender_width = max(len('Male'), len('Female'))
+    gender_width = max(gender_width, len('Gender'))
+    
+    game_width = max(len(str(p['game_number'])) for p in participants)
+    game_width = max(game_width, len('Game Number'))
+    
+    age_width = max(len(str(p['age_during_games'])) for p in participants)
+    age_width = max(age_width, len('Age During Games'))
+    
+    training_width = max(len(str(p['training_score'])) for p in participants)
+    training_width = max(training_width, len('Training Score'))
+    
+    intel_width = max(len(str(p['intelligence_score'])) for p in participants)
+    intel_width = max(intel_width, len('Intelligence Score'))
+    
+    like_width = max(len(str(p['likeability_score'])) for p in participants)
+    like_width = max(like_width, len('Likeability Score'))
+    
+    placement_width = max(len(str(p['final_placement'])) for p in participants)
+    placement_width = max(placement_width, len('Final Placement'))
+    
+    length = id_width + name_width + district_width + gender_width + game_width + age_width + training_width + intel_width + like_width + placement_width + 58
         
     print("\n" + "=" * length)
     print(" PARTICIPANTS")
     print("=" * length)
-    print(f" {'ID':<12} │ {'Name':<30} │ {'District':<8} │ {'Gender':<8} │ {'Game Number':<12} │ {'Age During Games':<20} │ {'Training Score':<20} │ {'Intelligence Score':<20} │ {'Likeability Score':<20} │ {'Final Placement':<10}")
-    # print("─" * length)
+    print(f" {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}}")
     for participant in participants:
-        if participant['gender'] == 'M':
-            gender = "Male"
-        else:
-            gender = "Female"
+        gender = "Male" if participant['gender'] == 'M' else "Female"
         print("─" * length)
-        print(f" {participant['participant_id']:<12} │ {participant['name']:<30} │ {participant['district']:<8} │ {gender:<8} │ {participant['game_number']:<12} │ {participant['age_during_games']:<20} │ {str(participant['training_score']):<20} │ {str(participant['intelligence_score']):<20} │ {str(participant['likeability_score']):<20} │ {str(participant['final_placement']):<10}")
+        print(f" {participant['participant_id']:<{id_width}} │ {participant['name']:<{name_width}} │ {participant['district']:<{district_width}} │ {gender:<{gender_width}} │ {participant['game_number']:<{game_width}} │ {participant['age_during_games']:<{age_width}} │ {str(participant['training_score']):<{training_width}} │ {str(participant['intelligence_score']):<{intel_width}} │ {str(participant['likeability_score']):<{like_width}} │ {str(participant['final_placement']):<{placement_width}}")
         
     print("=" * length + "\n")
 
-    #VIEW VICTORS
+
+# VIEW VICTORS
 def display_view_victors_menu():
     """Displays the menu for viewing victors"""
     length = 42
@@ -624,38 +729,62 @@ def display_view_victors_menu():
 
 def display_victors(victors):
     """Display formatted list of victors"""
-    length = 70
     if not victors:
         print("\nNo victors found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(v['victor_id'])) for v in victors)
+    id_width = max(id_width, len('Victor ID'))
+    
+    name_width = max(len(str(v['name'])) for v in victors)
+    name_width = max(name_width, len('Victor Name'))
+    
+    games_width = max(len(str(v['games_won']) if v['games_won'] else 'TBD') for v in victors)
+    games_width = max(games_width, len('Games Won'))
+    
+    length = id_width + name_width + games_width + 20
         
     print("\n" + "=" * length)
     print(" VICTORS")
     print("=" * length)
-    print(f" {'Victor ID':<12} │ {'Victor Name':<30} │ {'Games Won':<15}")
+    print(f" {'Victor ID':<{id_width}} │ {'Victor Name':<{name_width}} │ {'Games Won':<{games_width}}")
     for victor in victors:
         games_won = victor['games_won'] if victor['games_won'] else 'TBD'
         print("─" * length)
-        print(f" {victor['victor_id']:<12} │ {victor['name']:<30} │ {games_won:<15}")
+        print(f" {victor['victor_id']:<{id_width}} │ {victor['name']:<{name_width}} │ {games_won:<{games_width}}")
     print("=" * length + "\n")
 
 
 def display_districts(districts):
     """Display formatted list of districts"""
-    length = 80
     if not districts:
         print("\nNo districts found.")
         return
+    
+    # Calculate column widths
+    num_width = max(len(str(d['district_num'])) for d in districts)
+    num_width = max(num_width, len('District #'))
+    
+    industry_width = max(len(str(d['industry'])) for d in districts)
+    industry_width = max(industry_width, len('Industry'))
+    
+    size_width = max(len(str(d['size'])) for d in districts)
+    size_width = max(size_width, len('Size'))
+    
+    wealth_width = max(len(str(d['wealth'])) for d in districts)
+    wealth_width = max(wealth_width, len('Wealth'))
+    
+    length = num_width + industry_width + size_width + wealth_width + 23
         
     print("\n" + "=" * length)
     print(" DISTRICTS")
     print("=" * length)
-    print(f" {'District #':<12} │ {'Industry':<20} │ {'Size':<15} │ {'Wealth':<15}")
+    print(f" {'District #':<{num_width}} │ {'Industry':<{industry_width}} │ {'Size':<{size_width}} │ {'Wealth':<{wealth_width}}")
     for district in districts:
         print("─" * length)
-        print(f" {district['district_num']:<12} │ {district['industry']:<20} │ {district['size']:<15} │ {district['wealth']:<15}")
+        print(f" {district['district_num']:<{num_width}} │ {district['industry']:<{industry_width}} │ {district['size']:<{size_width}} │ {district['wealth']:<{wealth_width}}")
     print("=" * length + "\n")
-
 
 '''
 ANALYTICS
