@@ -567,13 +567,31 @@ def display_victors(victors):
     print("\n" + "=" * length)
     print(" VICTORS")
     print("=" * length)
-    print(f" {'Tribute ID':<12} │ {'Victor Name':<30} │ {'Game Number(s)':<15}")
+    print(f" {'Tribute ID':<12} │ {'Victor Name':<30} │ {'Games Won':<15}")
     print("─" * length)
     for victor in victors:
+        print("─" * length)
         games_won = victor['games_won'] if victor['games_won'] else 'TBD'
         print(f" {victor['victor_id']:<12} │ {victor['name']:<30} │ {games_won:<15}")
     print("=" * length + "\n")
 
+
+def display_districts(districts):
+    """Display formatted list of districts"""
+    length = 80
+    if not districts:
+        print("\nNo districts found.")
+        return
+        
+    print("\n" + "=" * length)
+    print(" DISTRICTS")
+    print("=" * length)
+    print(f" {'District #':<12} │ {'Industry':<20} │ {'Size':<15} │ {'Wealth':<15}")
+    print("─" * length)
+    for district in districts:
+        print("─" * length)
+        print(f" {district['district_num']:<12} │ {district['industry']:<20} │ {district['size']:<15} │ {district['wealth']:<15}")
+    print("=" * length + "\n")
 '''
 ANALYTICS
 '''

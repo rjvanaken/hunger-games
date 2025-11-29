@@ -507,7 +507,7 @@ def handle_view_victors(connection):
             print("Invalid entry")
 
 def handle_view_districts(connection):
-    rows = ops.view_districts()
+    rows = ops.view_districts(connection)
     menu.display_districts(rows)
 
 
