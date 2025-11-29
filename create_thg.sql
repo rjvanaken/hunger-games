@@ -973,19 +973,20 @@ DELIMITER ;
 -- CRUD PROCEDURES: MANAGE victors
 -- ==============================
 
--- create victor
-DROP PROCEDURE IF EXISTS create_victor;
+
+-- delete victor
+DROP PROCEDURE IF EXISTS delete_victor;
 DELIMITER $$
 
-CREATE PROCEDURE create_victor(p_tribute_id INT)
-BEGIN
+CREATE PROCEDURE delete_victor(p_victor_id INT)
 
-    IF (SELECT COUNT(*) FROM tribute WHERE tribute_id = p_tribute_id) = 0 THEN
+BEGIN
+    IF (SELECT COUNT(*) FROM victor WHERE victor_id= p_victor_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tribute does not exist';
-    ELSE
-        INSERT INTO victor(tribute_id)
-        VALUES(p_tribute_id);
+        SET MESSAGE_TEXT = 'Victor does not exist';
+    ELSE 
+        DELETE FROM victor
+        WHERE victor_id = p_victor_id;
     END IF;
 END $$
 
