@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS participant(
     likeability_score INT DEFAULT NULL,
     
     CONSTRAINT check_intelligence_score CHECK (intelligence_score BETWEEN 1 AND 10),
-    CONSTRAINT check_likeability_score CHECK (likeability_score BETWEEN 1 AND 10)
+    CONSTRAINT check_likeability_score CHECK (likeability_score BETWEEN 1 AND 10),
 
     FOREIGN KEY (tribute_id) REFERENCES tribute(tribute_id)
 		ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -553,7 +553,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_participants;
 DELIMITER $$
 
-CREATE PROCEDURE view_participants(p_tribute_name VARCHAR(64), p_age_during_games INT, p_game_number INT, p_training_score INT)
+CREATE PROCEDURE view_participants(p_tribute_name VARCHAR(64), p_age_during_games INT, p_game_number INT, p_training_score INT, p_intelligence_score INT, p_likeability_score INT)
 
 BEGIN
     SELECT * FROM participant_details
@@ -562,9 +562,11 @@ BEGIN
     AND (p_age_during_games is NULL OR age_during_games = p_age_during_games)
     AND (p_game_number is NULL OR game_number = p_game_number)
     AND (p_training_score is NULL OR training_score = p_training_score)
+    AND (p_intelligence_score is NULL OR intelligence_score = p_intelligence_score)
+    AND (p_likeability_score is NULL OR likeability_score = p_likeability_score)
     ORDER BY game_number, district, gender;
+    
 END $$
-
 DELIMITER ;
 
 
@@ -588,6 +590,8 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
 
 
 
@@ -704,6 +708,7 @@ BEGIN
     ELSE
         DELETE FROM tribute
         WHERE tribute_id = p_tribute_id;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -1043,6 +1048,20 @@ DELIMITER ;
 -- CRUD PROCEDURES: MANAGE victors
 -- ================================
 
+-- view victors (used for delete)
+DROP PROCEDURE IF EXISTS view_victors_for_delete;
+DELIMITER $$
+
+CREATE PROCEDURE view_victors_for_delete()
+BEGIN
+
+    SELECT v.victor_id, t.name as tribute_name
+    FROM victor v
+    JOIN tribute t ON v.victor_id = t.tribute_id
+    ORDER BY v.victor_id;
+END $$
+
+DELIMITER ;
 
 -- delete victor
 DROP PROCEDURE IF EXISTS delete_victor;
@@ -1402,7 +1421,8 @@ SELECT
     p.game_number,
     get_participant_age(p.participant_id) AS age_during_games,
     get_training_score(p.participant_id) AS training_score,
-    p.interview_score,
+    p.intelligence_score,
+    p.likeability_score,
     p.final_placement
 FROM participant p
 JOIN tribute t ON p.tribute_id = t.tribute_id;

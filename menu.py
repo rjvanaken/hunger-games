@@ -271,8 +271,64 @@ def display_team_members_full(team_members):
     print("=" * length + "\n")
 
 
+def display_participants_full(participants):
+    """Display formatted list of participants"""
+    if not participants:
+        print("\nNo participants found.")
+        return
+    
+    # Calculate column widths
+    id_width = max(len(str(p['participant_id'])) for p in participants)
+    id_width = max(id_width, len('participant_id'))
+    
+    tribute_width = max(len(str(p['tribute_id'])) for p in participants)
+    tribute_width = max(tribute_width, len('tribute_id'))
+    
+    game_width = max(len(str(p['game_number'])) for p in participants)
+    game_width = max(game_width, len('game_number'))
+    
+    placement_width = max(len(str(p['final_placement']) if p['final_placement'] else 'N/A') for p in participants)
+    placement_width = max(placement_width, len('final_placement'))
+    
+    intel_width = max(len(str(p['intelligence_score']) if p['intelligence_score'] else 'N/A') for p in participants)
+    intel_width = max(intel_width, len('intelligence_score'))
+    
+    like_width = max(len(str(p['likeability_score']) if p['likeability_score'] else 'N/A') for p in participants)
+    like_width = max(like_width, len('likeability_score'))
+    
+    # Calculate total length (6 columns + 5 separators)
+    length = id_width + tribute_width + game_width + placement_width + intel_width + like_width + 35
+    
+    print("\n" + "=" * length)
+    print(" PARTICIPANTS")
+    print("=" * length)
+    print(f" {'participant_id':<{id_width}} │ {'tribute_id':<{tribute_width}} │ {'game_number':<{game_width}} │ {'final_placement':<{placement_width}} │ {'intelligence_score':<{intel_width}} │ {'likeability_score':<{like_width}}")
+    
+    for p in participants:
+        placement_display = str(p['final_placement']) if p['final_placement'] else 'N/A'
+        intel_display = str(p['intelligence_score']) if p['intelligence_score'] else 'N/A'
+        like_display = str(p['likeability_score']) if p['likeability_score'] else 'N/A'
+        print("─" * length)
+        print(f" {p['participant_id']:<{id_width}} │ {p['tribute_id']:<{tribute_width}} │ {p['game_number']:<{game_width}} │ {placement_display:<{placement_width}} │ {intel_display:<{intel_width}} │ {like_display:<{like_width}}")
+    
+    print("=" * length + "\n")
 
-
+# DISPLAY VICTORS FULL
+def display_victors_full(victors):
+    """Display formatted list of victors"""
+    length = 70
+    if not victors:
+        print("\nNo victors found.")
+        return
+        
+    print("\n" + "=" * length)
+    print(" VICTORS")
+    print("=" * length)
+    print(f" {'Victor ID':<12} │ {'Tribute Name':<30}")
+    for victor in victors:
+        print("─" * length)
+        print(f" {victor['victor_id']:<12} │ {victor['tribute_name']:<30}")
+    print("=" * length + "\n")
 
 
 '''
@@ -519,6 +575,8 @@ def display_view_participants_menu():
     print(" 3: Search Participant by Age")
     print(" 4: Search Participant by Game Number")
     print(" 5: Search Participant by Training Score")
+    print(" 6: Search Participant by Intelligence Score")
+    print(" 7: Search Participant by Likeability Score")
     print("─" * length)
     print(" 0: RETURN")
     print("\n")
@@ -527,8 +585,8 @@ def display_view_participants_menu():
 
 
 def display_participants(participants):
-    """Display formatted list of sponsors"""
-    length = 175
+    """Display formatted list of participants"""
+    length = 200
     if not participants:
         print("\nNo participants found.")
         return
@@ -536,7 +594,7 @@ def display_participants(participants):
     print("\n" + "=" * length)
     print(" PARTICIPANTS")
     print("=" * length)
-    print(f" {'ID':<12} │ {'Name':<30} │ {'District':<8} │ {'Gender':<8} │ {'Game Number':<12} │ {'Age During Games':<20} │ {'Training Score':<20} │ {'Interview Score':<20} │ {'Final Placement':<10}")
+    print(f" {'ID':<12} │ {'Name':<30} │ {'District':<8} │ {'Gender':<8} │ {'Game Number':<12} │ {'Age During Games':<20} │ {'Training Score':<20} │ {'Intelligence Score':<20} │ {'Likeability Score':<20} │ {'Final Placement':<10}")
     # print("─" * length)
     for participant in participants:
         if participant['gender'] == 'M':
@@ -544,7 +602,7 @@ def display_participants(participants):
         else:
             gender = "Female"
         print("─" * length)
-        print(f" {participant['participant_id']:<12} │ {participant['name']:<30} │ {participant['district']:<8} │ {gender:<8} │ {participant['game_number']:<12} │ {participant['age_during_games']:<20} │ {str(participant['training_score']):<20} │ {str(participant['interview_score']):<20} │ {str(participant['final_placement']):<10}")
+        print(f" {participant['participant_id']:<12} │ {participant['name']:<30} │ {participant['district']:<8} │ {gender:<8} │ {participant['game_number']:<12} │ {participant['age_during_games']:<20} │ {str(participant['training_score']):<20} │ {str(participant['intelligence_score']):<20} │ {str(participant['likeability_score']):<20} │ {str(participant['final_placement']):<10}")
         
     print("=" * length + "\n")
 

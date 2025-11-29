@@ -304,8 +304,8 @@ def handle_manage_victors(connection):
     while True:
         choice = menu.display_manage_victors_menu()
         if choice == '1': # DELETE
-            rows = ops.view_table(connection, 'victor')
-            menu.display_victors(rows)
+            rows = ops.view_victors_for_delete(connection)
+            menu.display_victors_full(rows)
             victor_id = menu.get_number_input('Enter the victor ID to delete')
             ops.delete_victor(connection, victor_id)
         elif choice == '0':
@@ -521,6 +521,16 @@ def handle_view_participants(connection):
         elif choice == '5':
             score = menu.get_number_input("Enter training score (1-12)")
             rows = ops.view_partipants(connection, training_score=score)
+            menu.display_participants(rows)
+
+        elif choice == '6':
+            score = menu.get_number_input("Enter intelligence score (1-10)")
+            rows = ops.view_partipants(connection, intelligence_score=score)
+            menu.display_participants(rows)
+
+        elif choice == '7':
+            score = menu.get_number_input("Enter likeability score (1-10)")
+            rows = ops.view_partipants(connection, likeability_score=score)
             menu.display_participants(rows)
 
         elif choice == "0":

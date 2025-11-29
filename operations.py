@@ -148,10 +148,10 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
 
 
 # View Participants
-def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None):
+def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None, intelligence_score=None, likeability_score=None):
     """view participants with optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_participants', [tribute_name, age_during_games, game_number, training_score])
+    cursor.callproc('view_participants', [tribute_name, age_during_games, game_number, training_score, intelligence_score, likeability_score])
     participants = cursor.fetchall()
     cursor.close()
     return participants
@@ -655,7 +655,14 @@ def delete_participant(connection, participant_id):
         cursor.close()
 
 '''MANAGE VICTORS'''
-
+# VIEW VICTORS FOR DELETION
+def view_victors_for_delete(connection):
+    """Display victors and names before delete"""
+    cursor = connection.cursor()
+    cursor.callproc('view_victors_for_delete')
+    victors = cursor.fetchall()
+    cursor.close()
+    return victors
 
 # DELETE VICTOR
 def delete_victor(connection, victor_id):
