@@ -269,6 +269,28 @@ def handle_manage_team_members(connection):
             print("Invalid entry")
 
 
+
+def handle_manage_participants(connection):
+    pass
+
+
+def handle_manage_victors(connection):
+    while True:
+        choice = menu.display_manage_victors_menu('victor')
+        if choice == '1': # VIEW
+            rows = ops.view_table(connection, 'victor')
+            menu.display_victors(rows)
+        elif choice == '2': # DELETE
+            rows = ops.view_table(connection, 'victor')
+            menu.display_victors(rows)
+            victor_id = menu.get_number_input('Enter the victor ID to delete')
+            ops.delete_victor(connection, victor_id)
+        elif choice == '0':
+            break
+        else:
+            print("Invalid entry")
+
+
 #-------------------------------------
 # HANDLE VIEW RECORDS
 #-------------------------------------

@@ -87,6 +87,19 @@ def display_manage_entity_menu(entity):
     choice = input("Enter choice: ")
     return choice
 
+def display_manage_victors_menu():
+    """Display menu for managing victors records"""
+    length = 42
+    print("\n" + "=" * length)
+    print(f" MANAGE VICTORS")
+    print("=" * length)
+    print(f" 1: View Victors")
+    print(f" 2: DELETE Victor")
+    print("─" * length)
+    print(" 0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
 
 # VIEW TRIBUTES FULL
 def display_tributes_full(tributes):
