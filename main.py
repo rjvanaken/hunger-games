@@ -94,7 +94,6 @@ def handle_manage_records(connection):
             break
         else:
             print("Invalid entry")
-            
 # MANAGE TRIBUTES
 def handle_manage_tributes(connection):
     while True:
@@ -103,13 +102,15 @@ def handle_manage_tributes(connection):
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
         elif choice == '2': # CREATE
-
             name, dob, gender, district = menu.get_tribute_inputs()
             ops.create_tribute(connection, name, dob, gender, district)
             
         elif choice == '3': # EDIT
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
+            if not rows:
+                print("No tributes available to edit.")
+                continue
             id = menu.get_number_input('Enter ID of tribute to edit')
             print(f"\nUpdating Tribute with ID of {id}")
             print("─" * 42)
@@ -119,6 +120,9 @@ def handle_manage_tributes(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
+            if not rows:
+                print("No tributes available to delete.")
+                continue
             id = menu.get_number_input('Enter ID of tribute to delete')
             ops.delete_tribute(connection, id)
         elif choice == '0':
@@ -140,6 +144,9 @@ def handle_manage_sponsors(connection):
         elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'sponsor')
             menu.display_sponsors_full(rows)
+            if not rows:
+                print("No sponsors available to edit.")
+                continue
             id = menu.get_number_input('Enter ID of sponsor to edit')
             print(f"\nUpdating Sponsor with ID of {id}")
             print("─" * 42)
@@ -149,6 +156,9 @@ def handle_manage_sponsors(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'sponsor')
             menu.display_sponsors_full(rows)
+            if not rows:
+                print("No sponsors available to delete.")
+                continue
             id = menu.get_number_input('Enter ID of sponsor to delete')
             ops.delete_sponsor(connection, id)
         elif choice == '0':
@@ -170,6 +180,9 @@ def handle_manage_games(connection):
         elif choice == '3': # EDIT
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
+            if not rows:
+                print("No games available to edit.")
+                continue
             game_number = menu.get_number_input('Enter the number of the game to edit')
             print(f"\nUpdating Game {game_number}")
             print("─" * 42)
@@ -179,6 +192,9 @@ def handle_manage_games(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
+            if not rows:
+                print("No games available to delete.")
+                continue
             game_number = menu.get_number_input('Enter the number of the game to delete')
             ops.delete_game(connection, game_number)
         elif choice == '0':
@@ -200,6 +216,9 @@ def handle_manage_gamemakers(connection):
         elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'gamemaker')
             menu.display_gamemakers_full(rows)
+            if not rows:
+                print("No gamemakers available to edit.")
+                continue
             id = menu.get_number_input('Enter ID of gamemaker to edit')
             print(f"\nUpdating Gamemaker with ID of {id}")
             print("─" * 42)
@@ -209,6 +228,9 @@ def handle_manage_gamemakers(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'gamemaker')
             menu.display_gamemakers_full(rows)
+            if not rows:
+                print("No gamemakers available to delete.")
+                continue
             id = menu.get_number_input('Enter ID of gamemaker to delete')
             ops.delete_gamemaker(connection, id)
         elif choice == '0':
@@ -216,8 +238,7 @@ def handle_manage_gamemakers(connection):
         else:
             print("Invalid entry")
 
-
-    # MANAGE TEAM MEMBERS
+# MANAGE TEAM MEMBERS
 def handle_manage_team_members(connection):
     while True:
         choice = menu.display_manage_entity_menu('team_member')
@@ -231,6 +252,9 @@ def handle_manage_team_members(connection):
         elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'team_member')
             menu.display_team_members_full(rows)
+            if not rows:
+                print("No team members available to edit.")
+                continue
             id = menu.get_number_input('Enter ID of team_member to edit')
             print(f"\nUpdating Team member with ID of {id}")
             print("─" * 42)
@@ -240,6 +264,9 @@ def handle_manage_team_members(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'team_member')
             menu.display_team_members_full(rows)
+            if not rows:
+                print("No team members available to delete.")
+                continue
             id = menu.get_number_input('Enter ID of team_member to delete')
             ops.delete_team_member(connection, id)
         elif choice == '0':
@@ -247,8 +274,7 @@ def handle_manage_team_members(connection):
         else:
             print("Invalid entry")
 
-
-
+# MANAGE PARTICIPANTS
 def handle_manage_participants(connection):
     while True:
         choice = menu.display_manage_entity_menu('participant')
@@ -262,6 +288,9 @@ def handle_manage_participants(connection):
         elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'participant')
             menu.display_participants_full(rows)
+            if not rows:
+                print("No participants available to edit.")
+                continue
             participant_id = menu.get_string_input('Enter participant ID to edit')
             print(f"\nUpdating Participant with ID of {participant_id}")
             print("─" * 42)
@@ -271,6 +300,9 @@ def handle_manage_participants(connection):
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'participant')
             menu.display_participants_full(rows)
+            if not rows:
+                print("No participants available to delete.")
+                continue
             participant_id = menu.get_string_input('Enter participant ID to delete')
             ops.delete_participant(connection, participant_id)
         elif choice == '0':
@@ -278,13 +310,19 @@ def handle_manage_participants(connection):
         else:
             print("Invalid entry")
 
-
+# MANAGE VICTORS
 def handle_manage_victors(connection):
     while True:
-        choice = menu.display_manage_victors_menu()
-        if choice == '1': # DELETE
+        choice = menu.display_manage_entity_menu_view_delete_only('victor')
+        if choice == '1': # VIEW
             rows = ops.view_victors_for_delete(connection)
             menu.display_victors_full(rows)
+        elif choice == '2': # DELETE
+            rows = ops.view_victors_for_delete(connection)
+            menu.display_victors_full(rows)
+            if not rows:
+                print("No victors available to delete.")
+                continue
             victor_id = menu.get_number_input('Enter the victor ID to delete')
             ops.delete_victor(connection, victor_id)
         elif choice == '0':
