@@ -87,13 +87,28 @@ def display_manage_entity_menu(entity):
     choice = input("Enter choice: ")
     return choice
 
-def display_manage_victors_menu():
-    """Display menu for managing victors records"""
+def display_manage_entity_menu_no_edit(entity):
+    """Display menu for managing entity records without edit option"""
     length = 42
     print("\n" + "=" * length)
-    print(f" MANAGE VICTORS")
+    print(f" MANAGE {entity.upper()}S")
     print("=" * length)
-    print(f" 1: DELETE Victor")
+    print(f" 1: View {entity.title()}s")
+    print(f" 2: CREATE {entity.title()}")
+    print(f" 3: DELETE {entity.title()}")
+    print("─" * length)
+    print(" 0: RETURN\n")
+    choice = input("Enter choice: ")
+    return choice
+
+def display_manage_entity_menu_view_delete_only(entity):
+    """Display menu for managing entity records with view and delete only"""
+    length = 42
+    print("\n" + "=" * length)
+    print(f" MANAGE {entity.upper()}S")
+    print("=" * length)
+    print(f" 1: View {entity.title()}s")
+    print(f" 2: DELETE {entity.title()}")
     print("─" * length)
     print(" 0: RETURN\n")
     choice = input("Enter choice: ")
