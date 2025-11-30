@@ -1110,6 +1110,68 @@ END $$
 
 DELIMITER ;
 
+-- edit team role
+DROP PROCEDURE IF EXISTS edit_team_role;
+DELIMITER $$
+
+CREATE PROCEDURE edit_team_role(p_member_id INT, p_tribute_id INT, p_member_type VARCHAR(64))
+BEGIN
+    
+    IF (SELECT COUNT(*) FROM team_role WHERE member_id = p_member_id AND tribute_id = p_tribute_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Team role does not exist';
+    ELSE
+        
+        IF p_member_type IS NOT NULL AND p_member_type NOT IN ('escort', 'mentor', 'stylist', 'prep') THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Member type must be escort, mentor, stylist, or prep';
+        END IF;
+        
+        UPDATE team_role
+            SET member_type = COALESCE(p_member_type, member_type)
+            WHERE member_id = p_member_id 
+            AND tribute_id = p_tribute_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+-- view team_roles (used for delete and view)
+DROP PROCEDURE IF EXISTS view_team_roles_for_delete;
+DELIMITER $$
+
+CREATE PROCEDURE view_team_roles_for_delete()
+BEGIN
+    SELECT tr.member_id, tr.tribute_id, tm.name as member_name, t.name as tribute_name, tr.member_type
+    FROM team_role tr
+    JOIN team_member tm ON tr.member_id = tm.member_id
+    JOIN tribute t ON tr.tribute_id = t.tribute_id
+    ORDER BY tr.member_id, tr.tribute_id;
+END $$
+
+DELIMITER ;
+
+-- delete team role
+DROP PROCEDURE IF EXISTS delete_team_role;
+DELIMITER $$
+
+CREATE PROCEDURE delete_team_role(p_member_id INT, p_participant_id INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM team_role WHERE p_member_id = member_id AND p_participant_id = participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Team role does not exist';
+    ELSE 
+        DELETE FROM team_role
+        WHERE p_member_id = member_id AND p_participant_id = participant_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+
 -- ===================================
 -- CRUD PROCEDURES: MANAGE sponsorships
 -- ===================================
@@ -1132,6 +1194,11 @@ BEGIN
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
 
+    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id AND sponsor_id = p_sponsor_id) > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sponsorship already exists for this participant and sponsor';
+    END IF;
+
     INSERT INTO sponsorship(participant_id, sponsor_id, sponsor_amount)
     VALUES (p_participant_id, p_sponsor_id, p_sponsor_amount);
 
@@ -1139,6 +1206,71 @@ END $$
 
 DELIMITER ;
 
+-- edit sponsorship
+
+DROP PROCEDURE IF EXISTS edit_sponsorship;
+DELIMITER $$
+
+CREATE PROCEDURE edit_sponsorship(
+    p_sponsor_id INT,
+    p_participant_id VARCHAR(64),
+    p_amount DECIMAL(10,2)
+)
+BEGIN
+
+    IF (SELECT COUNT(*) FROM sponsorship WHERE sponsor_id = p_sponsor_id AND participant_id = p_participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sponsorship does not exist';
+    ELSE
+        -- Validate amount if provided
+        IF p_amount IS NOT NULL AND p_amount < 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Amount must be non-negative';
+        END IF;
+        
+        UPDATE sponsorship
+            SET amount = COALESCE(p_amount, amount)
+            WHERE sponsor_id = p_sponsor_id 
+            AND participant_id = p_participant_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
+-- view sponsorships (used for delete and view)
+DROP PROCEDURE IF EXISTS view_sponsorships_for_delete;
+DELIMITER $$
+
+CREATE PROCEDURE view_sponsorships_for_delete()
+BEGIN
+    SELECT s.sponsor_id, s.participant_id, sp.name as sponsor_name, t.name as tribute_name, p.game_number, s.amount
+    FROM sponsorship s
+    JOIN sponsor sp ON s.sponsor_id = sp.sponsor_id
+    JOIN participant p ON s.participant_id = p.participant_id
+    JOIN tribute t ON p.tribute_id = t.tribute_id
+    ORDER BY s.sponsor_id, s.participant_id;
+END $$
+
+DELIMITER ;
+
+
+-- delete sponsorship
+DROP PROCEDURE IF EXISTS delete_sponsorship;
+DELIMITER $$
+
+CREATE PROCEDURE delete_sponsorship(p_sponsor_id INT, p_participant_id INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM sponsorship WHERE p_sponsor_id = sponsor_id AND p_participant_id = participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Sponsorship does not exist';
+    ELSE 
+        DELETE FROM sponsorship
+        WHERE p_sponsor_id = sponsor_id AND p_participant_id = participant_id;
+    END IF;
+END $$
+
+DELIMITER ;
 
 -- ====================================
 -- CRUD PROCEDURES: MANAGE game_creators
@@ -1167,6 +1299,39 @@ END $$
 
 DELIMITER ;
 
+-- view game_creators (used for delete and view)
+DROP PROCEDURE IF EXISTS view_game_creators_for_delete;
+DELIMITER $$
+
+CREATE PROCEDURE view_game_creators_for_delete()
+BEGIN
+    SELECT gc.game_number, gc.gamemaker_id, gm.name as gamemaker_name
+    FROM game_creator gc
+    JOIN gamemaker gm ON gc.gamemaker_id = gm.gamemaker_id
+    ORDER BY gc.game_number, gc.gamemaker_id;
+END $$
+
+DELIMITER ;
+
+-- delete game creator
+
+DROP PROCEDURE IF EXISTS delete_game_creator;
+DELIMITER $$
+
+CREATE PROCEDURE delete_game_creator(p_game_number INT, p_gamemaker_id INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM game_creator WHERE p_game_number = game_number AND p_gamemaker_id = gamemaker_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game creator does not exist';
+    ELSE 
+        DELETE FROM game_creator
+        WHERE p_game_number = game_number AND p_gamemaker_id = gamemaker_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
 -- ===================================
 -- CRUD PROCEDURES: MANAGE game_victor
 -- ===================================
@@ -1190,6 +1355,40 @@ BEGIN
 
     INSERT INTO game_victor(game_number, victor_id)
     VALUES (p_game_number, p_victor_id);
+END $$
+
+DELIMITER ;
+
+-- view game_victors (used for delete and view)
+DROP PROCEDURE IF EXISTS view_game_victors_for_delete;
+DELIMITER $$
+
+CREATE PROCEDURE view_game_victors_for_delete()
+BEGIN
+    SELECT gv.game_number, gv.victor_id, t.name as tribute_name
+    FROM game_victor gv
+    JOIN victor v ON gv.victor_id = v.victor_id
+    JOIN tribute t ON v.victor_id = t.tribute_id
+    ORDER BY gv.game_number, gv.victor_id;
+END $$
+
+DELIMITER ;
+
+-- delete game victor
+
+DROP PROCEDURE IF EXISTS delete_game_victor;
+DELIMITER $$
+
+CREATE PROCEDURE delete_game_victor(p_game_number INT, p_victor_id INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM game_victor WHERE p_game_number = game_number AND p_victor_id = victor_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game victor does not exist';
+    ELSE 
+        DELETE FROM game_victor
+        WHERE p_game_number = game_number AND p_victor_id = victor_id;
+    END IF;
 END $$
 
 DELIMITER ;
@@ -1222,6 +1421,67 @@ END $$
 
 DELIMITER ;
 
+
+-- edit gamemaker score
+DROP PROCEDURE IF EXISTS edit_gamemaker_score;
+DELIMITER $$
+
+CREATE PROCEDURE edit_gamemaker_score(p_gamemaker_id INT, p_participant_id VARCHAR(64), p_assessment_score INT)
+BEGIN
+    
+    IF (SELECT COUNT(*) FROM gamemaker_score WHERE gamemaker_id = p_gamemaker_id AND participant_id = p_participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Gamemaker score does not exist';
+    ELSE
+        
+        IF p_assessment_score IS NOT NULL AND (p_assessment_score < 1 OR p_assessment_score > 12) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Assessment score must be between 1 and 12';
+        END IF;
+        
+        UPDATE gamemaker_score
+            SET assessment_score = COALESCE(p_assessment_score, assessment_score)
+            WHERE gamemaker_id = p_gamemaker_id 
+            AND participant_id = p_participant_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
+-- view gamemaker_scores (used for delete and view)
+DROP PROCEDURE IF EXISTS view_gamemaker_scores_for_delete;
+DELIMITER $$
+
+CREATE PROCEDURE view_gamemaker_scores_for_delete()
+BEGIN
+    SELECT gs.gamemaker_id, gs.participant_id, gm.name as gamemaker_name, t.name as tribute_name, p.game_number, gs.assessment_score
+    FROM gamemaker_score gs
+    JOIN gamemaker gm ON gs.gamemaker_id = gm.gamemaker_id
+    JOIN participant p ON gs.participant_id = p.participant_id
+    JOIN tribute t ON p.tribute_id = t.tribute_id
+    ORDER BY gs.gamemaker_id, gs.participant_id;
+END $$
+
+DELIMITER ;
+
+
+-- delete gamemaker score
+DROP PROCEDURE IF EXISTS delete_gamemaker_score;
+DELIMITER $$
+
+CREATE PROCEDURE delete_gamemaker_score(p_gamemaker_id INT, p_participant_id INT)
+
+BEGIN
+    IF (SELECT COUNT(*) FROM gamemaker_score WHERE p_gamemaker_id = gamemaker_id AND p_participant_id = participant_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'This gamemaker score does not exist';
+    ELSE 
+        DELETE FROM gamemaker_score
+        WHERE p_gamemaker_id = gamemaker_id AND p_participant_id = participant_id;
+    END IF;
+END $$
+
+DELIMITER ;
 
 -- ===========================================================================
 -- TRIGGER: adds the intended start date based on the game number
