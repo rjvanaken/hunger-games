@@ -331,18 +331,195 @@ def display_participants_full(participants):
 # DISPLAY VICTORS FULL
 def display_victors_full(victors):
     """Display formatted list of victors"""
-    length = 70
     if not victors:
         print("\nNo victors found.")
         return
+    
+    # Calculate column widths
+    id_width = max(len(str(v['victor_id'])) for v in victors)
+    id_width = max(id_width, len('Victor ID'))
+    
+    name_width = max(len(str(v['tribute_name'])) for v in victors)
+    name_width = max(name_width, len('Tribute Name'))
+    
+    length = id_width + name_width + 16
         
     print("\n" + "=" * length)
     print(" VICTORS")
     print("=" * length)
-    print(f" {'Victor ID':<12} │ {'Tribute Name':<30}")
+    print(f" {'Victor ID':<{id_width}} │ {'Tribute Name':<{name_width}}")
     for victor in victors:
         print("─" * length)
-        print(f" {victor['victor_id']:<12} │ {victor['tribute_name']:<30}")
+        print(f" {victor['victor_id']:<{id_width}} │ {victor['tribute_name']:<{name_width}}")
+    print("=" * length + "\n")
+
+
+# DISPLAY TEAM_ROLES FULL
+def display_team_roles_full(team_roles):
+    """Display formatted list of team roles"""
+    if not team_roles:
+        print("\nNo team roles found.")
+        return
+    
+    # Calculate column widths
+    member_id_width = max(len(str(tr['member_id'])) for tr in team_roles)
+    member_id_width = max(member_id_width, len('member_id'))
+    
+    tribute_id_width = max(len(str(tr['tribute_id'])) for tr in team_roles)
+    tribute_id_width = max(tribute_id_width, len('tribute_id'))
+    
+    member_name_width = max(len(str(tr['member_name'])) for tr in team_roles)
+    member_name_width = max(member_name_width, len('member_name'))
+    
+    tribute_name_width = max(len(str(tr['tribute_name'])) for tr in team_roles)
+    tribute_name_width = max(tribute_name_width, len('tribute_name'))
+    
+    type_width = max(len(str(tr['member_type'])) for tr in team_roles)
+    type_width = max(type_width, len('member_type'))
+    
+    length = member_id_width + tribute_id_width + member_name_width + tribute_name_width + type_width + 32
+        
+    print("\n" + "=" * length)
+    print(" TEAM ROLES")
+    print("=" * length)
+    print(f" {'member_id':<{member_id_width}} │ {'tribute_id':<{tribute_id_width}} │ {'member_name':<{member_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'member_type':<{type_width}}")
+    for tr in team_roles:
+        print("─" * length)
+        print(f" {tr['member_id']:<{member_id_width}} │ {tr['tribute_id']:<{tribute_id_width}} │ {tr['member_name']:<{member_name_width}} │ {tr['tribute_name']:<{tribute_name_width}} │ {tr['member_type']:<{type_width}}")
+    print("=" * length + "\n")
+
+
+# DISPLAY SPONSORSHIPS FULL
+def display_sponsorships_full(sponsorships):
+    """Display formatted list of sponsorships"""
+    if not sponsorships:
+        print("\nNo sponsorships found.")
+        return
+    
+    # Calculate column widths
+    sponsor_id_width = max(len(str(s['sponsor_id'])) for s in sponsorships)
+    sponsor_id_width = max(sponsor_id_width, len('sponsor_id'))
+    
+    participant_id_width = max(len(str(s['participant_id'])) for s in sponsorships)
+    participant_id_width = max(participant_id_width, len('participant_id'))
+    
+    sponsor_name_width = max(len(str(s['sponsor_name'])) for s in sponsorships)
+    sponsor_name_width = max(sponsor_name_width, len('sponsor_name'))
+    
+    tribute_name_width = max(len(str(s['tribute_name'])) for s in sponsorships)
+    tribute_name_width = max(tribute_name_width, len('tribute_name'))
+    
+    game_width = max(len(str(s['game_number'])) for s in sponsorships)
+    game_width = max(game_width, len('game_number'))
+    
+    amount_width = max(len(f"${s['amount']:,.2f}") for s in sponsorships)
+    amount_width = max(amount_width, len('amount'))
+    
+    length = sponsor_id_width + participant_id_width + sponsor_name_width + tribute_name_width + game_width + amount_width + 38
+        
+    print("\n" + "=" * length)
+    print(" SPONSORSHIPS")
+    print("=" * length)
+    print(f" {'sponsor_id':<{sponsor_id_width}} │ {'participant_id':<{participant_id_width}} │ {'sponsor_name':<{sponsor_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'amount':<{amount_width}}")
+    for s in sponsorships:
+        print("─" * length)
+        print(f" {s['sponsor_id']:<{sponsor_id_width}} │ {s['participant_id']:<{participant_id_width}} │ {s['sponsor_name']:<{sponsor_name_width}} │ {s['tribute_name']:<{tribute_name_width}} │ {s['game_number']:<{game_width}} │ ${s['amount']:<{amount_width-1},.2f}")
+    print("=" * length + "\n")
+
+
+# DISPLAY GAME_CREATORS FULL
+def display_game_creators_full(game_creators):
+    """Display formatted list of game creators"""
+    if not game_creators:
+        print("\nNo game creators found.")
+        return
+    
+    # Calculate column widths
+    game_width = max(len(str(gc['game_number'])) for gc in game_creators)
+    game_width = max(game_width, len('game_number'))
+    
+    gamemaker_id_width = max(len(str(gc['gamemaker_id'])) for gc in game_creators)
+    gamemaker_id_width = max(gamemaker_id_width, len('gamemaker_id'))
+    
+    name_width = max(len(str(gc['gamemaker_name'])) for gc in game_creators)
+    name_width = max(name_width, len('gamemaker_name'))
+    
+    length = game_width + gamemaker_id_width + name_width + 20
+        
+    print("\n" + "=" * length)
+    print(" GAME CREATORS")
+    print("=" * length)
+    print(f" {'game_number':<{game_width}} │ {'gamemaker_id':<{gamemaker_id_width}} │ {'gamemaker_name':<{name_width}}")
+    for gc in game_creators:
+        print("─" * length)
+        print(f" {gc['game_number']:<{game_width}} │ {gc['gamemaker_id']:<{gamemaker_id_width}} │ {gc['gamemaker_name']:<{name_width}}")
+    print("=" * length + "\n")
+
+
+# DISPLAY GAME_VICTORS FULL
+def display_game_victors_full(game_victors):
+    """Display formatted list of game victors"""
+    if not game_victors:
+        print("\nNo game victors found.")
+        return
+    
+    # Calculate column widths
+    game_width = max(len(str(gv['game_number'])) for gv in game_victors)
+    game_width = max(game_width, len('game_number'))
+    
+    victor_id_width = max(len(str(gv['victor_id'])) for gv in game_victors)
+    victor_id_width = max(victor_id_width, len('victor_id'))
+    
+    name_width = max(len(str(gv['tribute_name'])) for gv in game_victors)
+    name_width = max(name_width, len('tribute_name'))
+    
+    length = game_width + victor_id_width + name_width + 20
+        
+    print("\n" + "=" * length)
+    print(" GAME VICTORS")
+    print("=" * length)
+    print(f" {'game_number':<{game_width}} │ {'victor_id':<{victor_id_width}} │ {'tribute_name':<{name_width}}")
+    for gv in game_victors:
+        print("─" * length)
+        print(f" {gv['game_number']:<{game_width}} │ {gv['victor_id']:<{victor_id_width}} │ {gv['tribute_name']:<{name_width}}")
+    print("=" * length + "\n")
+
+
+# DISPLAY GAMEMAKER_SCORES FULL
+def display_gamemaker_scores_full(gamemaker_scores):
+    """Display formatted list of gamemaker scores"""
+    if not gamemaker_scores:
+        print("\nNo gamemaker scores found.")
+        return
+    
+    # Calculate column widths
+    gamemaker_id_width = max(len(str(gs['gamemaker_id'])) for gs in gamemaker_scores)
+    gamemaker_id_width = max(gamemaker_id_width, len('gamemaker_id'))
+    
+    participant_id_width = max(len(str(gs['participant_id'])) for gs in gamemaker_scores)
+    participant_id_width = max(participant_id_width, len('participant_id'))
+    
+    gamemaker_name_width = max(len(str(gs['gamemaker_name'])) for gs in gamemaker_scores)
+    gamemaker_name_width = max(gamemaker_name_width, len('gamemaker_name'))
+    
+    tribute_name_width = max(len(str(gs['tribute_name'])) for gs in gamemaker_scores)
+    tribute_name_width = max(tribute_name_width, len('tribute_name'))
+    
+    game_width = max(len(str(gs['game_number'])) for gs in gamemaker_scores)
+    game_width = max(game_width, len('game_number'))
+    
+    score_width = max(len(str(gs['assessment_score'])) for gs in gamemaker_scores)
+    score_width = max(score_width, len('assessment_score'))
+    
+    length = gamemaker_id_width + participant_id_width + gamemaker_name_width + tribute_name_width + game_width + score_width + 38
+        
+    print("\n" + "=" * length)
+    print(" GAMEMAKER SCORES")
+    print("=" * length)
+    print(f" {'gamemaker_id':<{gamemaker_id_width}} │ {'participant_id':<{participant_id_width}} │ {'gamemaker_name':<{gamemaker_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'assessment_score':<{score_width}}")
+    for gs in gamemaker_scores:
+        print("─" * length)
+        print(f" {gs['gamemaker_id']:<{gamemaker_id_width}} │ {gs['participant_id']:<{participant_id_width}} │ {gs['gamemaker_name']:<{gamemaker_name_width}} │ {gs['tribute_name']:<{tribute_name_width}} │ {gs['game_number']:<{game_width}} │ {gs['assessment_score']:<{score_width}}")
     print("=" * length + "\n")
 
 
@@ -902,6 +1079,49 @@ def get_participant_inputs(on_update=False):
 
         return tribute_id, game_number
 
+def get_sponsorship_inputs(on_update=False):
+    if on_update:
+        amount = get_number_input("Enter the new sponsor amount or ENTER to skip", True)
+        return amount
+    else:
+        participant_id = get_string_input("Enter the participant ID", True)
+        sponsor_id = get_number_input("Enter the sponsor ID")
+        sponsor_amount = get_number_input("Enter the sponsor amount")
+        return participant_id, sponsor_id, sponsor_amount
+
+
+def get_team_role_inputs(on_update=False):
+    if on_update:
+        member_type = get_string_input("Enter the new member type (escort, mentor, stylist, prep) or ENTER to skip")
+        return member_type
+    else:
+        member_id = get_number_input("Enter the member ID")
+        participant_id = get_string_input("Enter the participant ID", True)
+        member_type = get_string_input("Enter the member type (escort, mentor, stylist, prep)", True)
+        return member_id, participant_id, member_type
+
+
+def get_gamemaker_score_inputs(on_update=False):
+    if on_update:
+        assessment_score = get_number_input("Enter the new assessment score (1-12) or ENTER to skip", True)
+        return assessment_score
+    else:
+        gamemaker_id = get_number_input("Enter the gamemaker ID")
+        participant_id = get_string_input("Enter the participant ID", True)
+        assessment_score = get_number_input("Enter the assessment score (1-12)")
+        return gamemaker_id, participant_id, assessment_score
+
+
+def get_game_victor_inputs():
+    game_number = get_number_input("Enter the game number")
+    victor_id = get_number_input("Enter the victor ID")
+    return game_number, victor_id
+
+
+def get_game_creator_inputs():
+    game_number = get_number_input("Enter the game number")
+    gamemaker_id = get_number_input("Enter the gamemaker ID")
+    return game_number, gamemaker_id
 
 
 
