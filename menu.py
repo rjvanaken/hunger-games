@@ -6,7 +6,7 @@ def display_menu():
     print("\n" + "=" * length)
     print(" MENU")
     print("=" * length)
-    print(" 1: Select Game")
+    print(" 1: View Game Dashboard")
     print(" 2: Manage Capitol Records")
     print(" 3: View Capitol Records")
     print(" 4: Get Stats & Analytics")
@@ -436,45 +436,30 @@ def display_team_roles_full(team_roles, dashboard=False):
 
 
 # DISPLAY SPONSORSHIPS FULL
-def display_sponsorships_full(sponsorships, dashboard=False):
+def display_sponsorships_full(sponsorships):
     """Display formatted list of sponsorships"""
     if not sponsorships:
         print("\nNo sponsorships found.")
         return
-    
-    if dashboard:
-        sponsor_id_title = 'Sponsor ID'
-        participant_id_title = 'Participant ID'
-        sponsor_name_title = 'Sponsor Name'
-        tribute_name_title = 'Tribute Name'
-        game_title = 'Game Number'
-        amount_title = 'Amount'
-    else:
-        sponsor_id_title = 'sponsor_id'
-        participant_id_title = 'participant_id'
-        sponsor_name_title = 'sponsor_name'
-        tribute_name_title = 'tribute_name'
-        game_title = 'game_number'
-        amount_title = 'sponsor_amount'
 
     # Calculate column widths
     sponsor_id_width = max(len(str(s['sponsor_id'])) for s in sponsorships)
-    sponsor_id_width = max(sponsor_id_width, len(sponsor_id_title))
+    sponsor_id_width = max(sponsor_id_width, len('sponsor_id'))
 
     participant_id_width = max(len(str(s['participant_id'])) for s in sponsorships)
-    participant_id_width = max(participant_id_width, len(participant_id_title))
+    participant_id_width = max(participant_id_width, len('participant_id'))
 
     sponsor_name_width = max(len(str(s['sponsor_name'])) for s in sponsorships)
-    sponsor_name_width = max(sponsor_name_width, len(sponsor_name_title))
+    sponsor_name_width = max(sponsor_name_width, len('sponsor_name'))
 
     tribute_name_width = max(len(str(s['tribute_name'])) for s in sponsorships)
-    tribute_name_width = max(tribute_name_width, len(tribute_name_title))
+    tribute_name_width = max(tribute_name_width, len('tribute_name'))
 
     game_width = max(len(str(s['game_number'])) for s in sponsorships)
-    game_width = max(game_width, len(game_title))
+    game_width = max(game_width, len('game_number'))
 
     amount_width = max(len(f"${s['sponsor_amount']:,.2f}") for s in sponsorships)
-    amount_width = max(amount_width, len(amount_title))
+    amount_width = max(amount_width, len('sponsor_amount'))
 
     
     length = sponsor_id_width + participant_id_width + sponsor_name_width + tribute_name_width + game_width + amount_width + 38
@@ -490,30 +475,21 @@ def display_sponsorships_full(sponsorships, dashboard=False):
 
 
 # DISPLAY GAME_CREATORS FULL
-def display_game_creators_full(game_creators, dashboard=False):
+def display_game_creators_full(game_creators):
     """Display formatted list of game creators"""
     if not game_creators:
         print("\nNo game creators found.")
         return
-    
-    if dashboard:
-        game_title = 'Game Number'
-        gamemaker_id_title = 'Gamemaker ID'
-        name_title = 'Gamemaker Name'
-    else:
-        game_title = 'game_number'
-        gamemaker_id_title = 'gamemaker_id'
-        name_title = 'gamemaker_name'
 
     # Calculate column widths
     game_width = max(len(str(gc['game_number'])) for gc in game_creators)
-    game_width = max(game_width, len(game_title))
+    game_width = max(game_width, len('game_number'))
 
     gamemaker_id_width = max(len(str(gc['gamemaker_id'])) for gc in game_creators)
-    gamemaker_id_width = max(gamemaker_id_width, len(gamemaker_id_title))
+    gamemaker_id_width = max(gamemaker_id_width, len('gamemaker_id'))
 
     name_width = max(len(str(gc['gamemaker_name'])) for gc in game_creators)
-    name_width = max(name_width, len(name_title))
+    name_width = max(name_width, len('gamemaker_name'))
     
     length = game_width + gamemaker_id_width + name_width + 20
         
@@ -528,30 +504,21 @@ def display_game_creators_full(game_creators, dashboard=False):
 
 
 # DISPLAY GAME_VICTORS FULL
-def display_game_victors_full(game_victors, dashboard=False):
+def display_game_victors_full(game_victors):
     """Display formatted list of game victors"""
     if not game_victors:
         print("\nNo game victors found.")
         return
-    
-    if dashboard:
-        game_title = 'Game Number'
-        victor_id_title = 'Victor ID'
-        name_title = 'Tribute Name'
-    else:
-        game_title = 'game_number'
-        victor_id_title = 'victor_id'
-        name_title = 'tribute_name'
 
     # Calculate column widths
     game_width = max(len(str(gv['game_number'])) for gv in game_victors)
-    game_width = max(game_width, len(game_title))
+    game_width = max(game_width, len('game_number'))
 
     victor_id_width = max(len(str(gv['victor_id'])) for gv in game_victors)
-    victor_id_width = max(victor_id_width, len(victor_id_title))
+    victor_id_width = max(victor_id_width, len('victor_id'))
 
     name_width = max(len(str(gv['tribute_name'])) for gv in game_victors)
-    name_width = max(name_width, len(name_title))
+    name_width = max(name_width, len('tribute_name'))
 
     
     length = game_width + victor_id_width + name_width + 20
@@ -567,45 +534,30 @@ def display_game_victors_full(game_victors, dashboard=False):
 
 
 # DISPLAY GAMEMAKER_SCORES FULL
-def display_gamemaker_scores_full(gamemaker_scores, dashboard=False):
+def display_gamemaker_scores_full(gamemaker_scores):
     """Display formatted list of gamemaker scores"""
     if not gamemaker_scores:
         print("\nNo gamemaker scores found.")
         return
-    
-    if dashboard:
-        gamemaker_id_title = 'Gamemaker ID'
-        participant_id_title = 'Participant ID'
-        gamemaker_name_title = 'Gamemaker Name'
-        tribute_name_title = 'Tribute Name'
-        game_title = 'Game Number'
-        score_title = 'Assessment Score'
-    else:
-        gamemaker_id_title = 'gamemaker_id'
-        participant_id_title = 'participant_id'
-        gamemaker_name_title = 'gamemaker_name'
-        tribute_name_title = 'tribute_name'
-        game_title = 'game_number'
-        score_title = 'assessment_score'
 
     # Calculate column widths
     gamemaker_id_width = max(len(str(gs['gamemaker_id'])) for gs in gamemaker_scores)
-    gamemaker_id_width = max(gamemaker_id_width, len(gamemaker_id_title))
+    gamemaker_id_width = max(gamemaker_id_width, len('gamemaker_id'))
 
     participant_id_width = max(len(str(gs['participant_id'])) for gs in gamemaker_scores)
-    participant_id_width = max(participant_id_width, len(participant_id_title))
+    participant_id_width = max(participant_id_width, len('participant_id'))
 
     gamemaker_name_width = max(len(str(gs['gamemaker_name'])) for gs in gamemaker_scores)
-    gamemaker_name_width = max(gamemaker_name_width, len(gamemaker_name_title))
+    gamemaker_name_width = max(gamemaker_name_width, len('gamemaker_name'))
 
     tribute_name_width = max(len(str(gs['tribute_name'])) for gs in gamemaker_scores)
-    tribute_name_width = max(tribute_name_width, len(tribute_name_title))
+    tribute_name_width = max(tribute_name_width, len('tribute_name'))
 
     game_width = max(len(str(gs['game_number'])) for gs in gamemaker_scores)
-    game_width = max(game_width, len(game_title))
+    game_width = max(game_width, len('game_number'))
 
     score_width = max(len(str(gs['assessment_score'])) for gs in gamemaker_scores)
-    score_width = max(score_width, len(score_title))
+    score_width = max(score_width, len('assessment_score'))
 
     
     length = gamemaker_id_width + participant_id_width + gamemaker_name_width + tribute_name_width + game_width + score_width + 26
