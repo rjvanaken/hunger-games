@@ -797,17 +797,23 @@ DELIMITER $$
 
 CREATE PROCEDURE edit_game(p_game_number INT, p_start_date DATE, p_end_date DATE, p_game_status VARCHAR(64), p_required_tribute_count INT)
 BEGIN
+    
     IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Game does not exist';
-    ELSE
-        UPDATE game
-            SET start_date = COALESCE(p_start_date, start_date),
-                end_date = COALESCE(p_end_date, end_date),
-                game_status = COALESCE(p_game_status, game_status),
-                required_tribute_count = COALESCE(p_required_tribute_count, required_tribute_count)
-            WHERE game_number = p_game_number;
     END IF;
+
+    IF p_game_status = 'in progress' AND (SELECT COUNT(*) FROM game WHERE game_status = 'in progress') = 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'You already have another game in progress. Set it to complete before starting another one';
+    END IF;
+
+    UPDATE game
+        SET start_date = COALESCE(p_start_date, start_date),
+            end_date = COALESCE(p_end_date, end_date),
+            game_status = COALESCE(p_game_status, game_status),
+            required_tribute_count = COALESCE(p_required_tribute_count, required_tribute_count)
+        WHERE game_number = p_game_number;
 END $$
 
 DELIMITER ;
