@@ -81,9 +81,20 @@ def get_games(connection):
     games = []
     for row in rows:
         games.append(row['game_number'])
-        
+
     cursor.close()
     return games
+
+
+def view_game_staff(connection, game):
+    """View game staff list for dashboard, combines members and gamemakers"""
+    cursor = connection.cursor()
+    cursor.callproc('view_game_staff', [game])
+    staff = cursor.fetchall()
+    cursor.close()
+    return staff
+
+
 
 '''
 ==============================
