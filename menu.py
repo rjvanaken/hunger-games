@@ -87,7 +87,9 @@ def display_game_info_on_dashboard(connection, game_info, ordinal_suffix):
     
     status_color = colors.get_status_color(game_status)
 
-    arrow_back = " ▶▶▶──────────────────"
+    # arrow_back = " ▶▶▶──────────────────"
+    # arrow_front ="────────────────────➤ "
+    arrow_back = " ➤➤➤──────────────────"
     arrow_front ="────────────────────➤ "
     arrow_front_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_front}{Colors.RESET}"
     arrow_back_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_back}{Colors.RESET}"

@@ -3,16 +3,25 @@ import database
 import operations as ops
 import menu
 from datetime import datetime
+from colors import Colors
 
 def main():
     """Main application loop"""
     connection = None
     
-    print("\n Welcome to:")
-    print("=" * 42)
-    print(" THE HUNGER GAMES MANAGEMENT SYSTEM")
-    print("=" * 42)
-
+    # arrow_back = " ▶▶▶──────────────────"
+    # arrow_front ="────────────────────➤ "
+    arrow_back = " ➤➤➤──────────────────"
+    arrow_front ="────────────────────➤ "
+    arrow_back_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_back}{Colors.RESET}"
+    arrow_front_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_front}{Colors.RESET}"
+    title_text = " THE HUNGER GAMES MANAGEMENT SYSTEM "
+    
+    full_text_length = len(arrow_back) + len(title_text) + len(arrow_front)
+    print("\n")
+    print("=" * 80)
+    print(f"{arrow_back_with_color}{title_text}{arrow_front_with_color}" + " " * (80 - full_text_length))
+    print("=" * 80)
     # Get database credentials and connect
     while True:
         print("\nYOUR CAPITOL CREDENTIALS:")
