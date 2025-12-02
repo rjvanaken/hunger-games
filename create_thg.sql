@@ -1798,7 +1798,12 @@ INSERT INTO tribute (name, dob, gender, district) VALUES
 ('Louella McCoy', '0055-10-09', 'f', 12),        
 ('Maysilee Donner', '0052-06-20', 'f', 12),
 ('Wyatt Callow', '0050-05-21', 'm', 12),           
-('Haymitch Abernathy', '0052-07-04', 'm', 12);
+('Haymitch Abernathy', '0052-07-04', 'm', 12),
+
+('Ampert Latier', '0056-02-05', 'm', 3),
+('Silka Sharp', '0055-10-22', 'f', 1),
+('Wellie', '0055-12-15', 'f', 6);
+
 
 -- TEAM MEMBERS
 INSERT INTO team_member (name) VALUES
@@ -1967,6 +1972,11 @@ CALL add_participant_by_name('Louella McCoy', 50);
 CALL add_participant_by_name('Maysilee Donner', 50);
 CALL add_participant_by_name('Wyatt Callow', 50);
 CALL add_participant_by_name('Haymitch Abernathy', 50);
+CALL add_participant_by_name('Silka Sharp', 50);
+CALL add_participant_by_name('Haymitch Abernathy', 50);
+CALL add_participant_by_name('Ampert Latier', 50);
+CALL add_participant_by_name('Wellie', 50);
+
 
 -- 75th tributes past games
 CALL add_participant_by_name('Mags', 11);
@@ -2007,7 +2017,7 @@ CALL add_participant_by_name('Blight', 75);
 CALL add_participant_by_name('Cecelia', 75);
 
 
-# ADD GAME VICTORS
+# ADD GAME VICTORS BY SETTING PLACEMENT TO 1
 CAll edit_participant('10.12.f.1', 1, NULL, NULL);
 CAll edit_participant('11.4.f.1', 1, NULL, NULL);
 CAll edit_participant('65.4.m.1', 1, NULL, NULL);
@@ -2018,6 +2028,49 @@ CAll edit_participant('34.3.m.1', 1, NULL, NULL);
 CAll edit_participant('64.1.f.1', 1, NULL, NULL);
 CAll edit_participant('63.1.m.1', 1, NULL, NULL);
 CAll edit_participant('62.2.f.1', 1, NULL, NULL);
+CAll edit_participant('74.12.f.1', 1, NULL, NULL);
+CAll edit_participant('74.12.m.1', 1, NULL, NULL);
+CAll edit_participant('50.12.m.1', 1, NULL, NULL);
+
+# SETTING FINAL PLACEMENTS
+
+-- 50th arena deaths
+CALL edit_participant('10.11.m.1', 2, NULL, NULL);  -- Reaper Ash
+CALL edit_participant('10.7.m.1', 3, NULL, NULL);   -- Treech
+CALL edit_participant('10.3.f.1', 4, NULL, NULL);   -- Teslee
+CALL edit_participant('10.4.m.1', 5, NULL, NULL);   -- Mizzen
+CALL edit_participant('10.4.f.1', 6, NULL, NULL);   -- Coral
+CALL edit_participant('10.3.m.1', 7, NULL, NULL);   -- Circ
+CALL edit_participant('10.8.f.1', 8, NULL, NULL);   -- Wovey
+CALL edit_participant('10.10.m.1', 9, NULL, NULL);  -- Tanner
+CALL edit_participant('10.7.f.1', 10, NULL, NULL);  -- Lamina
+CALL edit_participant('10.12.m.1', 11, NULL, NULL); -- Jessup Diggs
+CALL edit_participant('10.5.f.1', 12, NULL, NULL);  -- Sol
+CALL edit_participant('10.8.m.1', 13, NULL, NULL);  -- Bobbin
+CALL edit_participant('10.11.f.1', 14, NULL, NULL); -- Dill
+CALL edit_participant('10.2.m.1', 15, NULL, NULL);  -- Marcus
+
+-- 50th Pre-Games Deaths (16-24)
+CALL edit_participant('10.5.m.1', 16, NULL, NULL);  -- Hy
+CALL edit_participant('10.9.m.1', 17, NULL, NULL);  -- Panlo
+CALL edit_participant('10.9.f.1', 18, NULL, NULL);  -- Sheaf
+CALL edit_participant('10.2.f.1', 19, NULL, NULL);  -- Sabyn
+CALL edit_participant('10.1.m.1', 20, NULL, NULL);  -- Facet
+CALL edit_participant('10.1.f.1', 21, NULL, NULL);  -- Velvereen
+CALL edit_participant('10.6.m.1', 22, NULL, NULL);  -- Otto
+CALL edit_participant('10.6.f.1', 23, NULL, NULL);  -- Ginnee
+CALL edit_participant('10.10.f.1', 24, NULL, NULL); -- Brandy
+
+
+# misc
+
+CAll edit_participant('50.1.f.1', 2, NULL, NULL);
+CAll edit_participant('50.6.f.1', 3, NULL, NULL);
+CAll edit_participant('50.12.f.2', 4, NULL, NULL);
+CAll edit_participant('74.2.m.1', 3, NULL, NULL);
+CAll edit_participant('74.11.m.1', 4, NULL, NULL);
+
+
 
 
 
