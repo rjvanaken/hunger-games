@@ -411,7 +411,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_sponsors;
 DELIMITER $$
 
-CREATE PROCEDURE view_sponsor(p_name VARCHAR(64))
+CREATE PROCEDURE view_sponsors(p_name VARCHAR(64))
 
 BEGIN
     SELECT * FROM sponsor WHERE 1=1

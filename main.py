@@ -58,7 +58,7 @@ def handle_select_game(connection):
     rows = ops.view_games(connection)
     menu.display_games(rows)
     while True:
-        game_number = menu.get_number_input("Enter the game number to view its game dashboard or 0 to RETURN")
+        game_number = menu.get_number_input("\nEnter the game number to view its game dashboard or 0 to RETURN")
         if game_number == 0:
             break
         rows = ops.view_games(connection, game_number)
