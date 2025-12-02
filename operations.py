@@ -29,6 +29,13 @@ def get_age_during_games(connection, participant_id):
     cursor.close()
     return result['age'] if result else 0
 
+def get_num_tributes_remaining(connection, game_number):
+    cursor = connection.cursor()
+    cursor.execute("SELECT get_num_tributes_remaining(%s) AS remaining", (game_number))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['remaining'] if result else 0
+
 def get_likeability(connection, participant_id):
     cursor = connection.cursor()
     cursor.execute("", (participant_id))
