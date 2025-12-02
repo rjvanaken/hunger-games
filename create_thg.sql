@@ -1364,18 +1364,18 @@ BEGIN
         SET MESSAGE_TEXT = 'Victor does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) 
-    FROM participant p
-    JOIN tribute t ON p.tribute_id = t.tribute_id;
-    JOIN victor v ON t.tribute_id = v.victor_id;
-    WHERE p.game_number = p_game_number AND t.tribute_id = p_victor_id) = 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = "Victor was not a participant in the provided games";
-    END IF;
-
     IF (SELECT COUNT(*) FROM game_victor WHERE game_number = p_game_number AND victor_id = p_victory_id) > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Game victor already exists for this victor and game number';
+    END IF;
+
+    IF (SELECT COUNT(*) 
+    FROM participant p
+    JOIN tribute t ON p.tribute_id = t.tribute_id
+    JOIN victor v ON t.tribute_id = v.victor_id
+    WHERE p.game_number = p_game_number AND t.tribute_id = p_victor_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = "Victor was not a participant in the provided games";
     END IF;
 
     INSERT INTO game_victor(game_number, victor_id)
@@ -2006,6 +2006,22 @@ CALL add_participant_by_name('Brutus', 75);
 CALL add_participant_by_name('Blight', 75);
 CALL add_participant_by_name('Cecelia', 75);
 
+
+# ADD GAME VICTORS
+CAll edit_participant('10.12.f.1', 1, NULL, NULL);
+CAll edit_participant('11.4.f.1', 1, NULL, NULL);
+CAll edit_participant('65.4.m.1', 1, NULL, NULL);
+CAll edit_participant('70.4.f.1', 1, NULL, NULL);
+CAll edit_participant('71.7.f.1', 1, NULL, NULL);
+CAll edit_participant('49.3.f.1', 1, NULL, NULL);
+CAll edit_participant('34.3.m.1', 1, NULL, NULL);
+CAll edit_participant('64.1.f.1', 1, NULL, NULL);
+CAll edit_participant('63.1.m.1', 1, NULL, NULL);
+CAll edit_participant('62.2.f.1', 1, NULL, NULL);
+
+
+
+
 INSERT INTO sponsor (name) VALUES
 ('Pieceof CapitolHorseShit'),
 ("Catos's Groupies"),
@@ -2020,6 +2036,8 @@ INSERT INTO sponsor (name) VALUES
 ("Caviar Cardew"),
 ("Flambee Flickerman")
 ;
+
+
 
 INSERT INTO team_role (member_id, member_type, participant_id) VALUES
 (1, 'escort', '74.12.F.1'),
