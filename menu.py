@@ -1,4 +1,6 @@
 import operations as ops
+import colors as colors
+from colors import Colors
 
 def display_menu():
     """Top menu options"""
@@ -32,22 +34,24 @@ def display_game_dashboard(connection, game):
     else:
         ordinal_suffix = 'TH'
 
+    print("\n\n")
     print(f"==================== THE {game}{ordinal_suffix} HUNGER GAMES DASHBOARD ====================")
-    print("\n\n")
-    print("PUT GAME INFO HERE") # TODO
-    print("\n\n")
+    game_info = ops.view_games(connection, game)
+    display_game_info_on_dashboard(connection, game_info)
+
+    print("\n")
     participants = ops.view_partipants(connection, None, None, game)
     display_participants(participants)
-    print("\n\n")
+    print("\n")
     sponsorships = ops.view_sponsorships(connection, game)
     display_sponsorships(sponsorships)
-    print("\n\n")
+    print("\n")
     staff = ops.view_game_staff(connection, game)
     display_game_staff(staff)
-    print("\n\n")
+    print("\n")
     victors = ops.view_victors(connection, None, game)
     display_victors(victors)
-    print("\n\n")
+    print("\n")
 
 
 def display_game_staff(staff):
@@ -75,8 +79,29 @@ def display_game_staff(staff):
     for person in staff:
         print("─" * length)
         print(f" {person['name']:<{name_width}} │ {person['role']:<{role_width}} │ {person['district']:<{district_width}}")
-    print("=" * length + "\n")    
+    print("=" * length + "\n") 
 
+
+def display_game_info_on_dashboard(connection, game_info):
+    game = game_info[0]
+    game_status = game['game_status'].title()
+    total_tributes = game['tribute_count']
+    game_number = game['game_number']
+    sd_str = game['start_date'].strftime('%Y-%m-%d') if game['start_date'] else 'N/A'
+    ed_str = game['end_date'].strftime('%Y-%m-%d') if game['end_date'] else 'N/A'
+    num_tributes_remaining = ops.get_num_tributes_remaining(connection, game_number)
+    
+    status_color = colors.get_status_color(game_status)
+    
+    print("\n╔" + "═" * 78 + "╗")
+    print(f"║ GAME {game_number} INFORMATION" + " " * (78 - len(f" GAME {game_number} INFORMATION")) + "║")
+    print("╠" + "═" * 78 + "╣")
+    print(f"║  Status: {status_color}{game_status}{colors.Colors.RESET}" + " " * (78 - len(f"  Status: {game_status}")) + "║")
+    print(f"║  Start Date: {sd_str}" + " " * (78 - len(f"  Start Date: {sd_str}")) + "║")
+    print(f"║  End Date: {ed_str}" + " " * (78 - len(f"  End Date: {ed_str}")) + "║")
+    print(f"║  Tributes: {num_tributes_remaining}/{total_tributes}" + " " * (78 - len(f"  Tributes: {num_tributes_remaining}/{total_tributes}")) + "║")
+    print("╚" + "═" * 78 + "╝\n")
+    
 
 '''
 MANAGE RECORDS
@@ -722,7 +747,7 @@ def display_sponsorships(sponsorships):
     print("\n" + "=" * length)
     print(" SPONSORSHIPS")
     print("=" * length)
-    print(f" {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'sponsor_amount':<{amount_width}}")
+    print(f" {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'Amount':<{amount_width}}")
     for sponsorship in sponsorships:
         print("─" * length)
         print(f" {sponsorship['sponsor_id']:<{sponsor_id_width}} │ {sponsorship['participant_id']:<{participant_id_width}} │ {sponsorship['sponsor_name']:<{sponsor_name_width}} │ {sponsorship['tribute_name']:<{tribute_name_width}} │ {sponsorship['game_number']:<{game_width}} │ ${sponsorship['sponsor_amount']:<{amount_width-1},.2f}")
@@ -940,16 +965,66 @@ def display_participants(participants):
     
     length = id_width + name_width + district_width + gender_width + game_width + age_width + training_width + intel_width + like_width + placement_width + 58
         
-    print("\n" + "=" * length)
-    print(" PARTICIPANTS")
-    print("=" * length)
-    print(f" {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}}")
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║ PARTICIPANTS" + " " * (length - 15) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}} ║")
     for participant in participants:
         gender = "Male" if participant['gender'] == 'M' else "Female"
-        print("─" * length)
-        print(f" {participant['participant_id']:<{id_width}} │ {participant['name']:<{name_width}} │ {participant['district']:<{district_width}} │ {gender:<{gender_width}} │ {participant['game_number']:<{game_width}} │ {participant['age_during_games']:<{age_width}} │ {str(participant['training_score']):<{training_width}} │ {str(participant['intelligence_score']):<{intel_width}} │ {str(participant['likeability_score']):<{like_width}} │ {str(participant['final_placement']):<{placement_width}}")
+        print("╟" + "─" * (length - 2) + "╢")
+        print(f"║ {participant['participant_id']:<{id_width}} │ {participant['name']:<{name_width}} │ {participant['district']:<{district_width}} │ {gender:<{gender_width}} │ {participant['game_number']:<{game_width}} │ {participant['age_during_games']:<{age_width}} │ {str(participant['training_score']):<{training_width}} │ {str(participant['intelligence_score']):<{intel_width}} │ {str(participant['likeability_score']):<{like_width}} │ {str(participant['final_placement']):<{placement_width}} ║")
         
-    print("=" * length + "\n")
+    print("╚" + "═" * (length - 2) + "╝\n")
+
+# def display_participants(participants):
+#     """Display formatted list of participants"""
+#     if not participants:
+#         print("\nNo participants found.")
+#         return
+    
+#     # Calculate column widths
+#     id_width = max(len(str(p['participant_id'])) for p in participants)
+#     id_width = max(id_width, len('ID'))
+    
+#     name_width = max(len(str(p['name'])) for p in participants)
+#     name_width = max(name_width, len('Name'))
+    
+#     district_width = max(len(str(p['district'])) for p in participants)
+#     district_width = max(district_width, len('District'))
+    
+#     gender_width = max(len('Male'), len('Female'))
+#     gender_width = max(gender_width, len('Gender'))
+    
+#     game_width = max(len(str(p['game_number'])) for p in participants)
+#     game_width = max(game_width, len('Game Number'))
+    
+#     age_width = max(len(str(p['age_during_games'])) for p in participants)
+#     age_width = max(age_width, len('Age During Games'))
+    
+#     training_width = max(len(str(p['training_score'])) for p in participants)
+#     training_width = max(training_width, len('Training Score'))
+    
+#     intel_width = max(len(str(p['intelligence_score'])) for p in participants)
+#     intel_width = max(intel_width, len('Intelligence Score'))
+    
+#     like_width = max(len(str(p['likeability_score'])) for p in participants)
+#     like_width = max(like_width, len('Likeability Score'))
+    
+#     placement_width = max(len(str(p['final_placement'])) for p in participants)
+#     placement_width = max(placement_width, len('Final Placement'))
+    
+#     length = id_width + name_width + district_width + gender_width + game_width + age_width + training_width + intel_width + like_width + placement_width + 58
+        
+#     print("\n" + "=" * length)
+#     print(" PARTICIPANTS")
+#     print("=" * length)
+#     print(f" {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}}")
+#     for participant in participants:
+#         gender = "Male" if participant['gender'] == 'M' else "Female"
+#         print("─" * length)
+#         print(f" {participant['participant_id']:<{id_width}} │ {participant['name']:<{name_width}} │ {participant['district']:<{district_width}} │ {gender:<{gender_width}} │ {participant['game_number']:<{game_width}} │ {participant['age_during_games']:<{age_width}} │ {str(participant['training_score']):<{training_width}} │ {str(participant['intelligence_score']):<{intel_width}} │ {str(participant['likeability_score']):<{like_width}} │ {str(participant['final_placement']):<{placement_width}}")
+        
+#     print("=" * length + "\n")
 
 
 # VIEW VICTORS

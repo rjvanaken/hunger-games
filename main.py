@@ -26,10 +26,10 @@ def main():
 
     # Successful Connection - Main menu loop
     while True:
-        choice = menu.display_menu()  # ← menu.py not operations
+        choice = menu.display_menu()
         
         if choice == '1':
-            # Select Game
+            # View Game Dashboard
             handle_select_game(connection)
             
         elif choice == '2':
@@ -55,9 +55,23 @@ def main():
 
 def handle_select_game(connection):
     """Handle game selection and game operations"""
-    games = ops.get_games(connection)  # ← Get from operations
-    game_num = menu.get_game_input(games)     # ← Display/input from menu
-    # Then handle game-specific operations...
+    rows = ops.view_games(connection)
+    menu.display_games(rows)
+    while True:
+        game_number = menu.get_number_input("Enter the game number to view its game dashboard or 0 to RETURN")
+        if game_number == 0:
+            break
+        rows = ops.view_games(connection, game_number)
+        if not rows:
+            print("\nGame does not exist. Please try again.\n")
+            continue
+        menu.display_game_dashboard(connection, str(game_number))
+        if not menu.get_yes_no_input('Would you like to view another game? (Y/N)'):
+            break
+        
+        rows = ops.view_games(connection)
+        menu.display_games(rows)
+                    
     
 #-----------------------------------
 # HANDLE MANAGE RECORDS
