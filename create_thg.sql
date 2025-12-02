@@ -231,6 +231,36 @@ END $$
 DELIMITER ;	
 
 
+-- ========================================================================
+-- FUNCTION: calculates and determined the number of tributes remaining
+-- ========================================================================
+DROP FUNCTION IF EXISTS get_num_tributes_remaining;
+
+DELIMITER $$
+CREATE FUNCTION get_num_tributes_remaining(p_game_number INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+	
+	DECLARE num_tributes_remaining INT;
+
+    IF (SELECT COUNT(*) from game WHERE game_status = 'completed' AND game_number = p_game_number) = 1 THEN
+        SELECT '0' INTO num_tributes_remaining;
+
+    ELSE
+        SELECT COUNT(*)
+        INTO num_tributes_remaining
+        FROM participant
+        WHERE final_placement IS NULL AND game_number = p_game_number;
+    END IF;
+
+	RETURN num_tributes_remaining;
+    
+END $$
+	
+DELIMITER ;	
+
+
 -- ===========================================================================
 -- PROCEDURE: takes tribute_id and creates a victor if doesn't already exist
 -- throws error if invalid parameter
@@ -400,7 +430,7 @@ DELIMITER $$
 CREATE PROCEDURE view_sponsorships(p_game_number INT, p_tribute_name VARCHAR(64))
 
 BEGIN
-        SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount as amount, p.game_number
+        SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount as sponsor_amount, p.game_number
         FROM sponsorship sp
         JOIN sponsor s ON sp.sponsor_id = s.sponsor_id
         JOIN participant p ON sp.participant_id = p.participant_id
@@ -428,7 +458,7 @@ CREATE PROCEDURE view_games(
 )
 BEGIN
     SET @sql = 'SELECT g.game_number, g.required_tribute_count as tribute_count, 
-                g.start_date, g.end_date, 
+                g.start_date, g.end_date, g.game_status,
                 GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ", ") as victor_names 
                 FROM game g
                 LEFT JOIN game_victor gv ON g.game_number = gv.game_number
@@ -603,16 +633,16 @@ DELIMITER $$
 
 CREATE PROCEDURE view_game_staff(p_game_number INT)
 BEGIN
-    SELECT DISTINCT tm.name as name, tr.member_type as role, t.district as district
+    SELECT DISTINCT tm.name as name, tr.member_type as role, CAST(t.district AS CHAR) as district
     FROM participant p
-    LEFT JOIN team_role tr ON p.participant_id = tr.participant_id
-    LEFT JOIN team_member tm ON tr.member_id = tm.member_id
-    LEFT JOIN tribute t ON p.tribute_id = t.tribute_id
+    JOIN team_role tr ON p.participant_id = tr.participant_id
+    JOIN team_member tm ON tr.member_id = tm.member_id
+    JOIN tribute t ON p.tribute_id = t.tribute_id
     WHERE p.game_number = p_game_number
     UNION
     SELECT gm.name as name, 'Gamemaker' as role, 'Capitol' as district
     FROM game_creator gc
-    LEFT JOIN gamemaker gm ON gc.gamemaker_id = gm.gamemaker_id
+    JOIN gamemaker gm ON gc.gamemaker_id = gm.gamemaker_id
     WHERE gc.game_number = p_game_number;
 END $$
 
@@ -734,13 +764,6 @@ BEGIN
 END $$
 
 DELIMITER ;
-
-
-
-
--- --     IF (SELECT COUNT(*) FROM x WHERE xn = pxn) = 0 THEN
---         SIGNAL SQLSTATE '45000'
---         SET MESSAGE_TEXT = 'x does not exist';
 
 
 -- ===============================
@@ -1967,7 +1990,7 @@ INSERT INTO game_creator (gamemaker_id, game_number) VALUES
 -- Game 71 (5 gamemakers - Seneca's first year)
 (2, 71), (25, 71), (6, 71), (7, 71), (4, 71),
 -- Game 74 (5 gamemakers - Seneca with Lucia)
-(2, 74), (4, 74), (12, 74), (13, 74), (14, 74),
+(2, 74), (3, 74), (12, 74), (13, 74), (14, 74),
 -- Game 75 (5 gamemakers - Plutarch's Quarter Quell)
 (1, 75), (20, 75), (21, 75), (22, 75), (23, 75);
 
@@ -2004,7 +2027,6 @@ CALL add_participant_by_name('Maysilee Donner', 50);
 CALL add_participant_by_name('Wyatt Callow', 50);
 CALL add_participant_by_name('Haymitch Abernathy', 50);
 CALL add_participant_by_name('Silka Sharp', 50);
-CALL add_participant_by_name('Haymitch Abernathy', 50);
 CALL add_participant_by_name('Ampert Latier', 50);
 CALL add_participant_by_name('Wellie', 50);
 
@@ -2059,9 +2081,7 @@ CAll edit_participant('34.3.m.1', 1, NULL, NULL);
 CAll edit_participant('64.1.f.1', 1, NULL, NULL);
 CAll edit_participant('63.1.m.1', 1, NULL, NULL);
 CAll edit_participant('62.2.f.1', 1, NULL, NULL);
-CAll edit_participant('74.12.f.1', 1, NULL, NULL);
-CAll edit_participant('74.12.m.1', 1, NULL, NULL);
-CAll edit_participant('50.12.m.1', 1, NULL, NULL);
+CAll edit_participant('50.12.m.2', 1, NULL, NULL);
 
 # SETTING FINAL PLACEMENTS
 
@@ -2102,7 +2122,7 @@ CAll edit_participant('74.2.m.1', 3, NULL, NULL);
 CAll edit_participant('74.11.m.1', 4, NULL, NULL);
 
 
-
+CALL edit_game(74, NULL, NULL, 'in progress', NULL);
 
 
 
@@ -2303,15 +2323,15 @@ INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VAL
 ('71.7.F.1', 3, 10), ('71.7.F.1', 25, 10), ('71.7.F.1', 6, 9), ('71.7.F.1', 7, 11), ('71.7.F.1', 8, 12);
 -- Game 74 (9 tributes, 5 gamemakers each)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
-('74.1.F.1', 2, 8),  ('74.1.F.1', 12, 7), ('74.1.F.1', 13, 9), ('74.1.F.1', 14, 10),
-('74.1.M.1', 2, 8),  ('74.1.M.1', 12, 7), ('74.1.M.1', 13, 9), ('74.1.M.1', 14, 10),
-('74.2.F.1', 2, 8),  ('74.2.F.1', 12, 9), ('74.2.F.1', 13, 8), ('74.2.F.1', 14, 12),
-('74.2.M.1', 2, 10),  ('74.2.M.1', 12, 11), ('74.2.M.1', 13, 11), ('74.2.M.1', 14, 8),
-('74.5.F.1', 2, 6),  ('74.5.F.1', 12, 3), ('74.5.F.1', 13, 7), ('74.5.F.1', 14, 4),
-('74.11.F.1', 2, 5),  ('74.11.F.1', 12, 7), ('74.11.F.1', 13, 6), ('74.11.F.1', 14, 9),
-('74.11.M.1', 2, 7),  ('74.11.M.1', 12, 8), ('74.11.M.1', 13, 7), ('74.11.M.1', 14, 12),
-('74.12.F.1', 2, 9),  ('74.12.F.1', 12, 10), ('74.12.F.1', 13, 10), ('74.12.F.1', 14, 12),
-('74.12.M.1', 2, 10),  ('74.12.M.1', 12, 7), ('74.12.M.1', 13, 6), ('74.12.M.1', 14, 9);
+('74.1.F.1', 2, 8), ('74.1.F.1', 3, 6), ('74.1.F.1', 12, 7), ('74.1.F.1', 13, 9), ('74.1.F.1', 14, 10),
+('74.1.M.1', 2, 8), ('74.1.M.1', 3, 11), ('74.1.M.1', 12, 7), ('74.1.M.1', 13, 9), ('74.1.M.1', 14, 10),
+('74.2.F.1', 2, 8), ('74.2.F.1', 3, 11), ('74.2.F.1', 12, 9), ('74.2.F.1', 13, 8), ('74.2.F.1', 14, 12),
+('74.2.M.1', 2, 10), ('74.2.M.1', 3, 10), ('74.2.M.1', 12, 11), ('74.2.M.1', 13, 11), ('74.2.M.1', 14, 8),
+('74.5.F.1', 2, 6), ('74.5.F.1', 3, 5), ('74.5.F.1', 12, 3), ('74.5.F.1', 13, 7), ('74.5.F.1', 14, 4),
+('74.11.F.1', 2, 5), ('74.11.F.1', 3, 8), ('74.11.F.1', 12, 7), ('74.11.F.1', 13, 6), ('74.11.F.1', 14, 9),
+('74.11.M.1', 2, 7), ('74.11.M.1', 3, 11), ('74.11.M.1', 12, 8), ('74.11.M.1', 13, 7), ('74.11.M.1', 14, 12),
+('74.12.F.1', 2, 9), ('74.12.F.1', 3, 11), ('74.12.F.1', 12, 10), ('74.12.F.1', 13, 10), ('74.12.F.1', 14, 12),
+('74.12.M.1', 2, 10), ('74.12.M.1', 3, 8), ('74.12.M.1', 12, 7), ('74.12.M.1', 13, 6), ('74.12.M.1', 14, 9);
 -- Game 75 (13 tributes, 5 gamemakers each)
 
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
