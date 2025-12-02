@@ -600,9 +600,6 @@ DELIMITER ;
 -- ============================
 
 
-
-
-
 DROP PROCEDURE IF EXISTS view_table;
 DELIMITER $$
 
@@ -1103,6 +1100,11 @@ BEGIN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Team Member does not exist';
     END IF;
+
+    IF (SELECT COUNT(*) FROM team_role WHERE member_id = p_member_id AND participant_id = p_participant_id) > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Team role already exists for this participant and team member';
+    END IF;
     
     INSERT INTO team_role(member_id, participant_id, member_type)
     VALUES (p_member_id, p_participant_id, p_member_type);
@@ -1296,6 +1298,11 @@ BEGIN
         SET MESSAGE_TEXT = 'Gamemaker does not exist';
     END IF;
 
+    IF (SELECT COUNT(*) FROM game_creator WHERE game_number = p_game_number AND gamemaker_id = p_gamemaker_id) > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game creator already exists for this gamemaker and game number';
+    END IF;
+
     INSERT INTO game_creator(game_number, gamemaker_id)
     VALUES (p_game_number, p_gamemaker_id);
 END $$
@@ -1355,6 +1362,20 @@ BEGIN
     IF (SELECT COUNT(*) FROM victor WHERE victor_id = p_victor_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Victor does not exist';
+    END IF;
+
+    IF (SELECT COUNT(*) 
+    FROM participant p
+    JOIN tribute t ON p.tribute_id = t.tribute_id;
+    JOIN victor v ON t.tribute_id = v.victor_id;
+    WHERE p.game_number = p_game_number AND t.tribute_id = p_victor_id) = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = "Victor was not a participant in the provided games";
+    END IF;
+
+    IF (SELECT COUNT(*) FROM game_victor WHERE game_number = p_game_number AND victor_id = p_victory_id) > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Game victor already exists for this victor and game number';
     END IF;
 
     INSERT INTO game_victor(game_number, victor_id)
@@ -1417,6 +1438,11 @@ BEGIN
     IF (SELECT COUNT(*) FROM gamemaker WHERE gamemaker_id = p_gamemaker_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Gamemaker does not exist';
+    END IF;
+
+    IF (SELECT COUNT(*) FROM gamemaker_score WHERE participant_id = p_participant_id AND gamemaker_id = p_gamemaker_id > 0) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Gamemaker score already exists for this participant and gamemaker';
     END IF;
 
     INSERT INTO gamemaker_score(gamemaker_id, participant_id, assessment_score)

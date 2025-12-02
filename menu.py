@@ -417,18 +417,18 @@ def display_sponsorships_full(sponsorships):
     game_width = max(len(str(s['game_number'])) for s in sponsorships)
     game_width = max(game_width, len('game_number'))
     
-    amount_width = max(len(f"${s['amount']:,.2f}") for s in sponsorships)
-    amount_width = max(amount_width, len('amount'))
+    amount_width = max(len(f"${s['sponsor_amount']:,.2f}") for s in sponsorships)
+    amount_width = max(amount_width, len('sponsor_amount'))
     
     length = sponsor_id_width + participant_id_width + sponsor_name_width + tribute_name_width + game_width + amount_width + 38
         
     print("\n" + "=" * length)
     print(" SPONSORSHIPS")
     print("=" * length)
-    print(f" {'sponsor_id':<{sponsor_id_width}} │ {'participant_id':<{participant_id_width}} │ {'sponsor_name':<{sponsor_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'amount':<{amount_width}}")
+    print(f" {'sponsor_id':<{sponsor_id_width}} │ {'participant_id':<{participant_id_width}} │ {'sponsor_name':<{sponsor_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'sponsor_amount':<{amount_width}}")
     for s in sponsorships:
         print("─" * length)
-        print(f" {s['sponsor_id']:<{sponsor_id_width}} │ {s['participant_id']:<{participant_id_width}} │ {s['sponsor_name']:<{sponsor_name_width}} │ {s['tribute_name']:<{tribute_name_width}} │ {s['game_number']:<{game_width}} │ ${s['amount']:<{amount_width-1},.2f}")
+        print(f" {s['sponsor_id']:<{sponsor_id_width}} │ {s['participant_id']:<{participant_id_width}} │ {s['sponsor_name']:<{sponsor_name_width}} │ {s['tribute_name']:<{tribute_name_width}} │ {s['game_number']:<{game_width}} │ ${s['sponsor_amount']:<{amount_width-1},.2f}")
     print("=" * length + "\n")
 
 
@@ -516,7 +516,7 @@ def display_gamemaker_scores_full(gamemaker_scores):
     score_width = max(len(str(gs['assessment_score'])) for gs in gamemaker_scores)
     score_width = max(score_width, len('assessment_score'))
     
-    length = gamemaker_id_width + participant_id_width + gamemaker_name_width + tribute_name_width + game_width + score_width + 38
+    length = gamemaker_id_width + participant_id_width + gamemaker_name_width + tribute_name_width + game_width + score_width + 26
         
     print("\n" + "=" * length)
     print(" GAMEMAKER SCORES")
@@ -670,18 +670,18 @@ def display_sponsorships(sponsorships):
     game_width = max(len(str(s['game_number'])) for s in sponsorships)
     game_width = max(game_width, len('Game Number'))
     
-    amount_width = max(len(f"${s['amount']:,.2f}") for s in sponsorships)
-    amount_width = max(amount_width, len('Amount'))
+    amount_width = max(len(f"${s['sponsor_amount']:,.2f}") for s in sponsorships)
+    amount_width = max(amount_width, len('sponsor_amount'))
     
     length = sponsor_id_width + participant_id_width + sponsor_name_width + tribute_name_width + game_width + amount_width + 38
         
     print("\n" + "=" * length)
     print(" SPONSORSHIPS")
     print("=" * length)
-    print(f" {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'Amount':<{amount_width}}")
+    print(f" {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'sponsor_amount':<{amount_width}}")
     for sponsorship in sponsorships:
         print("─" * length)
-        print(f" {sponsorship['sponsor_id']:<{sponsor_id_width}} │ {sponsorship['participant_id']:<{participant_id_width}} │ {sponsorship['sponsor_name']:<{sponsor_name_width}} │ {sponsorship['tribute_name']:<{tribute_name_width}} │ {sponsorship['game_number']:<{game_width}} │ ${sponsorship['amount']:<{amount_width-1},.2f}")
+        print(f" {sponsorship['sponsor_id']:<{sponsor_id_width}} │ {sponsorship['participant_id']:<{participant_id_width}} │ {sponsorship['sponsor_name']:<{sponsor_name_width}} │ {sponsorship['tribute_name']:<{tribute_name_width}} │ {sponsorship['game_number']:<{game_width}} │ ${sponsorship['sponsor_amount']:<{amount_width-1},.2f}")
     print("=" * length + "\n")
 
 
