@@ -81,9 +81,9 @@ def handle_manage_records(connection):
         elif manage_choice == '7':
             handle_manage_victors(connection)
         elif manage_choice == '8':
-            handle_manage_sponsorships(connection)
-        elif manage_choice == '9':
             handle_manage_team_roles(connection)
+        elif manage_choice == '9':
+            handle_manage_sponsorships(connection)
         elif manage_choice == '10':
             handle_manage_game_victors(connection)
         elif manage_choice == '11':
@@ -315,10 +315,10 @@ def handle_manage_victors(connection):
     while True:
         choice = menu.display_manage_entity_menu_view_delete_only('victor')
         if choice == '1': # VIEW
-            rows = ops.view_victors_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_victors_for_delete')
             menu.display_victors_full(rows)
         elif choice == '2': # DELETE
-            rows = ops.view_victors_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_victors_for_delete')
             menu.display_victors_full(rows)
             if not rows:
                 print("No victors available to delete.")
@@ -335,31 +335,31 @@ def handle_manage_sponsorships(connection):
     while True:
         choice = menu.display_manage_entity_menu('sponsorship')
         if choice == '1': # VIEW
-            rows = ops.view_sponsorships_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_sponsorships_for_delete')
             menu.display_sponsorships_full(rows)
         elif choice == '2': # CREATE
             participant_id, sponsor_id, sponsor_amount = menu.get_sponsorship_inputs()
             ops.create_sponsorship(connection, participant_id, sponsor_id, sponsor_amount)
         elif choice == '3': # EDIT
-            rows = ops.view_sponsorships_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_sponsorships_for_delete')
             menu.display_sponsorships_full(rows)
             if not rows:
                 print("No sponsorships available to edit.")
                 continue
-            sponsor_id = menu.get_number_input('Enter sponsor ID to edit')
-            participant_id = menu.get_string_input('Enter participant ID to edit', True)
+            sponsor_id = menu.get_number_input('Enter sponsor ID of the sponsorship to edit')
+            participant_id = menu.get_string_input('Enter participant ID of the sponsorship to edit', True)
             print(f"\nUpdating Sponsorship")
             print("─" * 42)
             amount = menu.get_sponsorship_inputs(True)
             ops.edit_sponsorship(connection, sponsor_id, participant_id, amount)
         elif choice == '4': # DELETE
-            rows = ops.view_sponsorships_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_sponsorships_for_delete')
             menu.display_sponsorships_full(rows)
             if not rows:
                 print("No sponsorships available to delete.")
                 continue
-            sponsor_id = menu.get_number_input('Enter sponsor ID to delete')
-            participant_id = menu.get_string_input('Enter participant ID to delete', True)
+            sponsor_id = menu.get_number_input('Enter sponsor ID of the sponsorship to delete')
+            participant_id = menu.get_string_input('Enter participant ID of the sponsorship to delete', True)
             ops.delete_sponsorship(connection, sponsor_id, participant_id)
         elif choice == '0':
             break
@@ -372,31 +372,31 @@ def handle_manage_team_roles(connection):
     while True:
         choice = menu.display_manage_entity_menu('team_role')
         if choice == '1': # VIEW
-            rows = ops.view_team_roles_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_team_roles_for_delete')
             menu.display_team_roles_full(rows)
         elif choice == '2': # CREATE
             member_id, participant_id, member_type = menu.get_team_role_inputs()
             ops.create_team_role(connection, member_id, participant_id, member_type)
         elif choice == '3': # EDIT
-            rows = ops.view_team_roles_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_team_roles_for_delete')
             menu.display_team_roles_full(rows)
             if not rows:
                 print("No team roles available to edit.")
                 continue
-            member_id = menu.get_number_input('Enter member ID to edit')
-            tribute_id = menu.get_number_input('Enter tribute ID to edit')
+            member_id = menu.get_number_input('Enter member ID of the team role to edit')
+            participant_id = menu.get_string_input('Enter participant ID of the team role to edit')
             print(f"\nUpdating Team Role")
             print("─" * 42)
             member_type = menu.get_team_role_inputs(True)
-            ops.edit_team_role(connection, member_id, tribute_id, member_type)
+            ops.edit_team_role(connection, member_id, participant_id, member_type)
         elif choice == '4': # DELETE
-            rows = ops.view_team_roles_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_team_roles_for_delete')
             menu.display_team_roles_full(rows)
             if not rows:
                 print("No team roles available to delete.")
                 continue
-            member_id = menu.get_number_input('Enter member ID to delete')
-            participant_id = menu.get_string_input('Enter participant ID to delete', True)
+            member_id = menu.get_number_input('Enter member ID of the team role to delete')
+            participant_id = menu.get_string_input('Enter participant ID of the team role to delete', True)
             ops.delete_team_role(connection, member_id, participant_id)
         elif choice == '0':
             break
@@ -409,31 +409,31 @@ def handle_manage_gamemaker_scores(connection):
     while True:
         choice = menu.display_manage_entity_menu('gamemaker_score')
         if choice == '1': # VIEW
-            rows = ops.view_gamemaker_scores_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_gamemaker_scores_for_delete')
             menu.display_gamemaker_scores_full(rows)
         elif choice == '2': # CREATE
             gamemaker_id, participant_id, assessment_score = menu.get_gamemaker_score_inputs()
             ops.create_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score)
         elif choice == '3': # EDIT
-            rows = ops.view_gamemaker_scores_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_gamemaker_scores_for_delete')
             menu.display_gamemaker_scores_full(rows)
             if not rows:
                 print("No gamemaker scores available to edit.")
                 continue
-            gamemaker_id = menu.get_number_input('Enter gamemaker ID to edit')
-            participant_id = menu.get_string_input('Enter participant ID to edit', True)
+            gamemaker_id = menu.get_number_input('Enter gamemaker ID of the gamemaker score to edit')
+            participant_id = menu.get_string_input('Enter participant ID of the gamemaker score to edit', True)
             print(f"\nUpdating Gamemaker Score")
             print("─" * 42)
             assessment_score = menu.get_gamemaker_score_inputs(True)
             ops.edit_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score)
         elif choice == '4': # DELETE
-            rows = ops.view_gamemaker_scores_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_gamemaker_scores_for_delete')
             menu.display_gamemaker_scores_full(rows)
             if not rows:
                 print("No gamemaker scores available to delete.")
                 continue
-            gamemaker_id = menu.get_number_input('Enter gamemaker ID to delete')
-            participant_id = menu.get_string_input('Enter participant ID to delete', True)
+            gamemaker_id = menu.get_number_input('Enter gamemaker ID of the gamemaker score to delete')
+            participant_id = menu.get_string_input('Enter participant ID of the gamemaker score to delete', True)
             ops.delete_gamemaker_score(connection, gamemaker_id, participant_id)
         elif choice == '0':
             break
@@ -446,19 +446,19 @@ def handle_manage_game_victors(connection):
     while True:
         choice = menu.display_manage_entity_menu_no_edit('game_victor')
         if choice == '1': # VIEW
-            rows = ops.view_game_victors_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_game_victors_for_delete')
             menu.display_game_victors_full(rows)
         elif choice == '2': # CREATE
             game_number, victor_id = menu.get_game_victor_inputs()
             ops.create_game_victor(connection, game_number, victor_id)
         elif choice == '3': # DELETE
-            rows = ops.view_game_victors_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_game_victors_for_delete')
             menu.display_game_victors_full(rows)
             if not rows:
                 print("No game victors available to delete.")
                 continue
-            game_number = menu.get_number_input('Enter game number to delete')
-            victor_id = menu.get_number_input('Enter victor ID to delete')
+            game_number = menu.get_number_input('Enter game number of the game victor to delete')
+            victor_id = menu.get_number_input('Enter victor ID of the game victor to delete')
             ops.delete_game_victor(connection, game_number, victor_id)
         elif choice == '0':
             break
@@ -471,19 +471,19 @@ def handle_manage_game_creators(connection):
     while True:
         choice = menu.display_manage_entity_menu_no_edit('game_creator')
         if choice == '1': # VIEW
-            rows = ops.view_game_creators_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_game_creators_for_delete')
             menu.display_game_creators_full(rows)
         elif choice == '2': # CREATE
             game_number, gamemaker_id = menu.get_game_creator_inputs()
             ops.create_game_creator(connection, game_number, gamemaker_id)
         elif choice == '3': # DELETE
-            rows = ops.view_game_creators_for_delete(connection)
+            rows = ops.view_entity_for_delete(connection, 'view_game_creators_for_delete')
             menu.display_game_creators_full(rows)
             if not rows:
                 print("No game creators available to delete.")
                 continue
-            game_number = menu.get_number_input('Enter game number to delete')
-            gamemaker_id = menu.get_number_input('Enter gamemaker ID to delete')
+            game_number = menu.get_number_input('Enter game number of the game creator to delete')
+            gamemaker_id = menu.get_number_input('Enter gamemaker ID of the game creator to delete')
             ops.delete_game_creator(connection, game_number, gamemaker_id)
         elif choice == '0':
             break

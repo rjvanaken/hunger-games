@@ -191,6 +191,14 @@ def view_table(connection, table_name):
     cursor.close()
     return rows
 
+def view_entity_for_delete(connection, procedure_name):
+    """Generic function to call view  that return data"""
+    cursor = connection.cursor()
+    cursor.callproc(procedure_name)
+    results = cursor.fetchall()
+    cursor.close()
+    return results
+
 
 '''MANAGE TRIBUTES'''
 
@@ -655,14 +663,6 @@ def delete_participant(connection, participant_id):
         cursor.close()
 
 '''MANAGE VICTORS'''
-# VIEW VICTORS FOR DELETION
-def view_victors_for_delete(connection):
-    """Display victors and names before delete"""
-    cursor = connection.cursor()
-    cursor.callproc('view_victors_for_delete')
-    victors = cursor.fetchall()
-    cursor.close()
-    return victors
 
 # DELETE VICTOR
 def delete_victor(connection, victor_id):
@@ -680,6 +680,334 @@ def delete_victor(connection, victor_id):
         return False
     finally:
         cursor.close()
+
+
+'''MANAGE TEAM ROLES'''
+
+# CREATE TEAM ROLE
+def create_team_role(connection, member_id, participant_id, member_type):
+    """Create team role"""
+
+    # Validate member_id
+    if member_id is None or member_id < 1:
+        print("\nInvalid member ID")
+        return False
+    
+    # Validate participant_id
+    if not participant_id or len(participant_id) > 64:
+        print("\nInvalid participant ID")
+        return False
+    
+    # Validate member_type
+    valid_types = ['escort', 'mentor', 'stylist', 'prep']
+    if member_type.lower() not in valid_types:
+        print(f"\nMember type must be one of: {', '.join(valid_types)}")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_team_role', [member_id, participant_id, member_type.lower()])
+        connection.commit()
+        print("\nTeam role successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# EDIT TEAM ROLE
+def edit_team_role(connection, member_id, tribute_id, member_type):
+    """Edit team role"""
+    
+    # Validate member_type
+    type_list = ['escort', 'mentor', 'stylist', 'prep']
+    member_type = utils.prepare_enum_for_update(member_type, type_list, 'member_type')
+    
+    if member_type == False:
+        print('\nUpdate failed')
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_team_role', [member_id, tribute_id, member_type])
+        connection.commit()
+        print("\nTeam role successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# DELETE TEAM ROLE
+def delete_team_role(connection, member_id, participant_id):
+    """Delete team role"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_team_role', [member_id, participant_id])
+        connection.commit()
+        cursor.close()
+        print("\nTeam role successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+'''MANAGE SPONSORSHIPS'''
+
+# CREATE SPONSORSHIP
+def create_sponsorship(connection, participant_id, sponsor_id, sponsor_amount):
+    """Create sponsorship"""
+
+    # Validate participant_id
+    if not participant_id or len(participant_id) > 64:
+        print("\nInvalid participant ID")
+        return False
+    
+    # Validate sponsor_id
+    if sponsor_id is None or sponsor_id < 1:
+        print("\nInvalid sponsor ID")
+        return False
+    
+    # Validate sponsor_amount
+    if sponsor_amount is None or sponsor_amount < 0:
+        print("\nSponsor amount must be non-negative")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_sponsorship', [participant_id, sponsor_id, sponsor_amount])
+        connection.commit()
+        print("\nSponsorship successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# EDIT SPONSORSHIP
+def edit_sponsorship(connection, sponsor_id, participant_id, sponsor_amount):
+    """Edit sponsorship"""
+    
+    # Validate sponsor_amount or set to None if empty
+    sponsor_amount = utils.prepare_num_for_update(sponsor_amount, 'sponsor_amount', 0, None)
+    
+    if sponsor_amount == False:
+        print('\nUpdate failed')
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_sponsorship', [sponsor_id, participant_id, sponsor_amount])
+        connection.commit()
+        print("\nSponsorship successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# DELETE SPONSORSHIP
+def delete_sponsorship(connection, sponsor_id, participant_id):
+    """Delete sponsorship"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_sponsorship', [sponsor_id, participant_id])
+        connection.commit()
+        cursor.close()
+        print("\nSponsorship successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+
+'''MANAGE GAME CREATORS'''
+
+# CREATE GAME CREATOR
+def create_game_creator(connection, game_number, gamemaker_id):
+    """Create game creator"""
+
+    # Validate game_number
+    if game_number is None or game_number < 1:
+        print("\nInvalid game number")
+        return False
+    
+    # Validate gamemaker_id
+    if gamemaker_id is None or gamemaker_id < 1:
+        print("\nInvalid gamemaker ID")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_game_creator', [game_number, gamemaker_id])
+        connection.commit()
+        print("\nGame creator successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# DELETE GAME CREATOR
+def delete_game_creator(connection, game_number, gamemaker_id):
+    """Delete game creator"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_game_creator', [game_number, gamemaker_id])
+        connection.commit()
+        cursor.close()
+        print("\nGame creator successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+
+
+
+'''MANAGE GAME VICTORS'''
+
+# CREATE GAME VICTOR
+def create_game_victor(connection, game_number, victor_id):
+    """Create game victor"""
+
+    # Validate game_number
+    if game_number is None or game_number < 1:
+        print("\nInvalid game number")
+        return False
+    
+    # Validate victor_id
+    if victor_id is None or victor_id < 1:
+        print("\nInvalid victor ID")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_game_victor', [game_number, victor_id])
+        connection.commit()
+        print("\nGame victor successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# DELETE GAME VICTOR
+def delete_game_victor(connection, game_number, victor_id):
+    """Delete game victor"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_game_victor', [game_number, victor_id])
+        connection.commit()
+        cursor.close()
+        print("\Game victor successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+
+
+'''MANAGE GAMEMAKER SCORES'''
+
+# CREATE GAMEMAKER SCORE
+def create_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score):
+    """Create gamemaker score"""
+
+    # Validate gamemaker_id
+    if gamemaker_id is None or gamemaker_id < 1:
+        print("\nInvalid gamemaker ID")
+        return False
+    
+    # Validate participant_id
+    if not participant_id or len(participant_id) > 64:
+        print("\nInvalid participant ID")
+        return False
+    
+    # Validate assessment_score
+    if assessment_score is None or assessment_score < 1 or assessment_score > 12:
+        print("\nAssessment score must be between 1 and 12")
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('create_gamemaker_score', [gamemaker_id, participant_id, assessment_score])
+        connection.commit()
+        print("\nGamemaker score successfully created!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+
+# EDIT GAMEMAKER SCORE
+def edit_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score):
+    """Edit gamemaker assessment score"""
+    
+    # Validate assessment_score or set to None if empty
+    assessment_score = utils.prepare_num_for_update(assessment_score, 'assessment_score', 1, 12)
+    
+    if assessment_score == False:
+        print('\nUpdate failed')
+        return False
+    
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('edit_gamemaker_score', [gamemaker_id, participant_id, assessment_score])
+        connection.commit()
+        print("\nGamemaker score successfully updated!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"\nDatabase error: {err}")
+        return False
+    finally:
+        cursor.close()
+
+# DELETE GAMEMAKER SCORE
+def delete_gamemaker_score(connection, gamemaker_id, participant_id):
+    """Delete gamemaker score"""
+    try: 
+        cursor = connection.cursor()
+        cursor.callproc('delete_gamemaker_score', [gamemaker_id, participant_id])
+        connection.commit()
+        cursor.close()
+        print("\nGamemaker score successfully deleted!")
+        return True
+    except pymysql.Error as err:
+        connection.rollback()
+        print(f"Database error: {err}")
+        return False
+    finally:
+        cursor.close()
+
 
 
 

@@ -67,6 +67,11 @@ def display_manage_records_menu():
     print(" 5: Manage Team Members")
     print(" 6: Manage Participants")
     print(" 7: Manage Victors")
+    print(" 8: Manage Team Roles")
+    print(" 9: Manage Sponsorships")
+    print(" 10: Manage Game Victors")
+    print(" 11: Manage Game Creators")
+    print(" 12: Manage Gamemaker Scores")
     print("─" * length)
     print(" 0: RETURN TO MAIN MENU\n")
     choice = input("Enter choice: ")
@@ -365,8 +370,8 @@ def display_team_roles_full(team_roles):
     member_id_width = max(len(str(tr['member_id'])) for tr in team_roles)
     member_id_width = max(member_id_width, len('member_id'))
     
-    tribute_id_width = max(len(str(tr['tribute_id'])) for tr in team_roles)
-    tribute_id_width = max(tribute_id_width, len('tribute_id'))
+    participant_id_width = max(len(str(tr['participant_id'])) for tr in team_roles)
+    participant_id_width = max(participant_id_width, len('participant_id'))
     
     member_name_width = max(len(str(tr['member_name'])) for tr in team_roles)
     member_name_width = max(member_name_width, len('member_name'))
@@ -377,15 +382,15 @@ def display_team_roles_full(team_roles):
     type_width = max(len(str(tr['member_type'])) for tr in team_roles)
     type_width = max(type_width, len('member_type'))
     
-    length = member_id_width + tribute_id_width + member_name_width + tribute_name_width + type_width + 32
+    length = member_id_width + participant_id_width + member_name_width + tribute_name_width + type_width + 32
         
     print("\n" + "=" * length)
     print(" TEAM ROLES")
     print("=" * length)
-    print(f" {'member_id':<{member_id_width}} │ {'tribute_id':<{tribute_id_width}} │ {'member_name':<{member_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'member_type':<{type_width}}")
+    print(f" {'member_id':<{member_id_width}} │ {'participant_id':<{participant_id_width}} │ {'member_name':<{member_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'member_type':<{type_width}}")
     for tr in team_roles:
         print("─" * length)
-        print(f" {tr['member_id']:<{member_id_width}} │ {tr['tribute_id']:<{tribute_id_width}} │ {tr['member_name']:<{member_name_width}} │ {tr['tribute_name']:<{tribute_name_width}} │ {tr['member_type']:<{type_width}}")
+        print(f" {tr['member_id']:<{member_id_width}} │ {tr['participant_id']:<{participant_id_width}} │ {tr['member_name']:<{member_name_width}} │ {tr['tribute_name']:<{tribute_name_width}} │ {tr['member_type']:<{type_width}}")
     print("=" * length + "\n")
 
 
@@ -1081,8 +1086,8 @@ def get_participant_inputs(on_update=False):
 
 def get_sponsorship_inputs(on_update=False):
     if on_update:
-        amount = get_number_input("Enter the new sponsor amount or ENTER to skip", True)
-        return amount
+        sponsor_amount = get_number_input("Enter the new sponsor amount or ENTER to skip", True)
+        return sponsor_amount
     else:
         participant_id = get_string_input("Enter the participant ID", True)
         sponsor_id = get_number_input("Enter the sponsor ID")

@@ -1090,7 +1090,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS create_team_role;
 DELIMITER $$
 
-CREATE PROCEDURE create_team_role(p_member_id INT,  participant_id INT, p_member_type VARCHAR(64))
+CREATE PROCEDURE create_team_role(p_member_id INT,  p_participant_id VARCHAR(64), p_member_type VARCHAR(64))
 BEGIN
     IF 
     (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
@@ -1114,10 +1114,10 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS edit_team_role;
 DELIMITER $$
 
-CREATE PROCEDURE edit_team_role(p_member_id INT, p_tribute_id INT, p_member_type VARCHAR(64))
+CREATE PROCEDURE edit_team_role(p_member_id INT, p_participant_id VARCHAR(64), p_member_type VARCHAR(64))
 BEGIN
     
-    IF (SELECT COUNT(*) FROM team_role WHERE member_id = p_member_id AND tribute_id = p_tribute_id) = 0 THEN
+    IF (SELECT COUNT(*) FROM team_role WHERE member_id = p_member_id AND participant_id = p_participant_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Team role does not exist';
     ELSE
@@ -1130,7 +1130,7 @@ BEGIN
         UPDATE team_role
             SET member_type = COALESCE(p_member_type, member_type)
             WHERE member_id = p_member_id 
-            AND tribute_id = p_tribute_id;
+            AND participant_id = p_participant_id;
     END IF;
 END $$
 
@@ -1143,11 +1143,12 @@ DELIMITER $$
 
 CREATE PROCEDURE view_team_roles_for_delete()
 BEGIN
-    SELECT tr.member_id, tr.tribute_id, tm.name as member_name, t.name as tribute_name, tr.member_type
+    SELECT tr.member_id, tr.participant_id, tm.name as member_name, t.name as tribute_name, tr.member_type
     FROM team_role tr
     JOIN team_member tm ON tr.member_id = tm.member_id
-    JOIN tribute t ON tr.tribute_id = t.tribute_id
-    ORDER BY tr.member_id, tr.tribute_id;
+    JOIN participant p ON tr.participant_id = p.participant_id
+    JOIN tribute t ON p.tribute_id = t.tribute_id
+    ORDER BY tr.member_id, tr.participant_id;
 END $$
 
 DELIMITER ;
@@ -1156,15 +1157,15 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS delete_team_role;
 DELIMITER $$
 
-CREATE PROCEDURE delete_team_role(p_member_id INT, p_participant_id INT)
+CREATE PROCEDURE delete_team_role(p_member_id INT, p_participant_id VARCHAR(64))
 
 BEGIN
-    IF (SELECT COUNT(*) FROM team_role WHERE p_member_id = member_id AND p_participant_id = participant_id) = 0 THEN
+    IF (SELECT COUNT(*) FROM team_role WHERE member_id = p_member_id AND participant_id = p_participant_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Team role does not exist';
     ELSE 
         DELETE FROM team_role
-        WHERE p_member_id = member_id AND p_participant_id = participant_id;
+        WHERE member_id = p_member_id AND participant_id = p_participant_id;
     END IF;
 END $$
 
@@ -1194,7 +1195,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Participant does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id AND sponsor_id = p_sponsor_id) > 0 THEN
+    IF (SELECT COUNT(*) FROM sponsorship WHERE participant_id = p_participant_id AND sponsor_id = p_sponsor_id) > 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Sponsorship already exists for this participant and sponsor';
     END IF;
@@ -1203,6 +1204,7 @@ BEGIN
     VALUES (p_participant_id, p_sponsor_id, p_sponsor_amount);
 
 END $$
+
 
 DELIMITER ;
 
@@ -1214,7 +1216,7 @@ DELIMITER $$
 CREATE PROCEDURE edit_sponsorship(
     p_sponsor_id INT,
     p_participant_id VARCHAR(64),
-    p_amount DECIMAL(10,2)
+    p_sponsor_amount DECIMAL(10,2)
 )
 BEGIN
 
@@ -1223,16 +1225,17 @@ BEGIN
         SET MESSAGE_TEXT = 'Sponsorship does not exist';
     ELSE
         -- Validate amount if provided
-        IF p_amount IS NOT NULL AND p_amount < 0 THEN
+        IF p_sponsor_amount IS NOT NULL AND p_sponsor_amount < 0 THEN
             SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Amount must be non-negative';
         END IF;
         
         UPDATE sponsorship
-            SET amount = COALESCE(p_amount, amount)
+            SET sponsor_amount = COALESCE(p_sponsor_amount, sponsor_amount)
             WHERE sponsor_id = p_sponsor_id 
             AND participant_id = p_participant_id;
     END IF;
+
 END $$
 
 DELIMITER ;
@@ -1243,7 +1246,7 @@ DELIMITER $$
 
 CREATE PROCEDURE view_sponsorships_for_delete()
 BEGIN
-    SELECT s.sponsor_id, s.participant_id, sp.name as sponsor_name, t.name as tribute_name, p.game_number, s.amount
+    SELECT s.sponsor_id, s.participant_id, sp.name as sponsor_name, t.name as tribute_name, p.game_number, s.sponsor_amount
     FROM sponsorship s
     JOIN sponsor sp ON s.sponsor_id = sp.sponsor_id
     JOIN participant p ON s.participant_id = p.participant_id
@@ -1258,7 +1261,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS delete_sponsorship;
 DELIMITER $$
 
-CREATE PROCEDURE delete_sponsorship(p_sponsor_id INT, p_participant_id INT)
+CREATE PROCEDURE delete_sponsorship(p_sponsor_id INT, p_participant_id VARCHAR(64))
 
 BEGIN
     IF (SELECT COUNT(*) FROM sponsorship WHERE p_sponsor_id = sponsor_id AND p_participant_id = participant_id) = 0 THEN
@@ -1313,6 +1316,7 @@ END $$
 
 DELIMITER ;
 
+
 -- delete game creator
 
 DROP PROCEDURE IF EXISTS delete_game_creator;
@@ -1356,6 +1360,7 @@ BEGIN
     INSERT INTO game_victor(game_number, victor_id)
     VALUES (p_game_number, p_victor_id);
 END $$
+
 
 DELIMITER ;
 
@@ -1464,12 +1469,11 @@ END $$
 
 DELIMITER ;
 
-
 -- delete gamemaker score
 DROP PROCEDURE IF EXISTS delete_gamemaker_score;
 DELIMITER $$
 
-CREATE PROCEDURE delete_gamemaker_score(p_gamemaker_id INT, p_participant_id INT)
+CREATE PROCEDURE delete_gamemaker_score(p_gamemaker_id INT, p_participant_id VARCHAR(64))
 
 BEGIN
     IF (SELECT COUNT(*) FROM gamemaker_score WHERE p_gamemaker_id = gamemaker_id AND p_participant_id = participant_id) = 0 THEN
@@ -2136,9 +2140,6 @@ INSERT INTO sponsorship (sponsor_id, participant_id, sponsor_amount) VALUES
 
 
 -- SCORES
--- Game 10 (24 tributes, 1 gamemaker each)
-INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
-('10.1.F.1', 4, 8), ('10.1.M.1', 4, 10), ('10.2.F.1', 4, 9), ('10.2.M.1', 4, 8), ('10.3.F.1', 4, 7), ('10.3.M.1', 4, 6), ('10.4.F.1', 4, 10), ('10.4.M.1', 4, 11), ('10.5.F.1', 4, 7), ('10.5.M.1', 4, 8), ('10.6.F.1', 4, 9), ('10.6.M.1', 4, 5), ('10.7.F.1', 4, 2), ('10.7.M.1', 4, 11), ('10.8.F.1', 4, 9), ('10.8.M.1', 4, 9), ('10.9.F.1', 4, 4), ('10.9.M.1', 4, 5), ('10.10.F.1', 4, 2), ('10.10.M.1', 4, 8), ('10.11.F.1', 4, 1), ('10.11.M.1', 4, 9), ('10.12.F.1', 4, 10), ('10.12.M.1', 4, 6);
 -- Game 11 (1 tribute, 1 gamemaker)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
 ('11.4.F.1', 4, 7);
@@ -2174,15 +2175,15 @@ INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VAL
 ('71.7.F.1', 3, 10), ('71.7.F.1', 25, 10), ('71.7.F.1', 6, 9), ('71.7.F.1', 7, 11), ('71.7.F.1', 8, 12);
 -- Game 74 (9 tributes, 5 gamemakers each)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
-('74.1.F.1', 3, 8), ('74.1.F.1', 4, 6), ('74.1.F.1', 12, 7), ('74.1.F.1', 13, 9), ('74.1.F.1', 14, 10),
-('74.1.M.1', 3, 8), ('74.1.M.1', 4, 11), ('74.1.M.1', 12, 7), ('74.1.M.1', 13, 9), ('74.1.M.1', 14, 10),
-('74.2.F.1', 3, 8), ('74.2.F.1', 4, 11), ('74.2.F.1', 12, 9), ('74.2.F.1', 13, 8), ('74.2.F.1', 14, 12),
-('74.2.M.1', 3, 10), ('74.2.M.1', 4, 10), ('74.2.M.1', 12, 11), ('74.2.M.1', 13, 11), ('74.2.M.1', 14, 8),
-('74.5.F.1', 3, 6), ('74.5.F.1', 4, 5), ('74.5.F.1', 12, 3), ('74.5.F.1', 13, 7), ('74.5.F.1', 14, 4),
-('74.11.F.1', 3, 5), ('74.11.F.1', 4, 8), ('74.11.F.1', 12, 7), ('74.11.F.1', 13, 6), ('74.11.F.1', 14, 9),
-('74.11.M.1', 3, 7), ('74.11.M.1', 4, 11), ('74.11.M.1', 12, 8), ('74.11.M.1', 13, 7), ('74.11.M.1', 14, 12),
-('74.12.F.1', 3, 9), ('74.12.F.1', 4, 11), ('74.12.F.1', 12, 10), ('74.12.F.1', 13, 10), ('74.12.F.1', 14, 12),
-('74.12.M.1', 3, 10), ('74.12.M.1', 4, 8), ('74.12.M.1', 12, 7), ('74.12.M.1', 13, 6), ('74.12.M.1', 14, 9);
+('74.1.F.1', 2, 8), ('74.1.F.1', 2, 6), ('74.1.F.1', 12, 7), ('74.1.F.1', 13, 9), ('74.1.F.1', 14, 10),
+('74.1.M.1', 2, 8), ('74.1.M.1', 2, 11), ('74.1.M.1', 12, 7), ('74.1.M.1', 13, 9), ('74.1.M.1', 14, 10),
+('74.2.F.1', 2, 8), ('74.2.F.1', 2, 11), ('74.2.F.1', 12, 9), ('74.2.F.1', 13, 8), ('74.2.F.1', 14, 12),
+('74.2.M.1', 2, 10), ('74.2.M.1', 2, 10), ('74.2.M.1', 12, 11), ('74.2.M.1', 13, 11), ('74.2.M.1', 14, 8),
+('74.5.F.1', 2, 6), ('74.5.F.1', 2, 5), ('74.5.F.1', 12, 3), ('74.5.F.1', 13, 7), ('74.5.F.1', 14, 4),
+('74.11.F.1', 2, 5), ('74.11.F.1', 2, 8), ('74.11.F.1', 12, 7), ('74.11.F.1', 13, 6), ('74.11.F.1', 14, 9),
+('74.11.M.1', 2, 7), ('74.11.M.1', 2, 11), ('74.11.M.1', 12, 8), ('74.11.M.1', 13, 7), ('74.11.M.1', 14, 12),
+('74.12.F.1', 2, 9), ('74.12.F.1', 2, 11), ('74.12.F.1', 12, 10), ('74.12.F.1', 13, 10), ('74.12.F.1', 14, 12),
+('74.12.M.1', 2, 10), ('74.12.M.1', 2, 8), ('74.12.M.1', 12, 7), ('74.12.M.1', 13, 6), ('74.12.M.1', 14, 9);
 -- Game 75 (13 tributes, 5 gamemakers each)
 INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VALUES
 ('75.1.F.1', 5, 11), ('75.1.F.1', 20, 12), ('75.1.F.1', 21, 9), ('75.1.F.1', 22, 11), ('75.1.F.1', 23, 7),
