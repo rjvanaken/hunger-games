@@ -594,6 +594,31 @@ DELIMITER ;
 
 
 
+-- ===========================================
+-- View game staff + gamemakers with filter
+-- ===========================================
+
+DROP PROCEDURE IF EXISTS view_game_staff;
+DELIMITER $$
+
+CREATE PROCEDURE view_game_staff(p_game_number INT)
+BEGIN
+    SELECT DISTINCT tm.name as name, tr.member_type as role, t.district as district
+    FROM participant p
+    LEFT JOIN team_role tr ON p.participant_id = tr.participant_id
+    LEFT JOIN team_member tm ON tr.member_id = tm.member_id
+    LEFT JOIN tribute t ON p.tribute_id = t.tribute_id
+    WHERE p.game_number = p_game_number
+    UNION
+    SELECT gm.name as name, 'Gamemaker' as role, 'Capitol' as district
+    FROM game_creator gc
+    LEFT JOIN gamemaker gm ON gc.gamemaker_id = gm.gamemaker_id
+    WHERE gc.game_number = p_game_number;
+END $$
+
+DELIMITER ;
+
+
 
 -- ============================
 -- CRUD PROCEDURE: VIEW full table
@@ -803,10 +828,10 @@ BEGIN
         SET MESSAGE_TEXT = 'Game does not exist';
     END IF;
 
-    IF p_game_status = 'in progress' AND (SELECT COUNT(*) FROM game WHERE game_status = 'in progress') = 1 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'You already have another game in progress. Set it to complete before starting another one';
-    END IF;
+    -- IF p_game_status = 'in progress' AND (SELECT COUNT(*) FROM game WHERE game_status = 'in progress') = 1 THEN
+    --     SIGNAL SQLSTATE '45000'
+    --     SET MESSAGE_TEXT = 'You already have another game in progress. Set it to complete before starting another one';
+    -- END IF;
 
     UPDATE game
         SET start_date = COALESCE(p_start_date, start_date),
