@@ -233,8 +233,9 @@ def display_sponsors_full(sponsors):
     
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ SPONSORS" + " " * (length - 11) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'sponsor_id':<{id_width}} │ {'name':<{name_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, sponsor in enumerate(sponsors):
         if i > 0:
@@ -271,8 +272,9 @@ def display_games_full(games):
     
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAMES" + " " * (length - 8) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'game_number':<{id_width}} │ {'required_tribute_count':<{required_tributes_width}} │ {'start_date':<{start_date_width}} │ {'end_date':<{end_date_width}} │ {'game_status':<{game_status_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, game in enumerate(games):
         if i > 0:
@@ -309,8 +311,9 @@ def display_gamemakers_full(gamemakers):
     
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAMEMAKERS" + " " * (length - 13) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'gamemaker_id':<{id_width}} │ {'name':<{name_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, gamemaker in enumerate(gamemakers):
         if i > 0:
@@ -341,8 +344,9 @@ def display_team_members_full(team_members):
     
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ TEAM MEMBERS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'member_id':<{id_width}} │ {'name':<{name_width}} │ {'victor_id':<{victor_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, tm in enumerate(team_members):
         if i > 0:
@@ -382,8 +386,9 @@ def display_participants_full(participants):
     
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ PARTICIPANTS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'participant_id':<{id_width}} │ {'tribute_id':<{tribute_width}} │ {'game_number':<{game_width}} │ {'final_placement':<{placement_width}} │ {'intelligence_score':<{intel_width}} │ {'likeability_score':<{like_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, p in enumerate(participants):
         if i > 0:
@@ -413,8 +418,9 @@ def display_victors_full(victors):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ VICTORS" + " " * (length - 10) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Victor ID':<{id_width}} │ {'Tribute Name':<{name_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, victor in enumerate(victors):
         if i > 0:
@@ -451,8 +457,9 @@ def display_team_roles_full(team_roles):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ TEAM ROLES" + " " * (length - 13) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'member_id':<{member_id_width}} │ {'participant_id':<{participant_id_width}} │ {'member_name':<{member_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'member_type':<{type_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, tr in enumerate(team_roles):
         if i > 0:
@@ -492,8 +499,9 @@ def display_sponsorships_full(sponsorships):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ SPONSORSHIPS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'sponsor_id':<{sponsor_id_width}} │ {'participant_id':<{participant_id_width}} │ {'sponsor_name':<{sponsor_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'sponsor_amount':<{amount_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, s in enumerate(sponsorships):
         if i > 0:
@@ -524,8 +532,9 @@ def display_game_creators_full(game_creators):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAME CREATORS" + " " * (length - 16) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'game_number':<{game_width}} │ {'gamemaker_id':<{gamemaker_id_width}} │ {'gamemaker_name':<{name_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, gc in enumerate(game_creators):
         if i > 0:
@@ -556,8 +565,9 @@ def display_game_victors_full(game_victors):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAME VICTORS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'game_number':<{game_width}} │ {'victor_id':<{victor_id_width}} │ {'tribute_name':<{name_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, gv in enumerate(game_victors):
         if i > 0:
@@ -597,8 +607,9 @@ def display_gamemaker_scores_full(gamemaker_scores):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAMEMAKER SCORES" + " " * (length - 19) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'gamemaker_id':<{gamemaker_id_width}} │ {'participant_id':<{participant_id_width}} │ {'gamemaker_name':<{gamemaker_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'assessment_score':<{score_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, gs in enumerate(gamemaker_scores):
         if i > 0:
@@ -672,8 +683,9 @@ def display_tributes(tributes):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ TRIBUTES" + " " * (length - 11) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Birth Date':<{dob_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, tribute in enumerate(tributes):
         if i > 0:
@@ -722,8 +734,9 @@ def display_sponsors(connection, sponsors):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ SPONSORS" + " " * (length - 11) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'Total Contributions':<{contrib_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, sponsor in enumerate(sponsors):
         if i > 0:
@@ -762,8 +775,9 @@ def display_sponsorships(sponsorships):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ SPONSORSHIPS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'Amount':<{amount_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, sponsorship in enumerate(sponsorships):
         if i > 0:
@@ -818,8 +832,9 @@ def display_games(games):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAMES" + " " * (length - 8) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Game Number':<{game_width}} │ {'Number of Tributes':<{tribute_count_width}} │ {'Start Date':<{start_width}} │ {'End Date':<{end_width}} │ {'Status':<{status_width}} │ {'Victor(s)':<{victor_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, game in enumerate(games):
         if i > 0:
@@ -867,8 +882,9 @@ def display_gamemakers(gamemakers):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAMEMAKERS" + " " * (length - 13) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Gamemaker ID':<{id_width}} │ {'Name':<{name_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, gamemaker in enumerate(gamemakers):
         if i > 0:
@@ -929,8 +945,9 @@ def display_team_members(team_members):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ TEAM MEMBERS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Member ID':<{id_width}} │ {'Name':<{name_width}} │ {'Roles':<{roles_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, member in enumerate(team_members):
         if i > 0:
@@ -1003,8 +1020,9 @@ def display_participants(participants):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ PARTICIPANTS" + " " * (length - 15) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, participant in enumerate(participants):
         if i > 0:
@@ -1050,8 +1068,9 @@ def display_victors(victors):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ VICTORS" + " " * (length - 10) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Victor ID':<{id_width}} │ {'Victor Name':<{name_width}} │ {'Games Won':<{games_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, victor in enumerate(victors):
         if i > 0:
@@ -1085,8 +1104,9 @@ def display_districts(districts):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ DISTRICTS" + " " * (length - 12) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'District #':<{num_width}} │ {'Industry':<{industry_width}} │ {'Size':<{size_width}} │ {'Wealth':<{wealth_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
     for i, district in enumerate(districts):
         if i > 0:
