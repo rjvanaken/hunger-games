@@ -176,6 +176,55 @@ END $$
 DELIMITER ;
 
 -- ===================================================================
+-- FUNCTION: returns the participant's intelligence score
+-- ===================================================================
+DROP FUNCTION IF EXISTS get_intelligence_score;
+DELIMITER $$
+
+CREATE FUNCTION get_intelligence_score(p_participant_id VARCHAR(64))
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE score INT;
+    
+    SELECT intelligence_score INTO score
+    FROM participant
+    WHERE participant_id = p_participant_id;
+    
+    RETURN score;
+
+END $$
+
+DELIMITER ;
+
+
+
+-- ===================================================================
+-- FUNCTION: returns the participant's likeability score
+-- ===================================================================
+DROP FUNCTION IF EXISTS get_likeability_score;
+DELIMITER $$
+
+CREATE FUNCTION get_likeability_score(p_participant_id VARCHAR(64))
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE score INT;
+    
+    SELECT likeability_score INTO score
+    FROM participant
+    WHERE participant_id = p_participant_id;
+    
+    RETURN score;
+
+END $$
+
+DELIMITER ;
+
+
+SELECT get_likeability_score('10.12.f.1');
+
+-- ===================================================================
 -- FUNCTION: calculates and returns a sponsor's total contributions
 -- ===================================================================
 DROP FUNCTION IF EXISTS get_total_contributions;
@@ -2351,3 +2400,6 @@ INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VAL
 ('75.8.F.1', 5, 11), ('75.8.F.1', 20, 9), ('75.8.F.1', 21, 12), ('75.8.F.1', 22, 11), ('75.8.F.1', 23, 12),
 ('75.12.F.1', 5, 11), ('75.12.F.1', 20, 11), ('75.12.F.1', 21, 10), ('75.12.F.1', 22, 12), ('75.12.F.1', 23, 12),
 ('75.12.M.1', 5, 10), ('75.12.M.1', 20, 11), ('75.12.M.1', 21, 11), ('75.12.M.1', 22, 11), ('75.12.M.1', 23, 12);
+
+
+-- TODO: add intelligence and likeability scores
