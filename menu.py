@@ -70,8 +70,9 @@ def display_game_staff(staff):
     print("║ GAME STAFF" + " " * (length - 13) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Name':<{name_width}} │ {'Role':<{role_width}} │ {'District':<{district_width}} ║")
-    for person in staff:
-        print("╟" + "─" * (length - 2) + "╢")
+    for i, person in enumerate(staff):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {person['name']:<{name_width}} │ {person['role'].title():<{role_width}} │ {person['district']:<{district_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
@@ -87,15 +88,12 @@ def display_game_info_on_dashboard(connection, game_info, ordinal_suffix):
     
     status_color = colors.get_status_color(game_status)
 
-    # arrow_back = " ▶▶▶──────────────────"
-    # arrow_front ="────────────────────➤ "
     arrow_back = " ➤➤➤──────────────────"
     arrow_front ="────────────────────➤ "
     arrow_front_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_front}{Colors.RESET}"
     arrow_back_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_back}{Colors.RESET}"
     title_text = f" THE {game_number}{ordinal_suffix} HUNGER GAMES DASHBOARD "
 
-    # Calculate total text length INCLUDING arrows
     full_text_length = len(arrow_back) + len(title_text) + len(arrow_front)
 
     print("\n╔" + "═" * 78 + "╗")
@@ -200,20 +198,22 @@ def display_tributes_full(tributes):
     district_width = max(len(str(t['district'])) for t in tributes)
     district_width = max(district_width, len('district')) + 5
     
-    # Calculate total length
     length = id_width + name_width + dob_width + gender_width + district_width + 16
     
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ TRIBUTES" + " " * (length - 11) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'tribute_id':<{id_width}} │ {'name':<{name_width}} │ {'birth_date':<{dob_width}} │ {'gender':<{gender_width}} │ {'district':<{district_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     
-    for tribute in tributes:
-        print("╟" + "─" * (length - 2) + "╢")
+    for i, tribute in enumerate(tributes):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         dob_str = str(tribute['dob']) if isinstance(tribute['dob'], str) else tribute['dob'].strftime('%Y-%m-%d')
         print(f"║ {tribute['tribute_id']:<{id_width}} │ {tribute['name']:<{name_width}} │ {dob_str:<{dob_width}} │ {tribute['gender']:<{gender_width}} │ {tribute['district']:<{district_width}} ║")
-    
+        
     print("╚" + "═" * (length - 2) + "╝\n")
+
 
 # DISPLAY SPONSORS FULL
 def display_sponsors_full(sponsors):
@@ -229,7 +229,6 @@ def display_sponsors_full(sponsors):
     name_width = max(len(str(s['name'])) for s in sponsors)
     name_width = max(name_width, len('name')) + 5
     
-    # Calculate total length
     length = id_width + name_width + 7
     
     print("\n╔" + "═" * (length - 2) + "╗")
@@ -237,8 +236,9 @@ def display_sponsors_full(sponsors):
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'sponsor_id':<{id_width}} │ {'name':<{name_width}} ║")
     
-    for sponsor in sponsors:
-        print("╟" + "─" * (length - 2) + "╢")
+    for i, sponsor in enumerate(sponsors):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {sponsor['sponsor_id']:<{id_width}} │ {sponsor['name']:<{name_width}} ║")
     
     print("╚" + "═" * (length - 2) + "╝\n")
@@ -267,7 +267,6 @@ def display_games_full(games):
     game_status_width = max(len(str(g['game_status'])) for g in games)
     game_status_width = max(game_status_width, len('game_status')) + 5
     
-    # Calculate total length
     length = id_width + required_tributes_width + start_date_width + end_date_width + game_status_width + 16
     
     print("\n╔" + "═" * (length - 2) + "╗")
@@ -275,13 +274,12 @@ def display_games_full(games):
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'game_number':<{id_width}} │ {'required_tribute_count':<{required_tributes_width}} │ {'start_date':<{start_date_width}} │ {'end_date':<{end_date_width}} │ {'game_status':<{game_status_width}} ║")
     
-
-    for game in games:
-        print("╟" + "─" * (length - 2) + "╢")
+    for i, game in enumerate(games):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         sd_str = str(game['start_date']) if isinstance(game['start_date'], str) else game['start_date'].strftime('%Y-%m-%d')
         ed_str = game['end_date'].strftime('%Y-%m-%d') if game['end_date'] else 'N/A'
 
-        # Add color to status
         status_color = colors.get_status_color(game['game_status'])
         status_text = game['game_status'].title()
         status_display = f"{status_color}{status_text}{Colors.RESET}"
@@ -289,7 +287,6 @@ def display_games_full(games):
         
         print(f"║ {game['game_number']:<{id_width}} │ {game['required_tribute_count']:<{required_tributes_width}} │ {sd_str:<{start_date_width}} │ {ed_str:<{end_date_width}} │ {status_display}{' ' * status_padding} ║")
         
-    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -308,7 +305,6 @@ def display_gamemakers_full(gamemakers):
     name_width = max(len(str(gm['name'])) for gm in gamemakers)
     name_width = max(name_width, len('name')) + 5
     
-    # Calculate total length
     length = id_width + name_width + 7
     
     print("\n╔" + "═" * (length - 2) + "╗")
@@ -316,8 +312,9 @@ def display_gamemakers_full(gamemakers):
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'gamemaker_id':<{id_width}} │ {'name':<{name_width}} ║")
     
-    for gamemaker in gamemakers:
-        print("╟" + "─" * (length - 2) + "╢")
+    for i, gamemaker in enumerate(gamemakers):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {gamemaker['gamemaker_id']:<{id_width}} │ {gamemaker['name']:<{name_width}} ║")
     
     print("╚" + "═" * (length - 2) + "╝\n")
@@ -340,7 +337,6 @@ def display_team_members_full(team_members):
     victor_width = max(len(str(tm['victor_id']) if tm['victor_id'] else 'N/A') for tm in team_members)
     victor_width = max(victor_width, len('victor_id')) + 5
     
-    # Calculate total length (3 columns + 2 separators)
     length = id_width + name_width + victor_width + 10
     
     print("\n╔" + "═" * (length - 2) + "╗")
@@ -348,9 +344,10 @@ def display_team_members_full(team_members):
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'member_id':<{id_width}} │ {'name':<{name_width}} │ {'victor_id':<{victor_width}} ║")
     
-    for tm in team_members:
+    for i, tm in enumerate(team_members):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         victor_display = str(tm['victor_id']) if tm['victor_id'] else 'N/A'
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {tm['member_id']:<{id_width}} │ {tm['name']:<{name_width}} │ {victor_display:<{victor_width}} ║")
     
     print("╚" + "═" * (length - 2) + "╝\n")
@@ -381,7 +378,6 @@ def display_participants_full(participants):
     like_width = max(len(str(p['likeability_score']) if p['likeability_score'] else 'N/A') for p in participants)
     like_width = max(like_width, len('likeability_score')) + 5
     
-    # Calculate total length (6 columns + 5 separators)
     length = id_width + tribute_width + game_width + placement_width + intel_width + like_width + 19
     
     print("\n╔" + "═" * (length - 2) + "╗")
@@ -389,11 +385,12 @@ def display_participants_full(participants):
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'participant_id':<{id_width}} │ {'tribute_id':<{tribute_width}} │ {'game_number':<{game_width}} │ {'final_placement':<{placement_width}} │ {'intelligence_score':<{intel_width}} │ {'likeability_score':<{like_width}} ║")
     
-    for p in participants:
+    for i, p in enumerate(participants):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         placement_display = str(p['final_placement']) if p['final_placement'] else 'N/A'
         intel_display = str(p['intelligence_score']) if p['intelligence_score'] else 'N/A'
         like_display = str(p['likeability_score']) if p['likeability_score'] else 'N/A'
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {p['participant_id']:<{id_width}} │ {p['tribute_id']:<{tribute_width}} │ {p['game_number']:<{game_width}} │ {placement_display:<{placement_width}} │ {intel_display:<{intel_width}} │ {like_display:<{like_width}} ║")
     
     print("╚" + "═" * (length - 2) + "╝\n")
@@ -418,9 +415,12 @@ def display_victors_full(victors):
     print("║ VICTORS" + " " * (length - 10) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Victor ID':<{id_width}} │ {'Tribute Name':<{name_width}} ║")
-    for victor in victors:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, victor in enumerate(victors):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {victor['victor_id']:<{id_width}} │ {victor['tribute_name']:<{name_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -453,9 +453,12 @@ def display_team_roles_full(team_roles):
     print("║ TEAM ROLES" + " " * (length - 13) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'member_id':<{member_id_width}} │ {'participant_id':<{participant_id_width}} │ {'member_name':<{member_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'member_type':<{type_width}} ║")
-    for tr in team_roles:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, tr in enumerate(team_roles):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {tr['member_id']:<{member_id_width}} │ {tr['participant_id']:<{participant_id_width}} │ {tr['member_name']:<{member_name_width}} │ {tr['tribute_name']:<{tribute_name_width}} │ {tr['member_type']:<{type_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -485,16 +488,18 @@ def display_sponsorships_full(sponsorships):
     amount_width = max(len(f"${s['sponsor_amount']:,.2f}") for s in sponsorships)
     amount_width = max(amount_width, len('sponsor_amount')) + 2
 
-    
     length = sponsor_id_width + participant_id_width + sponsor_name_width + tribute_name_width + game_width + amount_width + 19
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ SPONSORSHIPS" + " " * (length - 15) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'sponsor_id':<{sponsor_id_width}} │ {'participant_id':<{participant_id_width}} │ {'sponsor_name':<{sponsor_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'sponsor_amount':<{amount_width}} ║")
-    for s in sponsorships:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, s in enumerate(sponsorships):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {s['sponsor_id']:<{sponsor_id_width}} │ {s['participant_id']:<{participant_id_width}} │ {s['sponsor_name']:<{sponsor_name_width}} │ {s['tribute_name']:<{tribute_name_width}} │ {s['game_number']:<{game_width}} │ ${s['sponsor_amount']:<{amount_width-1},.2f} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -521,9 +526,12 @@ def display_game_creators_full(game_creators):
     print("║ GAME CREATORS" + " " * (length - 16) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'game_number':<{game_width}} │ {'gamemaker_id':<{gamemaker_id_width}} │ {'gamemaker_name':<{name_width}} ║")
-    for gc in game_creators:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, gc in enumerate(game_creators):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {gc['game_number']:<{game_width}} │ {gc['gamemaker_id']:<{gamemaker_id_width}} │ {gc['gamemaker_name']:<{name_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -544,16 +552,18 @@ def display_game_victors_full(game_victors):
     name_width = max(len(str(gv['tribute_name'])) for gv in game_victors)
     name_width = max(name_width, len('tribute_name')) + 5
 
-    
     length = game_width + victor_id_width + name_width + 10
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAME VICTORS" + " " * (length - 15) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'game_number':<{game_width}} │ {'victor_id':<{victor_id_width}} │ {'tribute_name':<{name_width}} ║")
-    for gv in game_victors:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, gv in enumerate(game_victors):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {gv['game_number']:<{game_width}} │ {gv['victor_id']:<{victor_id_width}} │ {gv['tribute_name']:<{name_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -583,16 +593,18 @@ def display_gamemaker_scores_full(gamemaker_scores):
     score_width = max(len(str(gs['assessment_score'])) for gs in gamemaker_scores)
     score_width = max(score_width, len('assessment_score')) + 5
 
-    
     length = gamemaker_id_width + participant_id_width + gamemaker_name_width + tribute_name_width + game_width + score_width + 19
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAMEMAKER SCORES" + " " * (length - 19) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'gamemaker_id':<{gamemaker_id_width}} │ {'participant_id':<{participant_id_width}} │ {'gamemaker_name':<{gamemaker_name_width}} │ {'tribute_name':<{tribute_name_width}} │ {'game_number':<{game_width}} │ {'assessment_score':<{score_width}} ║")
-    for gs in gamemaker_scores:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, gs in enumerate(gamemaker_scores):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {gs['gamemaker_id']:<{gamemaker_id_width}} │ {gs['participant_id']:<{participant_id_width}} │ {gs['gamemaker_name']:<{gamemaker_name_width}} │ {gs['tribute_name']:<{tribute_name_width}} │ {gs['game_number']:<{game_width}} │ {gs['assessment_score']:<{score_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -662,10 +674,13 @@ def display_tributes(tributes):
     print("║ TRIBUTES" + " " * (length - 11) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Birth Date':<{dob_width}} ║")
-    for tribute in tributes:
+    
+    for i, tribute in enumerate(tributes):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         gender = "Male" if tribute['gender'] == 'm' else "Female"
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {tribute['tribute_id']:<{id_width}} │ {tribute['name']:<{name_width}} │ {tribute['district']:<{district_width}} │ {gender:<{gender_width}} │ {str(tribute['dob']):<{dob_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -709,9 +724,12 @@ def display_sponsors(connection, sponsors):
     print("║ SPONSORS" + " " * (length - 11) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'Total Contributions':<{contrib_width}} ║")
+    
     for i, sponsor in enumerate(sponsors):
-        print("╟" + "─" * (length - 2) + "╢")
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {sponsor['sponsor_id']:<{id_width}} │ {sponsor['name']:<{name_width}} │ ${contributions[i]:<{contrib_width-1},.2f} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -746,9 +764,12 @@ def display_sponsorships(sponsorships):
     print("║ SPONSORSHIPS" + " " * (length - 15) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Sponsor ID':<{sponsor_id_width}} │ {'Participant ID':<{participant_id_width}} │ {'Sponsor Name':<{sponsor_name_width}} │ {'Tribute Name':<{tribute_name_width}} │ {'Game Number':<{game_width}} │ {'Amount':<{amount_width}} ║")
-    for sponsorship in sponsorships:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, sponsorship in enumerate(sponsorships):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {sponsorship['sponsor_id']:<{sponsor_id_width}} │ {sponsorship['participant_id']:<{participant_id_width}} │ {sponsorship['sponsor_name']:<{sponsor_name_width}} │ {sponsorship['tribute_name']:<{tribute_name_width}} │ {sponsorship['game_number']:<{game_width}} │ ${sponsorship['sponsor_amount']:<{amount_width-1},.2f} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -799,17 +820,19 @@ def display_games(games):
     print("║ GAMES" + " " * (length - 8) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Game Number':<{game_width}} │ {'Number of Tributes':<{tribute_count_width}} │ {'Start Date':<{start_width}} │ {'End Date':<{end_width}} │ {'Status':<{status_width}} │ {'Victor(s)':<{victor_width}} ║")
-    for game in games:
+    
+    for i, game in enumerate(games):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         victors = game['victor_names'] if game['victor_names'] else 'TBD'
         
-        # Add color to status
         status_color = colors.get_status_color(game['game_status'])
         status_text = game['game_status'].title()
         status_display = f"{status_color}{status_text}{Colors.RESET}"
         status_padding = status_width - len(status_text)
         
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {game['game_number']:<{game_width}} │ {game['tribute_count']:<{tribute_count_width}} │ {str(game['start_date']):<{start_width}} │ {str(game['end_date']):<{end_width}} │ {status_display}{' ' * status_padding} │ {victors:<{victor_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 # VIEW GAMEMAKERS
@@ -846,9 +869,12 @@ def display_gamemakers(gamemakers):
     print("║ GAMEMAKERS" + " " * (length - 13) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Gamemaker ID':<{id_width}} │ {'Name':<{name_width}} ║")
-    for gamemaker in gamemakers:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, gamemaker in enumerate(gamemakers):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {gamemaker['gamemaker_id']:<{id_width}} │ {gamemaker['name']:<{name_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -905,10 +931,13 @@ def display_team_members(team_members):
     print("║ TEAM MEMBERS" + " " * (length - 15) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Member ID':<{id_width}} │ {'Name':<{name_width}} │ {'Roles':<{roles_width}} ║")
-    for member in team_members:
+    
+    for i, member in enumerate(team_members):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         roles = member['roles'].title() if member['roles'] else 'TBD'
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {member['member_id']:<{id_width}} │ {member['name']:<{name_width}} │ {roles:<{roles_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -976,9 +1005,11 @@ def display_participants(participants):
     print("║ PARTICIPANTS" + " " * (length - 15) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}} ║")
-    for participant in participants:
+    
+    for i, participant in enumerate(participants):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         gender = "Male" if participant['gender'].lower() == 'm' else "Female"
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {participant['participant_id']:<{id_width}} │ {participant['name']:<{name_width}} │ {participant['district']:<{district_width}} │ {gender:<{gender_width}} │ {participant['game_number']:<{game_width}} │ {participant['age_during_games']:<{age_width}} │ {str(participant['training_score']):<{training_width}} │ {str(participant['intelligence_score']):<{intel_width}} │ {str(participant['likeability_score']):<{like_width}} │ {str(participant['final_placement']):<{placement_width}} ║")
         
     print("╚" + "═" * (length - 2) + "╝\n")
@@ -1021,10 +1052,13 @@ def display_victors(victors):
     print("║ VICTORS" + " " * (length - 10) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'Victor ID':<{id_width}} │ {'Victor Name':<{name_width}} │ {'Games Won':<{games_width}} ║")
-    for victor in victors:
+    
+    for i, victor in enumerate(victors):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         games_won = victor['games_won'] if victor['games_won'] else 'TBD'
-        print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {victor['victor_id']:<{id_width}} │ {victor['name']:<{name_width}} │ {games_won:<{games_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -1053,10 +1087,14 @@ def display_districts(districts):
     print("║ DISTRICTS" + " " * (length - 12) + "║")
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'District #':<{num_width}} │ {'Industry':<{industry_width}} │ {'Size':<{size_width}} │ {'Wealth':<{wealth_width}} ║")
-    for district in districts:
-        print("╟" + "─" * (length - 2) + "╢")
+    
+    for i, district in enumerate(districts):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {district['district_num']:<{num_width}} │ {district['industry']:<{industry_width}} │ {district['size']:<{size_width}} │ {district['wealth']:<{wealth_width}} ║")
+    
     print("╚" + "═" * (length - 2) + "╝\n")
+
 
 '''
 ANALYTICS
