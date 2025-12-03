@@ -42,8 +42,12 @@ def display_analytics_menu():
     return choice
 
 
+def display_win_predictions(rows):
+    pass
+
+
 def display_district_success(rates):
-    """Display formatted list of game staff (team members and gamemakers)"""
+    """Display formatted list of districts and their success rates"""
     if not rates:
         print("\nNo information found.")
         return
@@ -75,6 +79,50 @@ def display_district_success(rates):
         print(f"║ {rate['district']:<{district_width}} │ {rate['total_victors']:<{victor_width}} │ {rate['total_tributes']:<{tribute_width}} │ {success:<{rate_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
+
+def display_sponsorship_impact(rows):
+    pass
+
+def display_assessment_analysis(rows):
+    pass
+
+
+def display_victor_age_analysis(results):
+    """Display formatted victor age analysis"""
+    if not results:
+        print("\nNo information found.")
+        return
+    
+    # Calculate column widths
+    age_width = max(len(str(r['age'])) for r in results)
+    age_width = max(age_width, len('Age'))
+    
+    participants_width = max(len(str(r['total_participants'])) for r in results)
+    participants_width = max(participants_width, len('Total Participants'))
+
+    victors_width = max(len(str(r['victors'])) for r in results)
+    victors_width = max(victors_width, len('Victors'))
+    
+    rate_width = max(len(str(r['win_rate'])) for r in results)
+    rate_width = max(rate_width, len('Win Rate')) + 1
+    
+    length = age_width + participants_width + victors_width + rate_width + 13
+        
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║ VICTOR AGE ANALYSIS" + " " * (length - 22) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print(f"║ {'Age':<{age_width}} │ {'Total Participants':<{participants_width}} │ {'Victors':<{victors_width}} │ {'Win Rate':<{rate_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
+    for i, result in enumerate(results):
+        win_rate = utils.convert_to_percentage(result['win_rate'])
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
+        print(f"║ {result['age']:<{age_width}} │ {result['total_participants']:<{participants_width}} │ {result['victors']:<{victors_width}} │ {win_rate:<{rate_width}} ║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+
+
+def display_mentor_success_rates(rows):
+    pass
 
 
 

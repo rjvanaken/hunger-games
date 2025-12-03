@@ -823,19 +823,23 @@ def handle_analytics(connection):
 
 
 def handle_win_predictions(connection):
-    pass
+    rows = ""
+    menu.display_win_predictions(rows)
 def handle_district_success_rates(connection):
-    rows = ops.get_raw_district_success_rates(connection);
+    rows = ops.get_raw_district_success_rates(connection)
     menu.display_district_success(rows)
 def handle_sponsorship_impact(connection):
-    pass
+    rows = ""
+    menu.display_sponsorship_impact(rows)
 def handle_assessment_accuracy(connection):
-    pass
+    rows = ""
+    menu.display_assessment_analysis(rows)
 def handle_victor_age_analysis(connection):
-    pass
+    rows = ops.get_raw_victor_age_patterns(connection)
+    menu.display_victor_age_patterns(rows)
 def handle_mentor_success_rates(connection):
-    pass
-
+    rows = ""
+    menu.display_mentor_success_rates(rows)
 
 
 

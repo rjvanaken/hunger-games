@@ -104,9 +104,17 @@ def get_total_district_tributes(connection):
 # leaving above for now in case I want to use it later, will delete if not
 
 def get_raw_district_success_rates(connection):
-    """runs procedure to get district wins"""
+    """runs procedure to get district success rates"""
     cursor = connection.cursor()
     cursor.callproc('get_district_success_rates')
+    rates = cursor.fetchall()
+    cursor.close()
+    return rates
+
+def get_raw_victor_age_patterns(connection):
+    """runs procedure to get a table of the main ages and their success rates"""
+    cursor = connection.cursor()
+    cursor.callproc('get_victor_age_patterns')
     rates = cursor.fetchall()
     cursor.close()
     return rates

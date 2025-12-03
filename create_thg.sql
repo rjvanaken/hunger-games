@@ -365,8 +365,6 @@ DELIMITER $$
 CREATE PROCEDURE get_district_success_rates()
 BEGIN
 
-
-
     SELECT d.district_num as district, COUNT(v.victor_id) as total_victors, COUNT(p.participant_id) as total_tributes, (COUNT(v.victor_id) / COUNT(p.participant_id)) as success_rate
     FROM district d
     LEFT JOIN tribute t ON d.district_num = t.district
@@ -380,8 +378,25 @@ END $$
 
 DELIMITER ;
 
-CALL get_district_success_rates
+-- ========================================================================
+-- PROCEDURE: returns the success rate for the districts
+-- ========================================================================
 
+DROP PROCEDURE IF EXISTS get_victor_age_patterns;
+DELIMITER $$
+
+CREATE PROCEDURE get_victor_age_patterns()
+BEGIN
+
+    SELECT pd.age_during_games, COUNT(pd.participant_id) as total_tributes, COUNT(CASE WHEN pd.final_placement = 1 THEN 1 END) as total_victors, (COUNT(CASE WHEN pd.final_placement = 1 THEN 1 END) / COUNT(pd.participant_id)) as success_rate
+    FROM participant_details pd
+    WHERE pd.age_during_games BETWEEN 12 AND 18
+    GROUP BY pd.age_during_games
+    ORDER BY success_rate DESC, pd.age_during_games ASC;
+
+END $$
+
+DELIMITER ;
 
 -- ===========================================================================
 -- PROCEDURE: takes tribute_id and creates a victor if doesn't already exist
