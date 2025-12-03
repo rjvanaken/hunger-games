@@ -44,7 +44,7 @@ def main():
             break  
         print(f"{Colors.RED}✗ Your credentials are incorrect, capitol citizen. Please try again{Colors.RESET}\n")
 
-    test_scores(connection)
+    test(connection)
 
 
     # Successful Connection - Main menu loop
@@ -77,7 +77,7 @@ def main():
             print("\nInvalid choice. Please try again.")
 
 
-def test_scores(connection):
+def test(connection):
     id = '74.12.f.1'
     intel = ops.get_intelligence_score(connection, id)
     like = ops.get_likeability_score(connection, id)
@@ -796,12 +796,61 @@ def handle_view_districts(connection):
 
 
 
-
+'''
+ANALYTICS
+'''
 
 def handle_analytics(connection):
     """Handle stats & analytics"""
-    # Your analytics routing here
+    while True:
+        choice = menu.display_analytics_menu()
+        if choice == '1':
+            handle_win_predictions(connection)
+        elif choice == '2':
+            handle_district_success_rates(connection)
+        elif choice == '3':
+            handle_sponsorship_impact(connection)
+        elif choice == '4':
+            handle_assessment_accuracy(connection)
+        elif choice == '5':
+            handle_victor_age_analysis(connection)
+        elif choice == '6':
+            handle_mentor_success_rates(connection)
+        elif choice == "0":
+            break
+        else:
+            print("Invalid entry")
+
+
+def handle_win_predictions(connection):
     pass
+def handle_district_success_rates(connection):
+    pass
+def handle_sponsorship_impact(connection):
+    pass
+def handle_assessment_accuracy(connection):
+    pass
+def handle_victor_age_analysis(connection):
+    pass
+def handle_mentor_success_rates(connection):
+    pass
+
+
+
+    """Displays the menu for analytics"""
+    length = 42
+    print("\n" + "=" * length)
+    print(" STATS & ANALYTICS")
+    print("=" * length)
+    print(" 1: Win Predictions")
+    print(" 2: District Success Rates")
+    print(" 3: Sponsorship Impact")
+    print(" 4: Assessment Accuracy Analysis")
+    print(" 5: Victor Age Analysis")
+    print(" 6: Mentor Success Rates")
+    print("─" * length)
+    print(" 0: RETURN\n")
+    choice = input("Enter choice: ")
 
 
 def close_connection(connection):
