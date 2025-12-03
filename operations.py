@@ -1,5 +1,4 @@
 import pymysql
-from datetime import datetime
 import utils
 
 '''
@@ -78,6 +77,39 @@ def get_raw_chances_of_winning(connection, participant_id, training_score, intel
 # likeability = 0.20
 # training = 0.5
 # intelligence = 0.3
+
+'''
+==============================
+ANALYTICS OPERATIONS
+==============================
+'''
+
+# DISTRICT WIN RATES
+def get_total_district_victors(connection):
+    """runs procedure to get district wins"""
+    cursor = connection.cursor()
+    cursor.callproc('get_total_district_victors')
+    num_victors = cursor.fetchall()
+    cursor.close()
+    return num_victors
+
+def get_total_district_tributes(connection):
+    """runs procedure to get district wins"""
+    cursor = connection.cursor()
+    cursor.callproc('get_total_district_tributes')
+    num_tributes = cursor.fetchall()
+    cursor.close()
+    return num_tributes
+
+# leaving above for now in case I want to use it later, will delete if not
+
+def get_raw_district_success_rates(connection):
+    """runs procedure to get district wins"""
+    cursor = connection.cursor()
+    cursor.callproc('get_district_success_rates')
+    rates = cursor.fetchall()
+    cursor.close()
+    return rates
 
 '''
 ==============================
@@ -245,7 +277,7 @@ def create_tribute(connection, name, birth_date, gender, district):
         return False
     
     if birth_date is not None and birth_date != '':
-        dob = validate_and_convert_date(birth_date)
+        dob = utils.validate_and_convert_date(birth_date)
     
     
     try:
@@ -396,7 +428,7 @@ def create_game(connection, game_number, start_date, required_tribute_count=24):
         print("\nGame number must be greater than 0")
         return False
     
-    start_date = validate_and_convert_date(start_date)
+    start_date = utils.validate_and_convert_date(start_date)
     if start_date == None:
         print("\nStart date is required")
         False
@@ -1032,19 +1064,4 @@ def delete_gamemaker_score(connection, gamemaker_id, participant_id):
         cursor.close()
 
 
-
-
-
-
-'''
-==============
-UTILITIES
-==============
-'''
-def validate_and_convert_date(date_string):
-    try:
-        date_obj = datetime.strptime(date_string, "%Y-%m-%d").date()
-        return date_obj
-    except ValueError:
-        return None 
     

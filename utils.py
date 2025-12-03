@@ -1,4 +1,4 @@
-import operations as ops
+from datetime import datetime
 
 def prepare_num_for_update(value, attribute_name, min=None, max=None):
     """
@@ -46,7 +46,7 @@ def prepare_enum_for_update(value, list, attribute_name):
             print(f"\n{attribute_name} must be one of the following: {list}")
             return False
     else:
-        value = None;
+        value = None
     
     return value
     
@@ -54,7 +54,7 @@ def prepare_date_for_update(date):
     if date == '':
         return None
     if date is not None and date != '':
-        date = ops.validate_and_convert_date(date)
+        date = validate_and_convert_date(date)
         if date == None:
             print("\nIncorrect date format")
             return False
@@ -63,3 +63,11 @@ def prepare_date_for_update(date):
 def convert_to_percentage(num):
     num = (num * 100)
     return f"{num:.2f}%"
+
+
+def validate_and_convert_date(date_string):
+    try:
+        date_obj = datetime.strptime(date_string, "%Y-%m-%d").date()
+        return date_obj
+    except ValueError:
+        return None 

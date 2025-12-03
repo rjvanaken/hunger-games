@@ -311,6 +311,74 @@ END $$
 DELIMITER ;	
 
 
+
+-- ========================================================================
+-- PROCEDURE: returns the number of victors per district
+-- ========================================================================
+DROP PROCEDURE IF EXISTS get_total_district_victors;
+DELIMITER $$
+
+CREATE PROCEDURE get_total_district_victors()
+BEGIN
+
+    SELECT d.district_num as district, COUNT(v.victor_id) as victors
+    FROM district d
+    LEFT JOIN tribute t ON d.district_num = t.district
+    LEFT JOIN victor v ON t.tribute_id = v.victor_id
+    GROUP BY d.district_num
+    ORDER BY victors DESC, d.district_num ASC;
+END $$
+
+DELIMITER ;
+
+CALL get_total_district_victors();
+
+
+-- ========================================================================
+-- PROCEDURE: returns the number of tributes per district
+-- ========================================================================
+DROP PROCEDURE IF EXISTS get_total_district_tributes;
+DELIMITER $$
+
+CREATE PROCEDURE get_total_district_tributes()
+BEGIN
+
+    SELECT d.district_num as district, COUNT(t.tribute_id) as tributes
+    FROM district d
+    LEFT JOIN tribute t ON d.district_num = t.district
+    GROUP BY d.district_num
+    ORDER BY d.district_num ASC;
+
+END $$
+
+DELIMITER ;
+
+CALL get_total_district_tributes();
+
+-- ========================================================================
+-- PROCEDURE: returns the success rate for the district
+-- ========================================================================
+DROP PROCEDURE IF EXISTS get_district_success_rates;
+DELIMITER $$
+
+CREATE PROCEDURE get_district_success_rates()
+BEGIN
+
+    SELECT 
+    d.district_num as district, COUNT(v.victor_id) as total_victors, COUNT(p.participant_id) as total_tributes, AVG(total_victors / total_tributes) as success_rate
+    FROM district d
+    LEFT JOIN tribute t ON d.district_num = t.district
+    LEFT JOIN victor v ON t.tribute_id = v.victor_id
+    LEFT JOIN participant p ON t.tribute_id = p.tribute_id
+    GROUP BY d.district_num
+    ORDER BY victors DESC, d.district_num ASC;
+
+
+END $$
+
+DELIMITER ;
+
+
 -- ===========================================================================
 -- PROCEDURE: takes tribute_id and creates a victor if doesn't already exist
 -- throws error if invalid parameter

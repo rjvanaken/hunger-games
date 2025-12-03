@@ -41,6 +41,36 @@ def display_analytics_menu():
     return choice
 
 
+def display_district_success(rates):
+    """Display formatted list of game staff (team members and gamemakers)"""
+    if not rates:
+        print("\nNo information found.")
+        return
+    
+    # Calculate column widths
+    district_width = max(len(str(r['district'])) for r in rates)
+    district_width = max(district_width, len('District'))
+    
+    victor_width = max(len(str(r['total_victors'])) for r in rates)
+    victor_width = max(victor_width, len('Total Victors'))
+
+    tribute_width = max(len(str(r['total_tributes'])) for r in rates)
+    tribute_width = max(tribute_width, len('Total Tributes'))
+    
+    rate_width = max(len(str(s['success_rate'])) for s in rates)
+    rate_width = max(rate_width, len('Success Rate')) + 5
+    
+    length = district_width + victor_width + tribute_width + rate_width + 10
+        
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║ DISTRICT SUCCESS RATES" + " " * (length - 13) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print(f"║ {'District':<{district_width}} │ {'Total Victors':<{victor_width}} │ {'Total Tributes':<{tribute_width}} │ {'Success Rate':<{rate_width}} ║")
+    for i, rate in enumerate(rates):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
+        print(f"║ {rate['district']:<{district_width}} │ {rate['total_victors'].title():<{victor_width}} │ {rate['total_tributes']:<{tribute_width}} │ {rate['success_rate']:<{rate_width}} ║")
+    print("╚" + "═" * (length - 2) + "╝\n")
 
 
 
