@@ -4,7 +4,7 @@ import utils
 
 '''
 ==============================
-CALCULATIONS
+CALCULATIONS / GET FUNCTIONS
 ==============================
 '''
 
@@ -14,13 +14,6 @@ def get_sponsor_total(connection, sponsor_id):
     result = cursor.fetchone()
     cursor.close()
     return result['total'] if result else 0
-
-def get_training_score(connection, participant_id):
-    cursor = connection.cursor()
-    cursor.execute("SELECT get_training_score(%s) AS score", (participant_id,))
-    result = cursor.fetchone()
-    cursor.close()
-    return result['score'] if result else 0
 
 def get_age_during_games(connection, participant_id):
     cursor = connection.cursor()
@@ -36,19 +29,28 @@ def get_num_tributes_remaining(connection, game_number):
     cursor.close()
     return result['remaining'] if result else 0
 
-def get_likeability(connection, participant_id):
+
+# PROBABILITY OF WINNING
+def get_training_score(connection, participant_id):
     cursor = connection.cursor()
-    cursor.execute("", (participant_id))
+    cursor.execute("SELECT get_training_score(%s) AS score", (participant_id,))
     result = cursor.fetchone()
     cursor.close()
-    return result['likeability'] if result else 0
+    return result['score'] if result else 0
+
+def get_likeability(connection, participant_id):
+    cursor = connection.cursor()
+    cursor.execute("SELECT get_likeability_score(%s) AS score", (participant_id))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['score'] if result else 0
 
 def get_intelligence(connection, participant_id):
     cursor = connection.cursor()
-    cursor.execute("", (participant_id))
+    cursor.execute("SELECT get_intelligence_score(%s) AS score", (participant_id))
     result = cursor.fetchone()
     cursor.close()
-    return result['intelligence'] if result else 0
+    return result['score'] if result else 0
 
 def get_chances_of_winning(connection, participant_id, training_score, intelligence_score, likeability_score):
     """_summary_

@@ -222,8 +222,6 @@ END $$
 DELIMITER ;
 
 
-SELECT get_likeability_score('10.12.f.1');
-
 -- ===================================================================
 -- FUNCTION: calculates and returns a sponsor's total contributions
 -- ===================================================================
