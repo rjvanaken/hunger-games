@@ -72,7 +72,7 @@ def display_game_staff(staff):
     print(f"║ {'Name':<{name_width}} │ {'Role':<{role_width}} │ {'District':<{district_width}} ║")
     for person in staff:
         print("╟" + "─" * (length - 2) + "╢")
-        print(f"║ {person['name']:<{name_width}} │ {person['role']:<{role_width}} │ {person['district']:<{district_width}} ║")
+        print(f"║ {person['name']:<{name_width}} │ {person['role'].title():<{role_width}} │ {person['district']:<{district_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -977,7 +977,7 @@ def display_participants(participants):
     print("╠" + "═" * (length - 2) + "╣")
     print(f"║ {'ID':<{id_width}} │ {'Name':<{name_width}} │ {'District':<{district_width}} │ {'Gender':<{gender_width}} │ {'Game Number':<{game_width}} │ {'Age During Games':<{age_width}} │ {'Training Score':<{training_width}} │ {'Intelligence Score':<{intel_width}} │ {'Likeability Score':<{like_width}} │ {'Final Placement':<{placement_width}} ║")
     for participant in participants:
-        gender = "Male" if participant['gender'] == 'M' else "Female"
+        gender = "Male" if participant['gender'].lower() == 'm' else "Female"
         print("╟" + "─" * (length - 2) + "╢")
         print(f"║ {participant['participant_id']:<{id_width}} │ {participant['name']:<{name_width}} │ {participant['district']:<{district_width}} │ {gender:<{gender_width}} │ {participant['game_number']:<{game_width}} │ {participant['age_during_games']:<{age_width}} │ {str(participant['training_score']):<{training_width}} │ {str(participant['intelligence_score']):<{intel_width}} │ {str(participant['likeability_score']):<{like_width}} │ {str(participant['final_placement']):<{placement_width}} ║")
         

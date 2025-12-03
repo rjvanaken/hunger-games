@@ -4,6 +4,7 @@ import operations as ops
 import menu
 from datetime import datetime
 from colors import Colors
+import time
 
 def main():
     """Main application loop"""
@@ -12,7 +13,7 @@ def main():
     # arrow_back = " ▶▶▶──────────────────"
     # arrow_front ="────────────────────➤ "
     arrow_back = " ➤➤➤──────────────────"
-    arrow_front ="────────────────────➤ "
+    arrow_front ="───────────────────➤ "
     arrow_back_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_back}{Colors.RESET}"
     arrow_front_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_front}{Colors.RESET}"
     title_text = " THE HUNGER GAMES MANAGEMENT SYSTEM "
@@ -22,16 +23,23 @@ def main():
     print("=" * 80)
     print(f"{arrow_back_with_color}{title_text}{arrow_front_with_color}" + " " * (80 - full_text_length))
     print("=" * 80)
+    
     # Get database credentials and connect
     while True:
-        print("\nYOUR CAPITOL CREDENTIALS:")
-        # username, password = database.get_credentials()
-        username, password = "root", "test"
-        print("\nVerifying identity...\n")
+        print(f"\n{Colors.BOLD}ENTER YOUR CAPITOL CREDENTIALS:{Colors.RESET}")
+        username, password = database.get_credentials()
+        # username, password = "snow", "lucygray"
+        print(f"\n{Colors.BLUE}Verifying identity", end="", flush=True)
+        for i in range(3):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        print(f"{Colors.RESET}\n")
         connection = database.connect_to_database(username, password)
         if connection is not None:
+            print(f"{Colors.GREEN}✓ Successfully connected to the capitol database!{Colors.RESET}")
             break  
-        print("Your credentials are incorrect, capitol citizen. Please try again\n")
+        print(f"{Colors.RED}✗ Your credentials are incorrect, capitol citizen. Please try again{Colors.RESET}\n")
 
     # Successful Connection - Main menu loop
     while True:

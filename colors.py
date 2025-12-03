@@ -1,10 +1,11 @@
 class Colors:
     RESET = '\033[0m'
     GREEN = '\033[92m'
-    YELLOW = '\033[93m'
+    YELLOW = '\033[38;5;220m'
     ORANGE = '\033[38;5;208m'
     BLUE = '\033[94m'
     CYAN = '\033[96m'
+    RED = '\033[91m'
     BOLD = '\033[1m'
 
 def get_status_color(status):

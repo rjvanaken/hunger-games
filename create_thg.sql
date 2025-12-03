@@ -3,6 +3,9 @@ CREATE DATABASE IF NOT EXISTS hunger_games;
 
 use hunger_games;
 
+CREATE USER 'snow'@'localhost' IDENTIFIED BY 'lucygray';
+GRANT ALL PRIVILEGES ON hunger_games.* TO 'snow'@'localhost';
+FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS district (
 	district_num INT PRIMARY KEY,

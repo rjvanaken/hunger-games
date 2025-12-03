@@ -1,4 +1,5 @@
 import pymysql
+from colors import Colors
 
 def get_credentials():
     """Prompt for username and password"""
@@ -7,7 +8,6 @@ def get_credentials():
     return username, password
 
 def connect_to_database(username, password) :
-    """Step 11: Connect with retry on failure"""
     try:
         connection = pymysql.connect(
             host='localhost',
@@ -18,8 +18,7 @@ def connect_to_database(username, password) :
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
-        print("Successfully connected to the capitol database!")
         return connection
     except pymysql.Error as e:
-        print(f"Error connecting to database: {e}")
+        # print(f"{Colors.RED}✗ Error connecting to database: {e}{Colors.RESET}")
         return None
