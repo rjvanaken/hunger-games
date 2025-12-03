@@ -1,6 +1,7 @@
 import operations as ops
 import colors as colors
 from colors import Colors
+import utils
 
 def display_menu():
     """Top menu options"""
@@ -58,18 +59,20 @@ def display_district_success(rates):
     tribute_width = max(tribute_width, len('Total Tributes'))
     
     rate_width = max(len(str(s['success_rate'])) for s in rates)
-    rate_width = max(rate_width, len('Success Rate')) + 5
+    rate_width = max(rate_width, len('Success Rate')) + 1
     
-    length = district_width + victor_width + tribute_width + rate_width + 10
+    length = district_width + victor_width + tribute_width + rate_width + 13
         
     print("\n╔" + "═" * (length - 2) + "╗")
-    print("║ DISTRICT SUCCESS RATES" + " " * (length - 13) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("║ DISTRICT SUCCESS RATES" + " " * (length - 25) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'District':<{district_width}} │ {'Total Victors':<{victor_width}} │ {'Total Tributes':<{tribute_width}} │ {'Success Rate':<{rate_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     for i, rate in enumerate(rates):
+        success = utils.convert_to_percentage(rate['success_rate'])
         if i > 0:
             print("╟" + "─" * (length - 2) + "╢")
-        print(f"║ {rate['district']:<{district_width}} │ {rate['total_victors'].title():<{victor_width}} │ {rate['total_tributes']:<{tribute_width}} │ {rate['success_rate']:<{rate_width}} ║")
+        print(f"║ {rate['district']:<{district_width}} │ {rate['total_victors']:<{victor_width}} │ {rate['total_tributes']:<{tribute_width}} │ {success:<{rate_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -125,8 +128,9 @@ def display_game_staff(staff):
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ GAME STAFF" + " " * (length - 13) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
+    print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Name':<{name_width}} │ {'Role':<{role_width}} │ {'District':<{district_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
     for i, person in enumerate(staff):
         if i > 0:
             print("╟" + "─" * (length - 2) + "╢")

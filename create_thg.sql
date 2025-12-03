@@ -356,27 +356,31 @@ DELIMITER ;
 CALL get_total_district_tributes();
 
 -- ========================================================================
--- PROCEDURE: returns the success rate for the district
+-- PROCEDURE: returns the success rate for the districts
 -- ========================================================================
+
 DROP PROCEDURE IF EXISTS get_district_success_rates;
 DELIMITER $$
 
 CREATE PROCEDURE get_district_success_rates()
 BEGIN
 
-    SELECT 
-    d.district_num as district, COUNT(v.victor_id) as total_victors, COUNT(p.participant_id) as total_tributes, AVG(total_victors / total_tributes) as success_rate
+
+
+    SELECT d.district_num as district, COUNT(v.victor_id) as total_victors, COUNT(p.participant_id) as total_tributes, (COUNT(v.victor_id) / COUNT(p.participant_id)) as success_rate
     FROM district d
     LEFT JOIN tribute t ON d.district_num = t.district
     LEFT JOIN victor v ON t.tribute_id = v.victor_id
     LEFT JOIN participant p ON t.tribute_id = p.tribute_id
     GROUP BY d.district_num
-    ORDER BY victors DESC, d.district_num ASC;
+    ORDER BY success_rate DESC, d.district_num ASC;
 
 
 END $$
 
 DELIMITER ;
+
+CALL get_district_success_rates
 
 
 -- ===========================================================================

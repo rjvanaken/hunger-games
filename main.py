@@ -825,7 +825,8 @@ def handle_analytics(connection):
 def handle_win_predictions(connection):
     pass
 def handle_district_success_rates(connection):
-    pass
+    rows = ops.get_raw_district_success_rates(connection);
+    menu.display_district_success(rows)
 def handle_sponsorship_impact(connection):
     pass
 def handle_assessment_accuracy(connection):
@@ -836,21 +837,6 @@ def handle_mentor_success_rates(connection):
     pass
 
 
-
-    """Displays the menu for analytics"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" STATS & ANALYTICS")
-    print("=" * length)
-    print(" 1: Win Predictions")
-    print(" 2: District Success Rates")
-    print(" 3: Sponsorship Impact")
-    print(" 4: Assessment Accuracy Analysis")
-    print(" 5: Victor Age Analysis")
-    print(" 6: Mentor Success Rates")
-    print("─" * length)
-    print(" 0: RETURN\n")
-    choice = input("Enter choice: ")
 
 
 def close_connection(connection):
