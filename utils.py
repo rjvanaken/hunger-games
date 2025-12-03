@@ -58,3 +58,8 @@ def prepare_date_for_update(date):
         if date == None:
             print("\nIncorrect date format")
             return False
+        
+
+def convert_to_percentage(num):
+    num = (num * 100)
+    return f"{num:.2f}%"

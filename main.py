@@ -4,6 +4,7 @@ import operations as ops
 import menu
 from datetime import datetime
 from colors import Colors
+import utils
 import time
 
 def main():
@@ -27,19 +28,24 @@ def main():
     # Get database credentials and connect
     while True:
         print(f"\n{Colors.BOLD}ENTER YOUR CAPITOL CREDENTIALS:{Colors.RESET}")
-        username, password = database.get_credentials()
-        # username, password = "snow", "lucygray"
-        print(f"\n{Colors.BLUE}Verifying identity", end="", flush=True)
-        for i in range(3):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-            time.sleep(0.5)
-        print(f"{Colors.RESET}\n")
+        # username, password = database.get_credentials()
+        username, password = "snow", "lucygray"
+
+        # print(f"\n{Colors.BLUE}Verifying identity", end="", flush=True)
+        # for i in range(3):
+        #     time.sleep(0.5)
+        #     print(".", end="", flush=True)
+        #     time.sleep(0.5)
+        # print(f"{Colors.RESET}\n")
+
         connection = database.connect_to_database(username, password)
         if connection is not None:
             print(f"{Colors.GREEN}✓ Successfully connected to the capitol database!{Colors.RESET}")
             break  
         print(f"{Colors.RED}✗ Your credentials are incorrect, capitol citizen. Please try again{Colors.RESET}\n")
+
+    test_scores(connection)
+
 
     # Successful Connection - Main menu loop
     while True:
@@ -69,6 +75,21 @@ def main():
             
         else:
             print("\nInvalid choice. Please try again.")
+
+
+def test_scores(connection):
+    id = '74.12.f.1'
+    intel = ops.get_intelligence_score(connection, id)
+    like = ops.get_likeability_score(connection, id)
+    train = ops.get_training_score(connection, id)
+    print(intel)
+    print(like)
+    print(train)
+    prob = ops.get_raw_chances_of_winning(connection, id, train, intel, like)
+    print(prob)
+    print(utils.convert_to_percentage(prob))
+
+
 
 def handle_select_game(connection):
     """Handle game selection and game operations"""

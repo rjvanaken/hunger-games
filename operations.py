@@ -38,21 +38,21 @@ def get_training_score(connection, participant_id):
     cursor.close()
     return result['score'] if result else 0
 
-def get_likeability(connection, participant_id):
+def get_likeability_score(connection, participant_id):
     cursor = connection.cursor()
     cursor.execute("SELECT get_likeability_score(%s) AS score", (participant_id))
     result = cursor.fetchone()
     cursor.close()
     return result['score'] if result else 0
 
-def get_intelligence(connection, participant_id):
+def get_intelligence_score(connection, participant_id):
     cursor = connection.cursor()
     cursor.execute("SELECT get_intelligence_score(%s) AS score", (participant_id))
     result = cursor.fetchone()
     cursor.close()
     return result['score'] if result else 0
 
-def get_chances_of_winning(connection, participant_id, training_score, intelligence_score, likeability_score):
+def get_raw_chances_of_winning(connection, participant_id, training_score, intelligence_score, likeability_score):
     """_summary_
 
     Args:
@@ -66,11 +66,14 @@ def get_chances_of_winning(connection, participant_id, training_score, intellige
         the participant's chances of winning, with 2 decimal places
     """
     training_score = get_training_score(connection, participant_id) * 0.5
-    intelligence_score = get_intelligence(connection, participant_id) * 0.3
-    likeability_score = get_likeability(connection, participant_id) * 0.2
+    intelligence_score = get_intelligence_score(connection, participant_id) * 0.3
+    likeability_score = get_likeability_score(connection, participant_id) * 0.2
 
-    chances = (training_score + intelligence_score + likeability_score / 11) * 100
-    return (f"{str(chances)}.2f")
+
+    print(training_score, intelligence_score, likeability_score)
+
+    chances = ((training_score + intelligence_score + likeability_score) / 11)
+    return chances
 
 # likeability = 0.20
 # training = 0.5

@@ -161,10 +161,10 @@ DROP FUNCTION IF EXISTS get_training_score;
 DELIMITER $$
 
 CREATE FUNCTION get_training_score(p_participant_id VARCHAR(64))
-RETURNS DECIMAL(2, 0)
+RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE training_score DECIMAL(2, 0);
+    DECLARE training_score INT;
     
     SELECT ROUND(AVG(assessment_score)) INTO training_score
     FROM gamemaker_score
