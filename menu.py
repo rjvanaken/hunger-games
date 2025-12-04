@@ -9,7 +9,7 @@ def display_menu():
     print("\n" + "=" * length)
     print(" MENU")
     print("=" * length)
-    print(" 1: View Game Dashboard - View game information")
+    print(" 1: View Game Dashboard")
     print(" 2: Browse Records")
     print(" 3: Manage Records")
     print(" 4: Get Stats & Analytics")
