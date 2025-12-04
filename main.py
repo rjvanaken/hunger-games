@@ -823,8 +823,24 @@ def handle_analytics(connection):
 
 
 def handle_win_predictions(connection):
-    rows = ""
-    menu.display_win_predictions(rows)
+    rows = ops.view_games(connection)
+    menu.display_games(rows)
+    while True:
+        game_number = menu.get_number_input("\nEnter the game number to view its win predictions or 0 to RETURN")
+        if game_number == 0:
+            break
+        rows = ops.view_games(connection, game_number)
+        if not rows:
+            print("\nGame does not exist. Please try again.\n")
+            continue
+        rows = ops.get_win_predictions(connection, game_number)
+        menu.display_win_predictions(rows, game_number)
+
+        if not menu.get_yes_no_input('Would you like to view another game? (Y/N)'):
+            break
+        rows = ops.view_games(connection)
+        menu.display_games(rows)
+
 def handle_district_success_rates(connection):
     rows = ops.get_raw_district_success_rates(connection)
     menu.display_district_success(rows)
@@ -836,7 +852,7 @@ def handle_assessment_accuracy(connection):
     menu.display_assessment_analysis(rows)
 def handle_victor_age_analysis(connection):
     rows = ops.get_raw_victor_age_patterns(connection)
-    menu.display_victor_age_patterns(rows)
+    menu.display_victor_age_analysis(rows)
 def handle_mentor_success_rates(connection):
     rows = ""
     menu.display_mentor_success_rates(rows)

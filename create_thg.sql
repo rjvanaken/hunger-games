@@ -3,6 +3,8 @@ CREATE DATABASE IF NOT EXISTS hunger_games;
 
 use hunger_games;
 
+DROP USER IF EXISTS 'snow'@'localhost';
+
 CREATE USER 'snow'@'localhost' IDENTIFIED BY 'lucygray';
 GRANT ALL PRIVILEGES ON hunger_games.* TO 'snow'@'localhost';
 FLUSH PRIVILEGES;
@@ -174,6 +176,28 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+
+-- ===================================================================
+-- FUNCTION: returns the participant's chances of winning
+-- ===================================================================
+DROP FUNCTION IF EXISTS calculate_win_prediction;
+DELIMITER $$
+
+CREATE FUNCTION calculate_win_prediction(
+    p_training INT,
+    p_intelligence INT, 
+    p_likeability INT
+)
+RETURNS DECIMAL(5,4)
+DETERMINISTIC
+BEGIN
+    RETURN (p_training * 0.5 + p_intelligence * 0.3 + p_likeability * 0.2) / 11;
+END $$
+
+DELIMITER ;
+
 
 -- ===================================================================
 -- FUNCTION: returns the participant's intelligence score
@@ -379,7 +403,7 @@ END $$
 DELIMITER ;
 
 -- ========================================================================
--- PROCEDURE: returns the success rate for the districts
+-- PROCEDURE: returns the success rate for the ages
 -- ========================================================================
 
 DROP PROCEDURE IF EXISTS get_victor_age_patterns;
@@ -393,6 +417,26 @@ BEGIN
     WHERE pd.age_during_games BETWEEN 12 AND 18
     GROUP BY pd.age_during_games
     ORDER BY success_rate DESC, pd.age_during_games ASC;
+
+END $$
+
+DELIMITER ;
+
+-- ========================================================================
+-- PROCEDURE: returns the win predictions for a given game
+-- ========================================================================
+
+DROP PROCEDURE IF EXISTS get_win_predictions;
+DELIMITER $$
+
+CREATE PROCEDURE get_win_predictions(p_game_number INT)
+BEGIN
+
+    SELECT pd.participant_id, pd.name, pd.district, pd.training_score, pd.intelligence_score, pd.likeability_score, 
+    calculate_win_prediction(pd.training_score, pd.intelligence_score, pd.likeability_score) as chances_of_winning
+    FROM participant_details pd
+    WHERE game_number = p_game_number
+    ORDER BY chances_of_winning DESC;
 
 END $$
 

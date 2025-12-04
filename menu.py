@@ -42,8 +42,63 @@ def display_analytics_menu():
     return choice
 
 
-def display_win_predictions(rows):
-    pass
+def display_win_predictions(predictions, game_number):
+    """Display formatted list of win predictions for a game"""
+    if not predictions:
+        print("\nNo predictions found.")
+        return
+    
+    # Calculate column widths
+    name_width = max(len(str(p['name'])) for p in predictions)
+    name_width = max(name_width, len('Tribute Name'))
+    
+    district_width = max(len(str(p['district'])) for p in predictions)
+    district_width = max(district_width, len('District'))
+    
+    training_width = max(len(str(p['training_score'])) for p in predictions)
+    training_width = max(training_width, len('Training'))
+    
+    intel_width = max(len(str(p['intelligence_score'])) for p in predictions)
+    intel_width = max(intel_width, len('Intelligence'))
+    
+    like_width = max(len(str(p['likeability_score'])) for p in predictions)
+    like_width = max(like_width, len('Likeability'))
+    
+    prediction_width = len('Chances of Winning') + 1
+    
+    length = name_width + district_width + training_width + intel_width + like_width + prediction_width + 19
+        
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print(f"║ GAME {game_number} WIN PREDICTIONS" + " " * (length - len(f" GAME {game_number} WIN PREDICTIONS") - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print(f"║ {'Tribute Name':<{name_width}} │ {'District':<{district_width}} │ {'Training':<{training_width}} │ {'Intelligence':<{intel_width}} │ {'Likeability':<{like_width}} │ {'Chances of Winning':<{prediction_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
+    
+    for i, prediction in enumerate(predictions):
+
+        if prediction['chances_of_winning'] is None:
+            chance = "N/A"
+        else:
+            chance = utils.convert_to_percentage(prediction['chances_of_winning'])
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
+        print(f"║ {prediction['name']:<{name_width}} │ {prediction['district']:<{district_width}} │ {prediction['training_score'] or 'N/A':<{training_width}} │ {prediction['intelligence_score'] or 'N/A':<{intel_width}} │ {prediction['likeability_score'] or 'N/A':<{like_width}} │ {chance:<{prediction_width}} ║")
+        
+    print("╚" + "═" * (length - 2) + "╝\n")
+
+
+    # Show the predicted winner
+    if predictions and predictions[0]['chances_of_winning'] is not None:
+        winner = predictions[0]  # First one (highest chance)
+        winner_name = winner['name']
+        chance = utils.convert_to_percentage(winner['chances_of_winning'])
+        
+        box_width = 50
+        print("╔" + "═" * box_width + "╗")
+        print(f"║{' ' * ((box_width - len(f'★ PREDICTED VICTOR ★')) // 2)}★ PREDICTED VICTOR ★{' ' * ((box_width - len(f'★ PREDICTED VICTOR ★')) // 2)}║")
+        print(f"║{' ' * ((box_width - len(winner_name)) // 2)}{Colors.YELLOW}{winner_name}{Colors.RESET}{' ' * ((box_width - len(winner_name)) // 2)}║")
+        print(f"║{' ' * ((box_width - len(f'Odds: {chance}')) // 2)}Odds: {chance}{' ' * ((box_width - len(f'Odds: {chance}')) // 2)}║")
+        print("╚" + "═" * box_width + "╝\n")
 
 
 def display_district_success(rates):
@@ -94,16 +149,16 @@ def display_victor_age_analysis(results):
         return
     
     # Calculate column widths
-    age_width = max(len(str(r['age'])) for r in results)
+    age_width = max(len(str(r['age_during_games'])) for r in results)
     age_width = max(age_width, len('Age'))
     
-    participants_width = max(len(str(r['total_participants'])) for r in results)
-    participants_width = max(participants_width, len('Total Participants'))
+    participants_width = max(len(str(r['total_tributes'])) for r in results)
+    participants_width = max(participants_width, len('Total Tributes'))
 
-    victors_width = max(len(str(r['victors'])) for r in results)
+    victors_width = max(len(str(r['total_victors'])) for r in results)
     victors_width = max(victors_width, len('Victors'))
     
-    rate_width = max(len(str(r['win_rate'])) for r in results)
+    rate_width = max(len(str(r['success_rate'])) for r in results)
     rate_width = max(rate_width, len('Win Rate')) + 1
     
     length = age_width + participants_width + victors_width + rate_width + 13
@@ -111,13 +166,13 @@ def display_victor_age_analysis(results):
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ VICTOR AGE ANALYSIS" + " " * (length - 22) + "║")
     print("╟" + "─" * (length - 2) + "╢")
-    print(f"║ {'Age':<{age_width}} │ {'Total Participants':<{participants_width}} │ {'Victors':<{victors_width}} │ {'Win Rate':<{rate_width}} ║")
+    print(f"║ {'Age':<{age_width}} │ {'Total Tributes':<{participants_width}} │ {'Total Victors':<{victors_width}} │ {'Win Rate':<{rate_width}} ║")
     print("╠" + "═" * (length - 2) + "╣")
     for i, result in enumerate(results):
-        win_rate = utils.convert_to_percentage(result['win_rate'])
+        success_rate = utils.convert_to_percentage(result['success_rate'])
         if i > 0:
             print("╟" + "─" * (length - 2) + "╢")
-        print(f"║ {result['age']:<{age_width}} │ {result['total_participants']:<{participants_width}} │ {result['victors']:<{victors_width}} │ {win_rate:<{rate_width}} ║")
+        print(f"║ {result['age_during_games']:<{age_width}} │ {result['total_tributes']:<{participants_width}} │ {result['total_victors']:<{victors_width}} │ {success_rate:<{rate_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
@@ -1171,14 +1226,14 @@ def display_victors(victors):
     name_width = max(name_width, len('Victor Name'))
     
     games_width = max(len(str(v['games_won']) if v['games_won'] else 'TBD') for v in victors)
-    games_width = max(games_width, len('Games Won')) + 5
+    games_width = max(games_width, len('Game(s) Won')) + 5
     
     length = id_width + name_width + games_width + 10
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ VICTORS" + " " * (length - 10) + "║")
     print("╟" + "─" * (length - 2) + "╢")
-    print(f"║ {'Victor ID':<{id_width}} │ {'Victor Name':<{name_width}} │ {'Games Won':<{games_width}} ║")
+    print(f"║ {'Victor ID':<{id_width}} │ {'Victor Name':<{name_width}} │ {'Game(s) Won':<{games_width}} ║")
     print("╠" + "═" * (length - 2) + "╣")
     
     for i, victor in enumerate(victors):

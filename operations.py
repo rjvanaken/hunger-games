@@ -83,6 +83,14 @@ def get_raw_chances_of_winning(connection, participant_id, training_score, intel
 ANALYTICS OPERATIONS
 ==============================
 '''
+# WIN PREDICTIONS
+def get_win_predictions(connection, game):
+    """runs procedure to get the win predictions for a provided game"""
+    cursor = connection.cursor()
+    cursor.callproc('get_win_predictions', [game])
+    predictions = cursor.fetchall()
+    cursor.close()
+    return predictions
 
 # DISTRICT WIN RATES
 def get_total_district_victors(connection):
