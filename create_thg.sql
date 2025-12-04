@@ -1278,10 +1278,10 @@ DELIMITER ;
 -- ================================
 
 -- view victors (used for delete)
-DROP PROCEDURE IF EXISTS view_victors_for_delete;
+DROP PROCEDURE IF EXISTS view_victors_for_ref;
 DELIMITER $$
 
-CREATE PROCEDURE view_victors_for_delete()
+CREATE PROCEDURE view_victors_for_ref()
 BEGIN
 
     SELECT v.victor_id, t.name as tribute_name
@@ -1372,10 +1372,10 @@ DELIMITER ;
 
 
 -- view team_roles (used for delete and view)
-DROP PROCEDURE IF EXISTS view_team_roles_for_delete;
+DROP PROCEDURE IF EXISTS view_team_roles_for_ref;
 DELIMITER $$
 
-CREATE PROCEDURE view_team_roles_for_delete()
+CREATE PROCEDURE view_team_roles_for_ref()
 BEGIN
     SELECT tr.member_id, tr.participant_id, tm.name as member_name, t.name as tribute_name, tr.member_type
     FROM team_role tr
@@ -1475,10 +1475,10 @@ END $$
 DELIMITER ;
 
 -- view sponsorships (used for delete and view)
-DROP PROCEDURE IF EXISTS view_sponsorships_for_delete;
+DROP PROCEDURE IF EXISTS view_sponsorships_for_ref;
 DELIMITER $$
 
-CREATE PROCEDURE view_sponsorships_for_delete()
+CREATE PROCEDURE view_sponsorships_for_ref()
 BEGIN
     SELECT s.sponsor_id, s.participant_id, sp.name as sponsor_name, t.name as tribute_name, p.game_number, s.sponsor_amount
     FROM sponsorship s
@@ -1542,10 +1542,10 @@ END $$
 DELIMITER ;
 
 -- view game_creators (used for delete and view)
-DROP PROCEDURE IF EXISTS view_game_creators_for_delete;
+DROP PROCEDURE IF EXISTS view_game_creators_for_ref;
 DELIMITER $$
 
-CREATE PROCEDURE view_game_creators_for_delete()
+CREATE PROCEDURE view_game_creators_for_ref()
 BEGIN
     SELECT gc.game_number, gc.gamemaker_id, gm.name as gamemaker_name
     FROM game_creator gc
@@ -1618,10 +1618,10 @@ END $$
 DELIMITER ;
 
 -- view game_victors (used for delete and view)
-DROP PROCEDURE IF EXISTS view_game_victors_for_delete;
+DROP PROCEDURE IF EXISTS view_game_victors_for_ref;
 DELIMITER $$
 
-CREATE PROCEDURE view_game_victors_for_delete()
+CREATE PROCEDURE view_game_victors_for_ref()
 BEGIN
     SELECT gv.game_number, gv.victor_id, t.name as tribute_name
     FROM game_victor gv
@@ -1712,10 +1712,10 @@ END $$
 DELIMITER ;
 
 -- view gamemaker_scores (used for delete and view)
-DROP PROCEDURE IF EXISTS view_gamemaker_scores_for_delete;
+DROP PROCEDURE IF EXISTS view_gamemaker_scores_for_ref;
 DELIMITER $$
 
-CREATE PROCEDURE view_gamemaker_scores_for_delete()
+CREATE PROCEDURE view_gamemaker_scores_for_ref()
 BEGIN
     SELECT gs.gamemaker_id, gs.participant_id, gm.name as gamemaker_name, t.name as tribute_name, p.game_number, gs.assessment_score
     FROM gamemaker_score gs

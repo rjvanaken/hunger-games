@@ -262,7 +262,7 @@ def view_table(connection, table_name):
     cursor.close()
     return rows
 
-def view_entity_for_delete(connection, procedure_name):
+def view_entity_for_ref(connection, procedure_name):
     """Generic function to call view  that return data"""
     cursor = connection.cursor()
     cursor.callproc(procedure_name)

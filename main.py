@@ -61,12 +61,12 @@ def main():
             handle_select_game(connection)
             
         elif choice == '2':
-            # Manage Capitol Records
-            handle_manage_records(connection)
-            
-        elif choice == '3':
             # View Capitol Records
             handle_view_records(connection)
+            
+        elif choice == '3':
+            # Manage Capitol Records
+            handle_manage_records(connection)
             
         elif choice == '4':
             # Stats & Analytics
@@ -339,6 +339,13 @@ def handle_manage_participants(connection):
             rows = ops.view_table(connection, 'participant')
             menu.display_participants_full(rows)
         elif choice == '2': # CREATE
+            games = ops.view_table(connection, 'game')
+            menu.display_games_full(games)
+            tributes = ops.view_table(connection, 'tribute')
+            menu.display_tributes_full(tributes)
+
+            print("Use the above tables to help create your Participant\n")
+            
             tribute_id, game_number = menu.get_participant_inputs()
             ops.create_participant(connection, tribute_id, game_number)
             
@@ -372,10 +379,10 @@ def handle_manage_victors(connection):
     while True:
         choice = menu.display_manage_entity_menu_view_delete_only('victor')
         if choice == '1': # VIEW
-            rows = ops.view_entity_for_delete(connection, 'view_victors_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_victors_for_ref')
             menu.display_victors_full(rows)
         elif choice == '2': # DELETE
-            rows = ops.view_entity_for_delete(connection, 'view_victors_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_victors_for_ref')
             menu.display_victors_full(rows)
             if not rows:
                 print("No victors available to delete.")
@@ -392,13 +399,20 @@ def handle_manage_sponsorships(connection):
     while True:
         choice = menu.display_manage_entity_menu('sponsorship')
         if choice == '1': # VIEW
-            rows = ops.view_entity_for_delete(connection, 'view_sponsorships_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_sponsorships_for_ref')
             menu.display_sponsorships_full(rows)
         elif choice == '2': # CREATE
+            sponsors = ops.view_table(connection, 'sponsor')
+            menu.display_sponsors_full(sponsors)
+            participants = ops.view_table(connection, 'participant')
+            menu.display_participants_full(participants)
+
+            print("Use the above tables to help create your Sponsorship\n")
+
             participant_id, sponsor_id, sponsor_amount = menu.get_sponsorship_inputs()
             ops.create_sponsorship(connection, participant_id, sponsor_id, sponsor_amount)
         elif choice == '3': # EDIT
-            rows = ops.view_entity_for_delete(connection, 'view_sponsorships_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_sponsorships_for_ref')
             menu.display_sponsorships_full(rows)
             if not rows:
                 print("No sponsorships available to edit.")
@@ -410,7 +424,7 @@ def handle_manage_sponsorships(connection):
             amount = menu.get_sponsorship_inputs(True)
             ops.edit_sponsorship(connection, sponsor_id, participant_id, amount)
         elif choice == '4': # DELETE
-            rows = ops.view_entity_for_delete(connection, 'view_sponsorships_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_sponsorships_for_ref')
             menu.display_sponsorships_full(rows)
             if not rows:
                 print("No sponsorships available to delete.")
@@ -422,6 +436,7 @@ def handle_manage_sponsorships(connection):
             break
         else:
             print("Invalid entry")
+            
 
 
 # MANAGE TEAM_ROLES
@@ -429,13 +444,20 @@ def handle_manage_team_roles(connection):
     while True:
         choice = menu.display_manage_entity_menu('team_role')
         if choice == '1': # VIEW
-            rows = ops.view_entity_for_delete(connection, 'view_team_roles_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_team_roles_for_ref')
             menu.display_team_roles_full(rows)
         elif choice == '2': # CREATE
+            participants = ops.view_table(connection, 'participant')
+            menu.display_participants_full(participants)
+            members = ops.view_table(connection, 'team_member')
+            menu.display_team_members_full(members)
+    
+            print("Use the above tables to help create your Team Role\n")
+
             member_id, participant_id, member_type = menu.get_team_role_inputs()
             ops.create_team_role(connection, member_id, participant_id, member_type)
         elif choice == '3': # EDIT
-            rows = ops.view_entity_for_delete(connection, 'view_team_roles_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_team_roles_for_ref')
             menu.display_team_roles_full(rows)
             if not rows:
                 print("No team roles available to edit.")
@@ -447,7 +469,7 @@ def handle_manage_team_roles(connection):
             member_type = menu.get_team_role_inputs(True)
             ops.edit_team_role(connection, member_id, participant_id, member_type)
         elif choice == '4': # DELETE
-            rows = ops.view_entity_for_delete(connection, 'view_team_roles_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_team_roles_for_ref')
             menu.display_team_roles_full(rows)
             if not rows:
                 print("No team roles available to delete.")
@@ -466,13 +488,20 @@ def handle_manage_gamemaker_scores(connection):
     while True:
         choice = menu.display_manage_entity_menu('gamemaker_score')
         if choice == '1': # VIEW
-            rows = ops.view_entity_for_delete(connection, 'view_gamemaker_scores_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_gamemaker_scores_for_ref')
             menu.display_gamemaker_scores_full(rows)
         elif choice == '2': # CREATE
+            participants = ops.view_table(connection, 'participant')
+            menu.display_participants_full(participants)
+            gamemakers = ops.view_table(connection, 'gamemaker')
+            menu.display_gamemakers_full(gamemakers)
+            
+            print("Use the above tables to help create your Gamemaker Score\n")
+
             gamemaker_id, participant_id, assessment_score = menu.get_gamemaker_score_inputs()
             ops.create_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score)
         elif choice == '3': # EDIT
-            rows = ops.view_entity_for_delete(connection, 'view_gamemaker_scores_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_gamemaker_scores_for_ref')
             menu.display_gamemaker_scores_full(rows)
             if not rows:
                 print("No gamemaker scores available to edit.")
@@ -484,7 +513,7 @@ def handle_manage_gamemaker_scores(connection):
             assessment_score = menu.get_gamemaker_score_inputs(True)
             ops.edit_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score)
         elif choice == '4': # DELETE
-            rows = ops.view_entity_for_delete(connection, 'view_gamemaker_scores_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_gamemaker_scores_for_ref')
             menu.display_gamemaker_scores_full(rows)
             if not rows:
                 print("No gamemaker scores available to delete.")
@@ -503,10 +532,10 @@ def handle_manage_game_victors(connection):
     while True:
         choice = menu.display_manage_entity_menu_view_delete_only('game_victor')
         if choice == '1': # VIEW
-            rows = ops.view_entity_for_delete(connection, 'view_game_victors_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_game_victors_for_ref')
             menu.display_game_victors_full(rows)
         elif choice == '2': # DELETE
-            rows = ops.view_entity_for_delete(connection, 'view_game_victors_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_game_victors_for_ref')
             menu.display_game_victors_full(rows)
             if not rows:
                 print("No game victors available to delete.")
@@ -525,13 +554,20 @@ def handle_manage_game_creators(connection):
     while True:
         choice = menu.display_manage_entity_menu_no_edit('game_creator')
         if choice == '1': # VIEW
-            rows = ops.view_entity_for_delete(connection, 'view_game_creators_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_game_creators_for_ref')
             menu.display_game_creators_full(rows)
         elif choice == '2': # CREATE
+            gamemakers = ops.view_table(connection, 'gamemaker')
+            menu.display_gamemakers_full(gamemakers)
+            games = ops.view_table(connection, 'game')
+            menu.display_games_full(games)
+
+            print("Use the above tables to help create your Game Creator\n")
+
             game_number, gamemaker_id = menu.get_game_creator_inputs()
             ops.create_game_creator(connection, game_number, gamemaker_id)
         elif choice == '3': # DELETE
-            rows = ops.view_entity_for_delete(connection, 'view_game_creators_for_delete')
+            rows = ops.view_entity_for_ref(connection, 'view_game_creators_for_ref')
             menu.display_game_creators_full(rows)
             if not rows:
                 print("No game creators available to delete.")
