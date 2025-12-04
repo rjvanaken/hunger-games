@@ -5,14 +5,13 @@ import menu
 from datetime import datetime
 from colors import Colors
 import utils
+import sys
 import time
 
 def main():
     """Main application loop"""
     connection = None
     
-    # arrow_back = " ▶▶▶──────────────────"
-    # arrow_front ="────────────────────➤ "
     arrow_back = " ➤➤➤──────────────────"
     arrow_front ="───────────────────➤ "
     arrow_back_with_color = f"{Colors.YELLOW}{Colors.BOLD}{arrow_back}{Colors.RESET}"
@@ -25,32 +24,38 @@ def main():
     print(f"{arrow_back_with_color}{title_text}{arrow_front_with_color}" + " " * (80 - full_text_length))
     print("=" * 80)
     
+    
     # Get database credentials and connect
     while True:
+        
         print(f"\n{Colors.BOLD}ENTER YOUR CAPITOL CREDENTIALS:{Colors.RESET}")
-        # username, password = database.get_credentials()
-        username, password = "snow", "lucygray"
+        if '--test' in sys.argv:
+            username, password = "snow", "lucygray"
 
-        # print(f"\n{Colors.BLUE}Verifying identity", end="", flush=True)
-        # for i in range(3):
-        #     time.sleep(0.5)
-        #     print(".", end="", flush=True)
-        #     time.sleep(0.5)
-        # print(f"{Colors.RESET}\n")
+        else:
+            username, password = database.get_credentials()
+
+            print(f"\n{Colors.BLUE}Verifying identity", end="", flush=True)
+            for i in range(3):
+                time.sleep(0.25)
+                print(".", end="", flush=True)
+                time.sleep(0.5)
+            print(f"{Colors.RESET}\n")
 
         connection = database.connect_to_database(username, password)
         if connection is not None:
             print(f"{Colors.GREEN}✓ Successfully connected to the capitol database!{Colors.RESET}")
             break  
-        print(f"{Colors.RED}✗ Your credentials are incorrect, capitol citizen. Please try again{Colors.RESET}\n")
+        print(f"{Colors.RED}✗ Your credentials are incorrect, capitol citizen. Please try again.{Colors.RESET}\n")
+
+    print("\nUse the menu below to proceed into the application\n")
 
     test(connection)
 
 
     # Successful Connection - Main menu loop
     while True:
-        choice = menu.display_menu()
-        
+        choice = menu.display_menu()        
         if choice == '1':
             # View Game Dashboard
             handle_select_game(connection)
