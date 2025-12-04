@@ -156,10 +156,10 @@ def display_victor_age_analysis(results):
     participants_width = max(participants_width, len('Total Tributes'))
 
     victors_width = max(len(str(r['total_victors'])) for r in results)
-    victors_width = max(victors_width, len('Victors'))
+    victors_width = max(victors_width, len('Total Victors'))
     
-    rate_width = max(len(str(r['success_rate'])) for r in results)
-    rate_width = max(rate_width, len('Win Rate')) + 1
+    rate_width = max(len(utils.convert_to_percentage(r['success_rate'])) for r in results)
+    rate_width = max(rate_width, len('Win Rate'))
     
     length = age_width + participants_width + victors_width + rate_width + 13
         
