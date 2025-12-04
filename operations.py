@@ -957,33 +957,6 @@ def delete_game_creator(connection, game_number, gamemaker_id):
 
 '''MANAGE GAME VICTORS'''
 
-# CREATE GAME VICTOR
-def create_game_victor(connection, game_number, victor_id):
-    """Create game victor"""
-
-    # Validate game_number
-    if game_number is None or game_number < 1:
-        print("\nInvalid game number")
-        return False
-    
-    # Validate victor_id
-    if victor_id is None or victor_id < 1:
-        print("\nInvalid victor ID")
-        return False
-    
-    try:
-        cursor = connection.cursor()
-        cursor.callproc('create_game_victor', [game_number, victor_id])
-        connection.commit()
-        print("\nGame victor successfully created!")
-        return True
-    except pymysql.Error as err:
-        connection.rollback()
-        print(f"\nDatabase error: {err}")
-        return False
-    finally:
-        cursor.close()
-
 # DELETE GAME VICTOR
 def delete_game_victor(connection, game_number, victor_id):
     """Delete game victor"""

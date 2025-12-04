@@ -501,14 +501,11 @@ def handle_manage_gamemaker_scores(connection):
 # MANAGE GAME_VICTORS
 def handle_manage_game_victors(connection):
     while True:
-        choice = menu.display_manage_entity_menu_no_edit('game_victor')
+        choice = menu.display_manage_entity_menu_view_delete_only('game_victor')
         if choice == '1': # VIEW
             rows = ops.view_entity_for_delete(connection, 'view_game_victors_for_delete')
             menu.display_game_victors_full(rows)
-        elif choice == '2': # CREATE
-            game_number, victor_id = menu.get_game_victor_inputs()
-            ops.create_game_victor(connection, game_number, victor_id)
-        elif choice == '3': # DELETE
+        elif choice == '2': # DELETE
             rows = ops.view_entity_for_delete(connection, 'view_game_victors_for_delete')
             menu.display_game_victors_full(rows)
             if not rows:
