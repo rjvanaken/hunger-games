@@ -207,6 +207,8 @@ def display_game_dashboard(connection, game):
     display_sponsorships(sponsorships)
     staff = ops.view_game_staff(connection, game)
     display_game_staff(staff)
+    predictions = ops.get_win_predictions(connection, game)
+    display_win_predictions(predictions, game)
     victors = ops.view_victors(connection, None, game)
     display_victors(victors)
     print("\n")
