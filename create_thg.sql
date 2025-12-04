@@ -1914,6 +1914,9 @@ DELIMITER ;
 -- ===========================================================================
 -- TRIGGER: when final_placement is updated to 1, create victor if it 
 -- doesn't exist and then insert into game_victor to set game's victor
+
+--          if the final_placement is updated from 1 to something else,
+--          remove game_victor
 -- ===========================================================================
 DROP TRIGGER IF EXISTS set_victor_upon_winner_updated;
 
@@ -1928,6 +1931,18 @@ BEGIN
 		CALL create_victor_from_tribute(NEW.tribute_id);
 		-- set victor
 		CALL set_game_victor(NEW.game_number, NEW.tribute_id);
+
+        -- delete game victor if set from 1 to something else, and victor if no longer needed
+    ELSEIF NEW.final_placement != 1 AND (OLD.final_placement IS 1) THEN
+        DELETE FROM game_victor 
+        WHERE game_number = NEW.game_number 
+            AND victor_id = NEW.tribute_id;
+
+        DELETE FROM victor 
+        WHERE tribute_id = NEW.participant_id
+            AND NOT EXISTS (
+                SELECT 1 FROM game_victor gv 
+                WHERE gv.victor_id = NEW.tribute_id);
 	END IF;
 END $$
 
