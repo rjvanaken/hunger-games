@@ -451,12 +451,9 @@ DELIMITER $$
 
 CREATE PROCEDURE create_victor_from_tribute(p_tribute_id INT)
 BEGIN
-	IF p_tribute_id NOT IN (SELECT tribute_id FROM tribute) THEN
-		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tribute does not exist';
+	IF p_tribute_id NOT IN (SELECT victor_id FROM victor) THEN
+        INSERT INTO victor(victor_id) VALUES (p_tribute_id);
     END IF;
-
-    INSERT INTO victor(victor_id) VALUES (p_tribute_id);
 END $$
 
 DELIMITER ;
@@ -1933,16 +1930,17 @@ BEGIN
 		CALL set_game_victor(NEW.game_number, NEW.tribute_id);
 
         -- delete game victor if set from 1 to something else, and victor if no longer needed
-    ELSEIF NEW.final_placement != 1 AND (OLD.final_placement IS 1) THEN
+    ELSEIF (NEW.final_placement != 1 OR NEW.final_placement IS NULL) AND (OLD.final_placement = 1) THEN
         DELETE FROM game_victor 
         WHERE game_number = NEW.game_number 
             AND victor_id = NEW.tribute_id;
 
         DELETE FROM victor 
-        WHERE tribute_id = NEW.participant_id
+        WHERE victor_id = NEW.tribute_id
             AND NOT EXISTS (
                 SELECT 1 FROM game_victor gv 
                 WHERE gv.victor_id = NEW.tribute_id);
+
 	END IF;
 END $$
 
