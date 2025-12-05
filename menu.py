@@ -4,18 +4,29 @@ from colors import Colors
 import utils
 
 def display_menu():
-    """Top menu options"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" MENU")
-    print("=" * length)
-    print(" 1: View Game Dashboard")
-    print(" 2: Browse Records")
-    print(" 3: Manage Records")
-    print(" 4: Get Stats & Analytics")
-    print("─" * length)
-    print(" 0: DISCONNECT FROM DATABASE\n")
+    """Display the main menu"""
+    length = 46  # Adjust width as needed
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " MAIN MENU" + " " * (length - 12) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║ 1: View Game Dashboard" + " " * (length - 25) + "║")
+    print("║    • view game information and statistics" + " " * (length - 44) + "║")
+    print("║" + " " * (length - 2) + "║")  # Blank line
+    print("║ 2: Browse Capitol Records" + " " * (length - 28) + "║")
+    print("║    • filter and search database records" + " " * (length - 42) + "║")
+    print("║" + " " * (length - 2) + "║")
+    print("║ 3: Manage Capitol Records" + " " * (length - 28) + "║")
+    print("║    • view, create, update, and delete" + " " * (length - 40) + "║")
+    print("║      records" + " " * (length - 15) + "║")
+    print("║" + " " * (length - 2) + "║")
+    print("║ 4: Get Stats & Analytics" + " " * (length - 27) + "║")
+    print("║    • view predictions and analysis" + " " * (length - 37) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║ 0: DISCONNECT FROM DATABASE" + " " * (length - 30) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
     choice = input("Enter choice: ")
+    print("")
     return choice
 
 
@@ -23,23 +34,33 @@ def display_menu():
 ANALYTICS
 '''
 
-# VIEW GAMEMAKERS
 def display_analytics_menu():
-    """Displays the menu for analytics"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" STATS & ANALYTICS")
-    print("=" * length)
-    print(" 1: Win Predictions")
-    print(" 2: District Success Rates")
-    print(" 3: Sponsorship Impact")
-    print(" 4: Assessment Accuracy Analysis")
-    print(" 5: Victor Age Analysis")
-    print(" 6: Mentor Success Rates")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    """Display the analytics submenu"""
+    length = 46  # Adjust width as needed
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " STATS & ANALYTICS" + " " * (length - 20) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║ 1: Win Predictions" + " " * (length - 21) + "║")
+    print("║    • see the predicted game outcome" + " " * (length - 38) + "║")
+    print("║" + " " * (length - 2) + "║")  # Blank line
+    print("║ 2: District Success Rates" + " " * (length - 28) + "║")
+    print("║    • see the success rate per district" + " " * (length - 41) + "║")
+    print("║" + " " * (length - 2) + "║")
+    print("║ 3: Sponsorship Impact Analysis" + " " * (length - 33) + "║")
+    print("║    • analyze the correlaton between" + " " * (length - 38) + "║")
+    print("║      tribute funding and their outcome" + " " * (length - 41) + "║")
+    print("║" + " " * (length - 2) + "║")
+    print("║ 4: Victor Age Analysis" + " " * (length - 25) + "║")
+    print("║    • see the win rate by age" + " " * (length - 31) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║ 0: DISCONNECT FROM DATABASE" + " " * (length - 30) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
     choice = input("Enter choice: ")
+    print("")
     return choice
+
+
 
 
 def display_win_predictions(predictions, game_number):
@@ -119,6 +140,9 @@ def display_district_success(rates):
     
     rate_width = max(len(str(s['success_rate'])) for s in rates)
     rate_width = max(rate_width, len('Success Rate')) + 1
+
+    rate_width = max(len(str(s['success_rate'])) for s in rates)
+    rate_width = max(rate_width, len('Success Rate')) + 1
     
     length = district_width + victor_width + tribute_width + rate_width + 13
         
@@ -135,10 +159,37 @@ def display_district_success(rates):
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
-def display_sponsorship_impact(rows):
-    pass
+def display_sponsorship_impact(results):
+    """Display formatted list of the funding analysis"""
+    if not results:
+        print("\nNo game information found.")
+        return
+    
+    # Calculate column widths
+    placement_width = max(len(str(s['placement_group'])) for s in results)
+    placement_width = max(placement_width, len('Placement Group'))
+    
+    avg_funding_width = max(len(str(s['avg_funding'])) for s in results)
+    avg_funding_width = max(avg_funding_width, len('Avg Funding'))
+    
+    tributes_width = max(len(str(s['tribute_count'])) for s in results)
+    tributes_width = max(tributes_width, len('Tributes')) + 5
+    
+    length = placement_width + avg_funding_width + tributes_width + 10
+        
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║ SPONSORSHIP IMPACT ANALYSIS" + " " * (length - 13) + "║")
+    print("║ Analyzing the correlation between final placement and tribute funding" + " " * (length - 13) + "║")            
+    print("╟" + "─" * (length - 2) + "╢")
+    print(f"║ {'Placement Group':<{placement_width}} │ {'Avg Funding':<{avg_funding_width}} │ {'Tributes':<{tributes_width}} ║")
+    print("╠" + "═" * (length - 2) + "╣")
+    for i, result in enumerate(results):
+        if i > 0:
+            print("╟" + "─" * (length - 2) + "╢")
+        print(f"║ {result['placement_group']:<{placement_width}} │ {result['avg_funding']:<{avg_funding_width}} │ {result['tribute_count']:<{tributes_width}} ║")
+    print("╚" + "═" * (length - 2) + "╝\n")
 
-def display_assessment_analysis(rows):
+def display_assessment_analysis(results):
     pass
 
 
@@ -276,69 +327,110 @@ def display_game_info_on_dashboard(connection, game_info, ordinal_suffix):
 MANAGE RECORDS
 '''
 
+def display_analytics_menu():
+    """Display the analytics submenu"""
+    length = 46  # Adjust width as needed
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " STATS & ANALYTICS" + " " * (length - 20) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║ 1: Win Predictions" + " " * (length - 21) + "║")
+    print("║    • see the predicted game outcome" + " " * (length - 38) + "║")
+    print("║" + " " * (length - 2) + "║")  # Blank line
+    print("║ 2: District Success Rates" + " " * (length - 28) + "║")
+    print("║    • see the success rate per district" + " " * (length - 41) + "║")
+    print("║" + " " * (length - 2) + "║")
+    print("║ 3: Sponsorship Impact Analysis" + " " * (length - 33) + "║")
+    print("║    • analyze the correlaton between" + " " * (length - 38) + "║")
+    print("║      tribute funding and their outcome" + " " * (length - 41) + "║")
+    print("║" + " " * (length - 2) + "║")
+    print("║ 4: Victor Age Analysis" + " " * (length - 25) + "║")
+    print("║    • see the win rate by age" + " " * (length - 31) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║ 0: DISCONNECT FROM DATABASE" + " " * (length - 30) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    choice = input("Enter choice: ")
+    print("")
+    return choice
+
+
 def display_manage_records_menu():
     """Display menu for records"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" MANAGE CAPITOL RECORDS")
-    print("=" * length)
-    print(" 1: Tributes")
-    print(" 2: Sponsors")
-    print(" 3: Games")
-    print(" 4: Gamemakers")
-    print(" 5: Team Members")
-    print(" 6: Participants")
-    print(" 7: Victors")
-    print(" 8: Team Roles")
-    print(" 9: Sponsorships")
-    print(" 10: Game Victors")
-    print(" 11: Game Creators")
-    print(" 12: Gamemaker Scores")
-    print("─" * length)
-    print(" 0: RETURN TO MAIN MENU\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " MANAGE CAPITOL RECORDS" + " " * (length - 25) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║  1: Tributes" + " " * (length - 15) + "║")
+    print("║  2: Sponsors" + " " * (length - 15) + "║")
+    print("║  3: Games" + " " * (length - 12) + "║")
+    print("║  4: Gamemakers" + " " * (length - 17) + "║")
+    print("║  5: Team Members" + " " * (length - 19) + "║")
+    print("║  6: Participants" + " " * (length - 19) + "║")
+    print("║  7: Victors" + " " * (length - 14) + "║")
+    print("║  8: Team Roles" + " " * (length - 17) + "║")
+    print("║  9: Sponsorships" + " " * (length - 19) + "║")
+    print("║ 10: Game Victors" + " " * (length - 19) + "║")
+    print("║ 11: Game Creators" + " " * (length - 20) + "║")
+    print("║ 12: Gamemaker Scores" + " " * (length - 23) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║ 0: RETURN TO MAIN MENU" + " " * (length - 25) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
+
 def display_manage_entity_menu(entity):
     """Display menu for managing entity records"""
-    length = 42
-    print("\n" + "=" * length)
-    print(f" MANAGE {entity.upper()}S")
-    print("=" * length)
-    print(f" 1: View {entity.title()}s")
-    print(f" 2: CREATE {entity.title()}")
-    print(f" 3: UPDATE {entity.title()}")
-    print(f" 4: DELETE {entity.title()}")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + f" MANAGE {entity.upper()}S".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + f" 1: VIEW {entity.title()}s".ljust(length - 2) + "║")
+    print("║" + f" 2: CREATE {entity.title()}".ljust(length - 2) + "║")
+    print("║" + f" 3: UPDATE {entity.title()}".ljust(length - 2) + "║")
+    print("║" + f" 4: DELETE {entity.title()}".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
 def display_manage_entity_menu_no_edit(entity):
     """Display menu for managing entity records without edit option"""
-    length = 42
-    print("\n" + "=" * length)
-    print(f" MANAGE {entity.upper()}S")
-    print("=" * length)
-    print(f" 1: View {entity.title()}s")
-    print(f" 2: CREATE {entity.title()}")
-    print(f" 3: DELETE {entity.title()}")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + f" MANAGE {entity.upper()}S".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + f" 1: VIEW {entity.title()}s".ljust(length - 2) + "║")
+    print("║" + f" 2: CREATE {entity.title()}".ljust(length - 2) + "║")
+    print("║" + f" 3: DELETE {entity.title()}".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
 def display_manage_entity_menu_view_delete_only(entity):
     """Display menu for managing entity records with view and delete only"""
-    length = 42
-    print("\n" + "=" * length)
-    print(f" MANAGE {entity.upper()}S")
-    print("=" * length)
-    print(f" 1: View {entity.title()}s")
-    print(f" 2: DELETE {entity.title()}")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + f" MANAGE {entity.upper()}S".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + f" 1: VIEW {entity.title()}s".ljust(length - 2) + "║")
+    print("║" + f" 2: DELETE {entity.title()}".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
+    return choice
     return choice
 
 # VIEW TRIBUTES FULL
@@ -790,20 +882,23 @@ VIEW RECORDS
 '''
 def display_view_records_menu():
     """Display menu for viewing records"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" FILTER & SEARCH RECORDS")
-    print("=" * length)
-    print(" 1: Tributes")
-    print(" 2: Sponsors")
-    print(" 3: Games")
-    print(" 4: Gamemakers")
-    print(" 5: Team Members")
-    print(" 6: Participants")
-    print(" 7: Victors")
-    print(" 8: Districts")
-    print("─" * length)
-    print(" 0: RETURN TO MAIN MENU\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE CAPITOL RECORDS".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: Tributes".ljust(length - 2) + "║")
+    print("║" + " 2: Sponsors".ljust(length - 2) + "║")
+    print("║" + " 3: Games".ljust(length - 2) + "║")
+    print("║" + " 4: Gamemakers".ljust(length - 2) + "║")
+    print("║" + " 5: Team Members".ljust(length - 2) + "║")
+    print("║" + " 6: Participants".ljust(length - 2) + "║")
+    print("║" + " 7: Victors".ljust(length - 2) + "║")
+    print("║" + " 8: Districts".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN TO MAIN MENU".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -811,15 +906,18 @@ def display_view_records_menu():
 # VIEW TRIBUTES
 def display_view_tributes_menu():
     """Displays the menu for viewing tributes"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW TRIBUTES")
-    print("=" * length)
-    print(" 1: View All Tributes")
-    print(" 2: Search Tribute by Name")
-    print(" 3: View Tributes From District")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE TRIBUTES".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Tributes".ljust(length - 2) + "║")
+    print("║" + " 2: Search Tribute by Name".ljust(length - 2) + "║")
+    print("║" + " 3: View Tributes From District".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -863,18 +961,22 @@ def display_tributes(tributes):
 
 
 # VIEW SPONSORS
+# VIEW SPONSORS
 def display_view_sponsors_menu():
     """Displays the menu for viewing sponsors"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW SPONSORS")
-    print("=" * length)
-    print(" 1: View All Sponsors")
-    print(" 2: Search Sponsor by Name")
-    print(" 3: View All Sponsorships")
-    print(" 4: View Sponsorships by Game and/or Tribute")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE SPONSORS".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Sponsors".ljust(length - 2) + "║")
+    print("║" + " 2: Search Sponsor by Name".ljust(length - 2) + "║")
+    print("║" + " 3: View All Sponsorships".ljust(length - 2) + "║")
+    print("║" + " 4: View Sponsorships by Game &/or Tribute".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -956,16 +1058,19 @@ def display_sponsorships(sponsorships):
 # VIEW GAMES
 def display_view_games_menu():
     """Displays the menu for viewing games"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW GAMES")
-    print("=" * length)
-    print(" 1: View All Games")
-    print(" 2: Search Game by Number")
-    print(" 3: Search Game by Tribute")
-    print(" 4: Search Game by Victor")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE GAMES".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Games".ljust(length - 2) + "║")
+    print("║" + " 2: Search Game by Number".ljust(length - 2) + "║")
+    print("║" + " 3: Search Game by Tribute".ljust(length - 2) + "║")
+    print("║" + " 4: Search Game by Victor".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -1019,15 +1124,18 @@ def display_games(games):
 # VIEW GAMEMAKERS
 def display_view_gamemakers_menu():
     """Displays the menu for viewing gamemakers"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW GAMEMAKERS")
-    print("=" * length)
-    print(" 1: View All Gamemakers")
-    print(" 2: Search Gamemaker by Name")
-    print(" 3: Search Gamemaker by Game Number")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE GAMEMAKERS".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Gamemakers".ljust(length - 2) + "║")
+    print("║" + " 2: Search Gamemaker by Name".ljust(length - 2) + "║")
+    print("║" + " 3: Search Gamemaker by Game Number".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -1063,31 +1171,38 @@ def display_gamemakers(gamemakers):
 # VIEW TEAM MEMBERS
 def display_view_team_members_menu():
     """Displays the menu for viewing team members"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW TEAM MEMBERS")
-    print("=" * length)
-    print(" 1: View All Team Members")
-    print(" 2: Search Team Member by Name")
-    print(" 3: Search Team Member by Role Type")
-    print(" 4: Search Team Member by Tribute Name")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE TEAM MEMBERS".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Team Members".ljust(length - 2) + "║")
+    print("║" + " 2: Search Team Member by Name".ljust(length - 2) + "║")
+    print("║" + " 3: Search Team Member by Role Type".ljust(length - 2) + "║")
+    print("║" + " 4: Search Team Member by Tribute Name".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
 def display_member_types():
     """Displays the menu for viewing member types"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW TEAM MEMBERS")
-    print("=" * length)
-    print(" 1: Escort")
-    print(" 2: Mentor")
-    print(" 3: Stylist")
-    print(" 4: Prep Team")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE TEAM MEMBERS".ljust(length - 2) + "║")
+    print("║" + " select role type".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: Escort".ljust(length - 2) + "║")
+    print("║" + " 2: Mentor".ljust(length - 2) + "║")
+    print("║" + " 3: Stylist".ljust(length - 2) + "║")
+    print("║" + " 4: Prep Team".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -1126,21 +1241,23 @@ def display_team_members(team_members):
 
 # VIEW PARTICIPANTS
 def display_view_participants_menu():
-    length = 42
     """Displays the menu for viewing participants"""
-    print("\n" + "=" * length)
-    print(" VIEW PARTICIPANTS")
-    print("=" * length)
-    print(" 1: View All Participants")
-    print(" 2: Search Participant by Name")
-    print(" 3: Search Participant by Age")
-    print(" 4: Search Participant by Game Number")
-    print(" 5: Search Participant by Training Score")
-    print(" 6: Search Participant by Intelligence Score")
-    print(" 7: Search Participant by Likeability Score")
-    print("─" * length)
-    print(" 0: RETURN")
-    print("\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE PARTICIPANTS".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Participants".ljust(length - 2) + "║")
+    print("║" + " 2: Search Participant by Name".ljust(length - 2) + "║")
+    print("║" + " 3: Search Participant by Age".ljust(length - 2) + "║")
+    print("║" + " 4: Search Participant by Game Number".ljust(length - 2) + "║")
+    print("║" + " 5: Search Participant by Training Score".ljust(length - 2) + "║")
+    print("║" + " 6: Search Participant by Intelligence".ljust(length - 2) + "║")
+    print("║" + " 7: Search Participant by Likeability".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
@@ -1201,15 +1318,18 @@ def display_participants(participants):
 # VIEW VICTORS
 def display_view_victors_menu():
     """Displays the menu for viewing victors"""
-    length = 42
-    print("\n" + "=" * length)
-    print(" VIEW VICTORS")
-    print("=" * length)
-    print(" 1: View All Victors")
-    print(" 2: Search Victor by Name")
-    print(" 3: Search Victor by Game Number")
-    print("─" * length)
-    print(" 0: RETURN\n")
+    length = 46
+    
+    print("\n╔" + "═" * (length - 2) + "╗")
+    print("║" + " BROWSE VICTORS".ljust(length - 2) + "║")
+    print("╠" + "═" * (length - 2) + "╣")
+    print("║" + " 1: View All Victors".ljust(length - 2) + "║")
+    print("║" + " 2: Search Victor by Name".ljust(length - 2) + "║")
+    print("║" + " 3: Search Victor by Game Number".ljust(length - 2) + "║")
+    print("╟" + "─" * (length - 2) + "╢")
+    print("║" + " 0: RETURN".ljust(length - 2) + "║")
+    print("╚" + "═" * (length - 2) + "╝\n")
+    
     choice = input("Enter choice: ")
     return choice
 
