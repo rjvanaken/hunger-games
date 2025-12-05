@@ -362,7 +362,7 @@ CALL get_total_district_victors();
 -- ========================================================================
 -- PROCEDURE: gets correlation data between funding and placement
 -- ========================================================================
-DROP PROCEDURE IF EXISTS get_funding_placement_analysis();
+DROP PROCEDURE IF EXISTS get_funding_placement_analysis;
 DELIMITER $$
 
 CREATE PROCEDURE get_funding_placement_analysis()
@@ -388,28 +388,6 @@ BEGIN
             ELSE 4
         END;
 END $$
-
-DELIMITER ;
-
-
-
-
-CREATE PROCEDURE view_game_staff(p_game_number INT)
-BEGIN
-    SELECT DISTINCT tm.name as name, tr.member_type as role, CAST(t.district AS CHAR) as district
-    FROM participant p
-    JOIN team_role tr ON p.participant_id = tr.participant_id
-    JOIN team_member tm ON tr.member_id = tm.member_id
-    JOIN tribute t ON p.tribute_id = t.tribute_id
-    WHERE p.game_number = p_game_number
-    UNION
-    SELECT gm.name as name, 'Gamemaker' as role, 'Capitol' as district
-    FROM game_creator gc
-    JOIN gamemaker gm ON gc.gamemaker_id = gm.gamemaker_id
-    WHERE gc.game_number = p_game_number;
-END $$
-
-DELIMITER ;
 
 DELIMITER ;
 
