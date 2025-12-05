@@ -1,5 +1,5 @@
 # Hunger Games Capitol Database System
-**CS5200 Database Management - Final Project**
+**Rebecca Van Aken**
 
 ---
 
