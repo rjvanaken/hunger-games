@@ -849,11 +849,8 @@ def handle_analytics(connection):
         elif choice == '3':
             handle_sponsorship_impact(connection)
         elif choice == '4':
-            handle_assessment_accuracy(connection)
-        elif choice == '5':
             handle_victor_age_analysis(connection)
-        elif choice == '6':
-            handle_mentor_success_rates(connection)
+
         elif choice == "0":
             break
         else:
@@ -883,17 +880,11 @@ def handle_district_success_rates(connection):
     rows = ops.get_raw_district_success_rates(connection)
     menu.display_district_success(rows)
 def handle_sponsorship_impact(connection):
-    rows = ""
+    rows = ops.get_funding_placement_analysis(connection)
     menu.display_sponsorship_impact(rows)
-def handle_assessment_accuracy(connection):
-    rows = ""
-    menu.display_assessment_analysis(rows)
 def handle_victor_age_analysis(connection):
     rows = ops.get_raw_victor_age_patterns(connection)
     menu.display_victor_age_analysis(rows)
-def handle_mentor_success_rates(connection):
-    rows = ""
-    menu.display_mentor_success_rates(rows)
 
 
 

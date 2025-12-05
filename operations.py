@@ -127,6 +127,14 @@ def get_raw_victor_age_patterns(connection):
     cursor.close()
     return rates
 
+def get_funding_placement_analysis(connection):
+    """runs procedure to analyze the impact of total funding on the participant's final placement"""
+    cursor = connection.cursor()
+    cursor.callproc('get_funding_placement_analysis')
+    funding = cursor.fetchall()
+    cursor.close()
+    return funding
+
 '''
 ==============================
 SELECT GAME OPERATIONS

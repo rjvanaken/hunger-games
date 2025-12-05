@@ -358,6 +358,61 @@ DELIMITER ;
 CALL get_total_district_victors();
 
 
+
+-- ========================================================================
+-- PROCEDURE: gets and displays sponsorship totals for all tributes
+-- ========================================================================
+DROP PROCEDURE IF EXISTS get_funding_placement_analysis();
+DELIMITER $$
+
+CREATE PROCEDURE get_funding_placement_analysis()
+BEGIN
+
+    SELECT 
+        CASE 
+            WHEN pd.final_placement = 1 THEN 'Winner (1st)'
+            WHEN pd.final_placement BETWEEN 2 AND 5 THEN 'Top 5'
+            WHEN pd.final_placement BETWEEN 6 AND 12 THEN 'Upper Half'
+            ELSE 'Lower Half'
+        END as placement_group,
+        AVG(COALESCE(SUM(s.sponsor_amount), 0)) as avg_funding,
+        COUNT(DISTINCT pd.participant_id) as tribute_count
+    FROM participant_details pd
+    JOIN sponsorship s ON pd.participant_id = s.participant_id
+    GROUP BY placement_group
+    ORDER BY 
+        CASE 
+            WHEN placement_group = 'Winner (1st)' THEN 1
+            WHEN placement_group = 'Top 5' THEN 2
+            WHEN placement_group = 'Upper Half' THEN 3
+            ELSE 4
+        END;
+END $$
+
+DELIMITER ;
+
+
+
+
+CREATE PROCEDURE view_game_staff(p_game_number INT)
+BEGIN
+    SELECT DISTINCT tm.name as name, tr.member_type as role, CAST(t.district AS CHAR) as district
+    FROM participant p
+    JOIN team_role tr ON p.participant_id = tr.participant_id
+    JOIN team_member tm ON tr.member_id = tm.member_id
+    JOIN tribute t ON p.tribute_id = t.tribute_id
+    WHERE p.game_number = p_game_number
+    UNION
+    SELECT gm.name as name, 'Gamemaker' as role, 'Capitol' as district
+    FROM game_creator gc
+    JOIN gamemaker gm ON gc.gamemaker_id = gm.gamemaker_id
+    WHERE gc.game_number = p_game_number;
+END $$
+
+DELIMITER ;
+
+DELIMITER ;
+
 -- ========================================================================
 -- PROCEDURE: returns the number of tributes per district
 -- ========================================================================
@@ -377,7 +432,6 @@ END $$
 
 DELIMITER ;
 
-CALL get_total_district_tributes();
 
 -- ========================================================================
 -- PROCEDURE: returns the success rate for the districts
@@ -1913,7 +1967,7 @@ DELIMITER ;
 -- doesn't exist and then insert into game_victor to set game's victor
 
 --          if the final_placement is updated from 1 to something else,
---          remove game_victor
+--          remove game_victor and victor if no longer needed
 -- ===========================================================================
 DROP TRIGGER IF EXISTS set_victor_upon_winner_updated;
 
