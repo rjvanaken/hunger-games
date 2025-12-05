@@ -605,11 +605,10 @@ DROP PROCEDURE IF EXISTS view_tributes;
 DELIMITER $$
 
 CREATE PROCEDURE view_tributes(p_name VARCHAR(64), p_district INT)
-
 BEGIN
     SELECT * FROM tribute WHERE 1=1
-    AND (p_name is NULL OR name LIKE p_name)
-    AND (p_district is NULL OR district = p_district);
+    AND (p_name IS NULL OR name LIKE CONCAT('%', p_name, '%'))
+    AND (p_district IS NULL OR district = p_district);
 END $$
 
 DELIMITER ;
@@ -622,10 +621,9 @@ DROP PROCEDURE IF EXISTS view_sponsors;
 DELIMITER $$
 
 CREATE PROCEDURE view_sponsors(p_name VARCHAR(64))
-
 BEGIN
     SELECT * FROM sponsor WHERE 1=1
-    AND (p_name is NULL OR name LIKE p_name);
+    AND (p_name IS NULL OR name LIKE CONCAT('%', p_name, '%'));
 END $$
 
 DELIMITER ;
@@ -638,18 +636,16 @@ DROP PROCEDURE IF EXISTS view_sponsorships;
 DELIMITER $$
 
 CREATE PROCEDURE view_sponsorships(p_game_number INT, p_tribute_name VARCHAR(64))
-
 BEGIN
-        SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount as sponsor_amount, p.game_number
-        FROM sponsorship sp
-        JOIN sponsor s ON sp.sponsor_id = s.sponsor_id
-        JOIN participant p ON sp.participant_id = p.participant_id
-        JOIN tribute t ON p.tribute_id = t.tribute_id
-        WHERE 1=1
-        AND (p_game_number is NULL or p.game_number = p_game_number)
-        AND (p_tribute_name is NULL or t.name LIKE p_tribute_name)
-        ORDER BY sp.sponsor_amount DESC;
-
+    SELECT sp.sponsor_id as sponsor_id, sp.participant_id as participant_id, s.name as sponsor_name, t.name AS tribute_name, sp.sponsor_amount as sponsor_amount, p.game_number
+    FROM sponsorship sp
+    JOIN sponsor s ON sp.sponsor_id = s.sponsor_id
+    JOIN participant p ON sp.participant_id = p.participant_id
+    JOIN tribute t ON p.tribute_id = t.tribute_id
+    WHERE 1=1
+    AND (p_game_number IS NULL OR p.game_number = p_game_number)
+    AND (p_tribute_name IS NULL OR t.name LIKE CONCAT('%', p_tribute_name, '%'))
+    ORDER BY sp.sponsor_amount DESC;
 END $$
 
 DELIMITER ;
@@ -667,50 +663,21 @@ CREATE PROCEDURE view_games(
     p_victor_name VARCHAR(100)
 )
 BEGIN
-    SET @sql = 'SELECT g.game_number, g.required_tribute_count as tribute_count, 
-                g.start_date, g.end_date, g.game_status,
-                GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ", ") as victor_names 
-                FROM game g
-                LEFT JOIN game_victor gv ON g.game_number = gv.game_number
-                LEFT JOIN victor v ON gv.victor_id = v.victor_id
-                LEFT JOIN tribute t ON v.victor_id = t.tribute_id';
-    
-    -- Only add participant joins if tribute_name filter is used
-    IF p_tribute_name IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' LEFT JOIN participant p ON g.game_number = p.game_number
-                                  LEFT JOIN tribute participant_t ON p.tribute_id = participant_t.tribute_id');
-    END IF;
-    
-    SET @sql = CONCAT(@sql, ' WHERE 1=1');
-    
-    -- Add game_number filter
-    IF p_game_number IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' AND g.game_number = ', p_game_number);
-    END IF;
-    
-    -- Add tribute_name filter
-    IF p_tribute_name IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' AND participant_t.name LIKE "%', p_tribute_name, '%"');
-    END IF;
-    
-    -- Add victor_name filter
-    IF p_victor_name IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' AND g.game_number IN (
-            SELECT DISTINCT gv2.game_number 
-            FROM game_victor gv2
-            JOIN victor v2 ON gv2.victor_id = v2.victor_id
-            JOIN tribute t2 ON v2.victor_id = t2.tribute_id
-            WHERE t2.name LIKE "%', p_victor_name, '%")');
-    END IF;
-    
-    
-    SET @sql = CONCAT(@sql, ' GROUP BY g.game_number, g.start_date, g.end_date, g.required_tribute_count
-                              ORDER BY g.game_number');
-    
-    
-    PREPARE stmt FROM @sql;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+    SELECT g.game_number, g.required_tribute_count as tribute_count, 
+           g.start_date, g.end_date, g.game_status,
+           GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ", ") as victor_names 
+    FROM game g
+    LEFT JOIN game_victor gv ON g.game_number = gv.game_number
+    LEFT JOIN victor v ON gv.victor_id = v.victor_id
+    LEFT JOIN tribute t ON v.victor_id = t.tribute_id
+    LEFT JOIN participant p ON g.game_number = p.game_number
+    LEFT JOIN tribute participant_t ON p.tribute_id = participant_t.tribute_id
+    WHERE 1=1
+    AND (p_game_number IS NULL OR g.game_number = p_game_number)
+    AND (p_tribute_name IS NULL OR participant_t.name LIKE CONCAT('%', p_tribute_name, '%'))
+    AND (p_victor_name IS NULL OR t.name LIKE CONCAT('%', p_victor_name, '%'))
+    GROUP BY g.game_number, g.start_date, g.end_date, g.required_tribute_count, g.game_status
+    ORDER BY g.game_number;
 END$$
 
 DELIMITER ;
@@ -723,14 +690,13 @@ DROP PROCEDURE IF EXISTS view_gamemakers;
 DELIMITER $$
 
 CREATE PROCEDURE view_gamemakers(p_name VARCHAR(64), p_game_number INT)
-
 BEGIN
     SELECT DISTINCT g.gamemaker_id as gamemaker_id, g.name as name
     FROM gamemaker g
     LEFT JOIN game_creator gc ON g.gamemaker_id = gc.gamemaker_id
-    WHERE 1=1 -- for easy visuals for the and conditions below to line up 
-    AND (p_name is NULL OR name = p_name)
-    AND (p_game_number is NULL OR gc.game_number = p_game_number)
+    WHERE 1=1
+    AND (p_name IS NULL OR g.name LIKE CONCAT('%', p_name, '%'))
+    AND (p_game_number IS NULL OR gc.game_number = p_game_number)
     GROUP BY g.gamemaker_id
     ORDER BY g.gamemaker_id;
 END $$
@@ -745,46 +711,22 @@ DROP PROCEDURE IF EXISTS view_team_members;
 DELIMITER $$
 
 CREATE PROCEDURE view_team_members(p_name VARCHAR(64), p_member_type VARCHAR(64), p_tribute_name VARCHAR(64))
-
 BEGIN
-    SET @sql = 'SELECT tm.member_id, tm.name, 
-                GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ", ") as roles
-                FROM team_member tm
-                LEFT JOIN team_role tr ON tm.member_id = tr.member_id
-                WHERE 1=1';
-    
-    -- Add name filter
-    IF p_name IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' AND tm.name LIKE "%', p_name, '%"');
-    END IF;
-    
-    -- Add member_type filter
-    IF p_member_type IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' AND tm.member_id IN (
-            SELECT DISTINCT tr2.member_id
-            FROM team_role tr2
-            WHERE tr2.member_type = "', p_member_type, '")');
-    END IF;
-    
-    -- Add tribute_name filter
-    IF p_tribute_name IS NOT NULL THEN
-        SET @sql = CONCAT(@sql, ' AND tm.member_id IN (
-            SELECT DISTINCT tr2.member_id
-            FROM team_role tr2
-            JOIN participant p ON tr2.participant_id = p.participant_id
-            JOIN tribute t ON p.tribute_id = t.tribute_id
-            WHERE t.name LIKE "%', p_tribute_name, '%")');
-    END IF;
-    
-    SET @sql = CONCAT(@sql, ' GROUP BY tm.member_id, tm.name
-                              ORDER BY tm.member_id ASC');
-    
-    PREPARE stmt FROM @sql;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
+    SELECT tm.member_id, tm.name, 
+           GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ", ") as roles
+    FROM team_member tm
+    LEFT JOIN team_role tr ON tm.member_id = tr.member_id
+    LEFT JOIN participant p ON tr.participant_id = p.participant_id
+    LEFT JOIN tribute t ON p.tribute_id = t.tribute_id
+    WHERE 1=1
+    AND (p_name IS NULL OR tm.name LIKE CONCAT('%', p_name, '%'))
+    AND (p_member_type IS NULL OR tr.member_type = p_member_type)
+    AND (p_tribute_name IS NULL OR t.name LIKE CONCAT('%', p_tribute_name, '%'))
+    GROUP BY tm.member_id, tm.name
+    ORDER BY tm.member_id ASC;
 END $$
 
-DELIMITER ; 
+DELIMITER ;
 
 
 -- ========================================
@@ -794,18 +736,16 @@ DROP PROCEDURE IF EXISTS view_participants;
 DELIMITER $$
 
 CREATE PROCEDURE view_participants(p_tribute_name VARCHAR(64), p_age_during_games INT, p_game_number INT, p_training_score INT, p_intelligence_score INT, p_likeability_score INT)
-
 BEGIN
     SELECT * FROM participant_details
     WHERE 1=1 
-    AND (p_tribute_name is NULL OR name LIKE p_tribute_name)
-    AND (p_age_during_games is NULL OR age_during_games = p_age_during_games)
-    AND (p_game_number is NULL OR game_number = p_game_number)
-    AND (p_training_score is NULL OR training_score = p_training_score)
-    AND (p_intelligence_score is NULL OR intelligence_score = p_intelligence_score)
-    AND (p_likeability_score is NULL OR likeability_score = p_likeability_score)
+    AND (p_tribute_name IS NULL OR name LIKE CONCAT('%', p_tribute_name, '%'))
+    AND (p_age_during_games IS NULL OR age_during_games = p_age_during_games)
+    AND (p_game_number IS NULL OR game_number = p_game_number)
+    AND (p_training_score IS NULL OR training_score = p_training_score)
+    AND (p_intelligence_score IS NULL OR intelligence_score = p_intelligence_score)
+    AND (p_likeability_score IS NULL OR likeability_score = p_likeability_score)
     ORDER BY game_number, district, gender;
-    
 END $$
 DELIMITER ;
 
@@ -823,7 +763,7 @@ BEGIN
     JOIN game_victor gv ON v.victor_id = gv.victor_id
     JOIN tribute t ON v.victor_id = t.tribute_id
     WHERE 1=1 
-    AND (p_tribute_name IS NULL OR t.name = p_tribute_name)
+    AND (p_tribute_name IS NULL OR t.name LIKE CONCAT('%', p_tribute_name, '%'))
     AND (p_game_number IS NULL OR gv.game_number = p_game_number)
     GROUP BY v.victor_id, t.name, t.district
     ORDER BY v.victor_id ASC;
