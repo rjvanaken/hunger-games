@@ -886,7 +886,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Tribute does not exist';
     END IF;
 
-    IF (SELECT COUNT(*) FROM district WHERE district_num = p_district) = 0 THEN
+    IF p_district IS NOT NULL AND (SELECT COUNT(*) FROM district WHERE district_num = p_district) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'District does not exist';
     END IF;
@@ -1208,29 +1208,38 @@ CREATE PROCEDURE edit_participant(
     p_likeability_score INT
 )
 BEGIN
-    -- Check if participant exists
     IF (SELECT COUNT(*) FROM participant WHERE participant_id = p_participant_id) = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Participant does not exist';
     ELSE
-        -- Validate scores if provided
-        IF p_intelligence_score IS NOT NULL AND (p_intelligence_score < 1 OR p_intelligence_score > 10) THEN
+        -- Validate scores if being set (not NULL and not sentinel)
+        IF p_intelligence_score IS NOT NULL AND p_intelligence_score != -1 AND (p_intelligence_score < 1 OR p_intelligence_score > 10) THEN
             SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Intelligence score must be between 1 and 10';
         END IF;
         
-        IF p_likeability_score IS NOT NULL AND (p_likeability_score < 1 OR p_likeability_score > 10) THEN
+        IF p_likeability_score IS NOT NULL AND p_likeability_score != -1 AND (p_likeability_score < 1 OR p_likeability_score > 10) THEN
             SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Likeability score must be between 1 and 10';
         END IF;
         
         UPDATE participant
-            SET final_placement = COALESCE(p_final_placement, final_placement),
-                intelligence_score = COALESCE(p_intelligence_score, intelligence_score),
-                likeability_score = COALESCE(p_likeability_score, likeability_score)
+            SET final_placement = CASE 
+                    WHEN p_final_placement = -1 THEN NULL 
+                    ELSE COALESCE(p_final_placement, final_placement) 
+                END,
+                intelligence_score = CASE 
+                    WHEN p_intelligence_score = -1 THEN NULL 
+                    ELSE COALESCE(p_intelligence_score, intelligence_score) 
+                END,
+                likeability_score = CASE 
+                    WHEN p_likeability_score = -1 THEN NULL 
+                    ELSE COALESCE(p_likeability_score, likeability_score) 
+                END
             WHERE participant_id = p_participant_id;
     END IF;
 END $$
+
 
 DELIMITER ;
 

@@ -1450,7 +1450,7 @@ def get_yes_no_input(prompt):
 
 def get_tribute_inputs(on_update=False):
     if on_update:
-        name = get_string_input("Enter the tribute's full name or ENTER to skip", True)
+        name = get_string_input("Enter the tribute's full name or ENTER to skip")
         dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd' or ENTER to skip")
         gender = get_string_input("Enter the tribute's gender (M or F) or ENTER to skip")
         district = get_number_input("Enter the tribute's district number (1-12) or ENTER to skip", True)

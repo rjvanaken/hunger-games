@@ -342,7 +342,7 @@ def handle_manage_participants(connection):
             participant_id = menu.get_string_input('Enter participant ID to edit')
             print(f"\nUpdating Participant with ID of {participant_id}")
             print("─" * 42)
-            final_placement, intelligence_score, likeability_score = menu.get_participant_inputs_edit()
+            final_placement, intelligence_score, likeability_score = menu.get_participant_inputs(True)
             ops.edit_participant(connection, participant_id, final_placement, intelligence_score, likeability_score)
             
         elif choice == '4': # DELETE
