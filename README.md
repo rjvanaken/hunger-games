@@ -133,7 +133,7 @@ hunger-games/
 ├── menu.py                    # Menu display functions
 ├── utils.py                   # Utility functions
 ├── colors.py                  # Terminal color formatting
-├── hunger_games_dump.sql      # Database dump file
+├── create_thg.sql             # Creates tables for testing
 ├── .gitignore                 # gitignore
 └── README.md                  # This file
 ```
