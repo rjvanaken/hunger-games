@@ -95,9 +95,9 @@ CREATE TABLE IF NOT EXISTS team_role (
     member_type ENUM ('escort', 'stylist', 'mentor', 'prep') NOT NULL,
     PRIMARY KEY (member_id, participant_id),
     FOREIGN KEY (member_id) REFERENCES team_member(member_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT,
+		ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (participant_id) REFERENCES participant(participant_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- gamemaker -> game
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS game_creator (
     FOREIGN KEY (game_number) REFERENCES game(game_number)
 		ON UPDATE CASCADE ON DELETE RESTRICT,
     FOREIGN KEY (gamemaker_id) REFERENCES gamemaker(gamemaker_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT
+		ON UPDATE CASCADE ON DELETE CASCADE
     
 );
 -- gamemaker -> participant
@@ -118,9 +118,9 @@ CREATE TABLE IF NOT EXISTS gamemaker_score (
     assessment_score INT,
     PRIMARY KEY (gamemaker_id, participant_id),
     FOREIGN KEY (gamemaker_id) REFERENCES gamemaker(gamemaker_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT,
+		ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (participant_id) REFERENCES participant(participant_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT,
+		ON UPDATE CASCADE ON DELETE CASCADE,
         
 	CONSTRAINT check_assessment CHECK (assessment_score BETWEEN 1 AND 12)
 );
@@ -132,9 +132,9 @@ CREATE TABLE IF NOT EXISTS sponsorship (
     sponsor_amount DECIMAL (10, 2) NOT NULL,
     PRIMARY KEY (sponsor_id, participant_id),
     FOREIGN KEY (sponsor_id) REFERENCES sponsor(sponsor_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT,
+		ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (participant_id) REFERENCES participant(participant_id)
-		ON UPDATE CASCADE ON DELETE RESTRICT,
+		ON UPDATE CASCADE ON DELETE CASCADE,
 	
     CONSTRAINT check_sponsorship CHECK (sponsor_amount BETWEEN 0 AND 99999999.99)
 );
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS game_victor (
     game_number INT NOT NULL,
     PRIMARY KEY (victor_id, game_number),
     FOREIGN KEY (victor_id) REFERENCES victor(victor_id)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
+        ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (game_number) REFERENCES game(game_number)
         ON UPDATE CASCADE ON DELETE RESTRICT
 );
@@ -367,18 +367,24 @@ DELIMITER $$
 
 CREATE PROCEDURE get_funding_placement_analysis()
 BEGIN
-
     SELECT 
-        CASE 
-            WHEN pd.final_placement = 1 THEN 'Winner (1st)'
-            WHEN pd.final_placement BETWEEN 2 AND 5 THEN 'Top 5'
-            WHEN pd.final_placement BETWEEN 6 AND 12 THEN 'Upper Half'
-            ELSE 'Lower Half'
-        END as placement_group,
-        AVG(COALESCE(SUM(s.sponsor_amount), 0)) as avg_funding,
-        COUNT(DISTINCT pd.participant_id) as tribute_count
-    FROM participant_details pd
-    JOIN sponsorship s ON pd.participant_id = s.participant_id
+        placement_group,
+        AVG(total_funding) as avg_funding,
+        COUNT(DISTINCT participant_id) as tribute_count
+    FROM (
+        SELECT 
+            pd.participant_id,
+            CASE 
+                WHEN pd.final_placement = 1 THEN 'Winner (1st)'
+                WHEN pd.final_placement BETWEEN 2 AND 5 THEN 'Top 5'
+                WHEN pd.final_placement BETWEEN 6 AND 12 THEN 'Upper Half'
+                ELSE 'Lower Half'
+            END as placement_group,
+            COALESCE(SUM(s.sponsor_amount), 0) as total_funding
+        FROM participant_details pd
+        LEFT JOIN sponsorship s ON pd.participant_id = s.participant_id
+        GROUP BY pd.participant_id, pd.final_placement
+    ) as participant_funding
     GROUP BY placement_group
     ORDER BY 
         CASE 
@@ -608,7 +614,8 @@ CREATE PROCEDURE view_tributes(p_name VARCHAR(64), p_district INT)
 BEGIN
     SELECT * FROM tribute WHERE 1=1
     AND (p_name IS NULL OR name LIKE CONCAT('%', p_name, '%'))
-    AND (p_district IS NULL OR district = p_district);
+    AND (p_district IS NULL OR district = p_district)
+    ORDER BY tribute_id;
 END $$
 
 DELIMITER ;
@@ -623,7 +630,8 @@ DELIMITER $$
 CREATE PROCEDURE view_sponsors(p_name VARCHAR(64))
 BEGIN
     SELECT * FROM sponsor WHERE 1=1
-    AND (p_name IS NULL OR name LIKE CONCAT('%', p_name, '%'));
+    AND (p_name IS NULL OR name LIKE CONCAT('%', p_name, '%'))
+    ORDER BY sponsor_id;
 END $$
 
 DELIMITER ;
@@ -645,7 +653,7 @@ BEGIN
     WHERE 1=1
     AND (p_game_number IS NULL OR p.game_number = p_game_number)
     AND (p_tribute_name IS NULL OR t.name LIKE CONCAT('%', p_tribute_name, '%'))
-    ORDER BY sp.sponsor_amount DESC;
+    ORDER BY sp.sponsor_id;
 END $$
 
 DELIMITER ;
@@ -1885,7 +1893,7 @@ DELIMITER ;
 -- doesn't exist and then insert into game_victor to set game's victor
 
 --          if the final_placement is updated from 1 to something else,
---          remove game_victor and victor if no longer needed
+--          remove game_victor
 -- ===========================================================================
 DROP TRIGGER IF EXISTS set_victor_upon_winner_updated;
 
@@ -1895,30 +1903,43 @@ CREATE TRIGGER set_victor_upon_winner_updated
 AFTER UPDATE ON participant
 FOR EACH ROW
 BEGIN
-	IF NEW.final_placement = 1 AND (OLD.final_placement IS NULL OR OLD.final_placement != 1) THEN
-		-- create victor if not exists
-		CALL create_victor_from_tribute(NEW.tribute_id);
-		-- set victor
-		CALL set_game_victor(NEW.game_number, NEW.tribute_id);
+    IF NEW.final_placement = 1 AND (OLD.final_placement IS NULL OR OLD.final_placement != 1) THEN
+        -- create victor if not exists
+        CALL create_victor_from_tribute(NEW.tribute_id);
+        -- set victor
+        CALL set_game_victor(NEW.game_number, NEW.tribute_id);
 
-        -- delete game victor if set from 1 to something else, and victor if no longer needed
+    -- delete game_victor if changed from 1 to something else
     ELSEIF (NEW.final_placement != 1 OR NEW.final_placement IS NULL) AND (OLD.final_placement = 1) THEN
         DELETE FROM game_victor 
         WHERE game_number = NEW.game_number 
             AND victor_id = NEW.tribute_id;
 
-        DELETE FROM victor 
-        WHERE victor_id = NEW.tribute_id
-            AND NOT EXISTS (
-                SELECT 1 FROM game_victor gv 
-                WHERE gv.victor_id = NEW.tribute_id);
-
-	END IF;
+    END IF;
 END $$
 
 DELIMITER ;
 
+-- ======================================================================
+-- TRIGGER: delete victor after game_victor as long as victor_id 
+-- is not used in another game_victor
+-- ======================================================================
+DROP TRIGGER IF EXISTS cleanup_victor_after_game_victor_delete;
+DELIMITER $$
+CREATE TRIGGER cleanup_victor_after_game_victor_delete
+AFTER DELETE ON game_victor
+FOR EACH ROW
+BEGIN
+    -- If this victor has no more wins, delete them
+    IF NOT EXISTS (
+        SELECT 1 FROM game_victor 
+        WHERE victor_id = OLD.victor_id
+    ) THEN
+        DELETE FROM victor WHERE victor_id = OLD.victor_id;
+    END IF;
+END $$
 
+DELIMITER ;
 -- ===================================
 -- VIEW: Displays participant details
 -- ===================================

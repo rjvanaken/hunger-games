@@ -1,4 +1,5 @@
 import operations as ops
+import colors
 from colors import Colors
 import utils
 
@@ -168,7 +169,9 @@ def display_sponsorship_impact(results):
     placement_width = max(len(str(s['placement_group'])) for s in results)
     placement_width = max(placement_width, len('Placement Group'))
     
-    avg_funding_width = max(len(str(s['avg_funding'])) for s in results)
+    # Format avg_funding as money for width calculation
+    formatted_funding = [f"${s['avg_funding']:,.2f}" for s in results]
+    avg_funding_width = max(len(f) for f in formatted_funding)
     avg_funding_width = max(avg_funding_width, len('Avg Funding'))
     
     tributes_width = max(len(str(s['tribute_count'])) for s in results)
@@ -177,15 +180,16 @@ def display_sponsorship_impact(results):
     length = placement_width + avg_funding_width + tributes_width + 10
         
     print("\n╔" + "═" * (length - 2) + "╗")
-    print("║ SPONSORSHIP IMPACT ANALYSIS" + " " * (length - 13) + "║")
-    print("║ Analyzing the correlation between final placement and tribute funding" + " " * (length - 13) + "║")            
+    print("║ SPONSORSHIP IMPACT ANALYSIS" + " " * (length - 30) + "║")
+    print("║ analyzing the correlation between" + " " * (length - 36) + "║")            
+    print("║ final placement and tribute funding" + " " * (length - 38) + "║")            
     print("╟" + "─" * (length - 2) + "╢")
     print(f"║ {'Placement Group':<{placement_width}} │ {'Avg Funding':<{avg_funding_width}} │ {'Tributes':<{tributes_width}} ║")
     print("╠" + "═" * (length - 2) + "╣")
     for i, result in enumerate(results):
         if i > 0:
             print("╟" + "─" * (length - 2) + "╢")
-        print(f"║ {result['placement_group']:<{placement_width}} │ {result['avg_funding']:<{avg_funding_width}} │ {result['tribute_count']:<{tributes_width}} ║")
+        print(f"║ {result['placement_group']:<{placement_width}} │ ${result['avg_funding']:<{avg_funding_width-1},.2f} │ {result['tribute_count']:<{tributes_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
 def display_assessment_analysis(results):
@@ -346,7 +350,7 @@ def display_analytics_menu():
     print("║ 4: Victor Age Analysis" + " " * (length - 25) + "║")
     print("║    • see the win rate by age" + " " * (length - 31) + "║")
     print("╟" + "─" * (length - 2) + "╢")
-    print("║ 0: DISCONNECT FROM DATABASE" + " " * (length - 30) + "║")
+    print("║ 0: RETURN TO MAIN MENU" + " " * (length - 30) + "║")
     print("╚" + "═" * (length - 2) + "╝\n")
     choice = input("Enter choice: ")
     print("")

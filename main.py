@@ -1,6 +1,7 @@
 import database
 import operations as ops
 import menu
+import colors as colors
 from colors import Colors
 import sys
 import time
