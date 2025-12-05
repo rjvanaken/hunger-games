@@ -281,6 +281,7 @@ def view_entity_for_ref(connection, procedure_name):
 
 '''MANAGE TRIBUTES'''
 
+
 # CREATE TRIBUTE
 def create_tribute(connection, name, birth_date, gender, district):
     """Create tribute"""
@@ -300,9 +301,15 @@ def create_tribute(connection, name, birth_date, gender, district):
         print("\nDistrict must be between 1-12")
         return False
     
-    if birth_date is not None and birth_date != '':
-        dob = utils.validate_and_convert_date(birth_date)
+    # Validate and convert date - DOB is REQUIRED
+    if birth_date is None or birth_date == '':
+        print("\nDate of birth is required")
+        return False
     
+    dob = utils.validate_and_convert_date(birth_date)
+    if dob is None:
+        print("\nInvalid date format")
+        return False
     
     try:
         cursor = connection.cursor()
