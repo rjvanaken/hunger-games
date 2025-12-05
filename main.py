@@ -1,10 +1,7 @@
-import pymysql
 import database
 import operations as ops
 import menu
-from datetime import datetime
 from colors import Colors
-import utils
 import sys
 import time
 
@@ -50,7 +47,6 @@ def main():
 
     print("\nUse the menu below to proceed into the application\n")
 
-    test(connection)
 
 
     # Successful Connection - Main menu loop
@@ -80,19 +76,6 @@ def main():
             
         else:
             print("\nInvalid choice. Please try again.")
-
-
-def test(connection):
-    id = '74.12.f.1'
-    intel = ops.get_intelligence_score(connection, id)
-    like = ops.get_likeability_score(connection, id)
-    train = ops.get_training_score(connection, id)
-    print(intel)
-    print(like)
-    print(train)
-    prob = ops.get_raw_chances_of_winning(connection, id, train, intel, like)
-    print(prob)
-    print(utils.convert_to_percentage(prob))
 
 
 

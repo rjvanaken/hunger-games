@@ -1,5 +1,4 @@
 import operations as ops
-import colors as colors
 from colors import Colors
 import utils
 

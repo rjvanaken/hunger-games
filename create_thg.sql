@@ -360,7 +360,7 @@ CALL get_total_district_victors();
 
 
 -- ========================================================================
--- PROCEDURE: gets and displays sponsorship totals for all tributes
+-- PROCEDURE: gets correlation data between funding and placement
 -- ========================================================================
 DROP PROCEDURE IF EXISTS get_funding_placement_analysis();
 DELIMITER $$
