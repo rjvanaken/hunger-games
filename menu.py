@@ -54,7 +54,7 @@ def display_analytics_menu():
     print("║ 4: Victor Age Analysis" + " " * (length - 25) + "║")
     print("║    • see the win rate by age" + " " * (length - 31) + "║")
     print("╟" + "─" * (length - 2) + "╢")
-    print("║ 0: DISCONNECT FROM DATABASE" + " " * (length - 30) + "║")
+    print("║ 0: RETURN TO MAIN MENU" + " " * (length - 25) + "║")
     print("╚" + "═" * (length - 2) + "╝\n")
     choice = input("Enter choice: ")
     print("")
@@ -329,32 +329,6 @@ def display_game_info_on_dashboard(connection, game_info, ordinal_suffix):
 '''
 MANAGE RECORDS
 '''
-
-def display_analytics_menu():
-    """Display the analytics submenu"""
-    length = 46  # Adjust width as needed
-    
-    print("\n╔" + "═" * (length - 2) + "╗")
-    print("║" + " STATS & ANALYTICS" + " " * (length - 20) + "║")
-    print("╠" + "═" * (length - 2) + "╣")
-    print("║ 1: Win Predictions" + " " * (length - 21) + "║")
-    print("║    • see the predicted game outcome" + " " * (length - 38) + "║")
-    print("║" + " " * (length - 2) + "║")  # Blank line
-    print("║ 2: District Success Rates" + " " * (length - 28) + "║")
-    print("║    • see the success rate per district" + " " * (length - 41) + "║")
-    print("║" + " " * (length - 2) + "║")
-    print("║ 3: Sponsorship Impact Analysis" + " " * (length - 33) + "║")
-    print("║    • analyze the correlaton between" + " " * (length - 38) + "║")
-    print("║      tribute funding and their outcome" + " " * (length - 41) + "║")
-    print("║" + " " * (length - 2) + "║")
-    print("║ 4: Victor Age Analysis" + " " * (length - 25) + "║")
-    print("║    • see the win rate by age" + " " * (length - 31) + "║")
-    print("╟" + "─" * (length - 2) + "╢")
-    print("║ 0: RETURN TO MAIN MENU" + " " * (length - 30) + "║")
-    print("╚" + "═" * (length - 2) + "╝\n")
-    choice = input("Enter choice: ")
-    print("")
-    return choice
 
 
 def display_manage_records_menu():
