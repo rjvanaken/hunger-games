@@ -70,4 +70,16 @@ def validate_and_convert_date(date_string):
         date_obj = datetime.strptime(date_string, "%Y-%m-%d").date()
         return date_obj
     except ValueError:
-        return None 
+        return None
+    
+def confirm_action(action):
+    while True:
+        print(f"Are you sure you want to {action}? (Y/N)")
+        response = input("Your answer: ")
+        if response == 'Y' or response == 'y':
+            return True
+        elif response == 'N' or response == 'n':
+            return False
+        else:
+            print("Invalid entry")
+            
