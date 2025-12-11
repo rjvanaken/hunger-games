@@ -984,14 +984,14 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS create_game;
 DELIMITER $$
 
-CREATE PROCEDURE create_game(p_game_number INT, p_start_date DATE, p_required_tribute_count INT)
+CREATE PROCEDURE create_game(p_game_number INT, p_required_tribute_count INT)
 BEGIN
     IF (SELECT COUNT(*) FROM game WHERE game_number = p_game_number) = 1 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Game already exists';
     END IF;
-    INSERT INTO game(game_number, start_date, required_tribute_count)
-    VALUES (p_game_number, p_start_date, p_required_tribute_count);
+    INSERT INTO game(game_number, required_tribute_count)
+    VALUES (p_game_number, p_required_tribute_count);
 
 END $$
 

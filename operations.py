@@ -451,22 +451,17 @@ def delete_sponsor(connection, sponsor_id):
 '''MANAGE GAMES'''
 
 # CREATE GAME
-def create_game(connection, game_number, start_date, required_tribute_count=24):
+def create_game(connection, game_number, required_tribute_count=24):
     """Create game"""
     
     # Validate game number
     if game_number < 1:
         print("\nGame number must be greater than 0")
         return False
-    
-    start_date = utils.validate_and_convert_date(start_date)
-    if start_date == None:
-        print("\nStart date is required")
-        False
 
     try:
         cursor = connection.cursor()
-        cursor.callproc('create_game', [game_number, start_date, required_tribute_count])
+        cursor.callproc('create_game', [game_number, required_tribute_count])
         connection.commit()
         print("\nGame successfully created!")
         return True

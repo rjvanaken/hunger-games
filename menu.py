@@ -1448,11 +1448,10 @@ def get_games_inputs(on_update=False):
         
         return start_date, end_date, game_status, required_tribute_count
     else:
-        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd'", True)
         game_number = get_number_input("Enter the game number")
         required_tribute_count = get_number_input("Enter the required number of tributes")
 
-        return game_number, start_date, required_tribute_count
+        return game_number, required_tribute_count
 
 
 def get_team_member_inputs(on_update=False):
@@ -1466,7 +1465,7 @@ def get_team_member_inputs(on_update=False):
         if answer == 'Y' or answer == 'y':
             victor_id = get_number_input("Enter the team member's victor_id")
         else:
-            victor_id = None;
+            victor_id = None
         
     return name, victor_id
 
