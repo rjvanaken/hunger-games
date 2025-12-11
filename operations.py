@@ -370,11 +370,11 @@ def delete_tribute(connection, tribute_id):
         cursor.callproc('delete_tribute', [tribute_id])
         connection.commit()
         cursor.close()
-        print("Tribute successfully deleted")
+        print("\nTribute successfully deleted")
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -441,7 +441,7 @@ def delete_sponsor(connection, sponsor_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -522,7 +522,7 @@ def delete_game(connection, game_number):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -589,7 +589,7 @@ def delete_gamemaker(connection, gamemaker_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -616,7 +616,7 @@ def create_team_member(connection, name, victor_id=None):
         cursor = connection.cursor()
         cursor.callproc('create_team_member', [name, victor_id])
         connection.commit()
-        print("\Team member successfully created!")
+        print("\nTeam member successfully created!")
         return True
     except pymysql.Error as err:
         connection.rollback()
@@ -662,7 +662,7 @@ def delete_team_member(connection, member_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -743,7 +743,7 @@ def delete_participant(connection, participant_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -762,7 +762,7 @@ def delete_victor(connection, victor_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -840,7 +840,7 @@ def delete_team_role(connection, member_id, participant_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -915,7 +915,7 @@ def delete_sponsorship(connection, sponsor_id, participant_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -962,7 +962,7 @@ def delete_game_creator(connection, game_number, gamemaker_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -980,11 +980,11 @@ def delete_game_victor(connection, game_number, victor_id):
         cursor.callproc('delete_game_victor', [game_number, victor_id])
         connection.commit()
         cursor.close()
-        print("\Game victor successfully deleted!")
+        print("\nGame victor successfully deleted!")
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
@@ -1062,7 +1062,7 @@ def delete_gamemaker_score(connection, gamemaker_id, participant_id):
         return True
     except pymysql.Error as err:
         connection.rollback()
-        print(f"Database error: {err}")
+        print(f"\nDatabase error: {err}")
         return False
     finally:
         cursor.close()
