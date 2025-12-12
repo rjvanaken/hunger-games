@@ -277,8 +277,9 @@ def handle_manage_gamemakers(connection):
                 print("No gamemakers available to edit.")
                 continue
             id = menu.get_number_input('Enter ID of gamemaker to edit')
-            print(f"\nUpdating Gamemaker with ID of {id}")
-            print("─" * 42)
+            name = ops.get_name_from_id(connection, 'gamemaker', id)
+            entity = ops.view_gamemakers(connection, name)
+            menu.display_gamemakers(entity)
             name = menu.get_string_input("Enter the new full name of the gamemaker or ENTER to skip")
             ops.edit_gamemaker(connection, id, name)
             
