@@ -1,4 +1,5 @@
 from datetime import datetime
+import operations as ops
 
 def prepare_num_for_update(value, attribute_name, min=None, max=None):
     """
@@ -82,4 +83,12 @@ def confirm_action(action):
             return False
         else:
             print("Invalid entry")
+
+
+def get_and_validate_name_from_id(connection, entity, id, entity_name):
+    name = ops.get_name_from_id(connection, entity, id)
+    if name is None:
+        print(f"Error: {entity_name} with ID of {id} does not exist.")
+        return
+    print(f"Updating {entity_name}: {name}")
             
