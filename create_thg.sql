@@ -305,9 +305,9 @@ END $$
 DELIMITER ;	
 
 
--- ========================================================================
--- FUNCTION: calculates and returns the participant's age during the games
--- ========================================================================
+-- ===============================================
+-- FUNCTION: gets the name from the entity id
+-- ===============================================
 DROP FUNCTION IF EXISTS get_name_from_id;
 
 DELIMITER $$
@@ -329,7 +329,7 @@ BEGIN
         WHEN 'victor' THEN 
             SELECT name INTO p_name FROM victor WHERE victor = p_id;
         WHEN 'participant' THEN 
-            SELECT name INTO p_name FROM participant p JOIN tribute t ON p.tribute_id = t.tribute_id WHERE tribute_id = p_id;
+            SELECT name INTO p_name FROM participant_details WHERE tribute_id = p_id;
         ELSE
             SET p_entity = NULL;
     END CASE;
