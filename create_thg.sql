@@ -311,7 +311,7 @@ DELIMITER ;
 DROP FUNCTION IF EXISTS get_name_from_id;
 
 DELIMITER $$
-CREATE FUNCTION get_name_from_id(p_entity VARCHAR(64), p_id INT)
+CREATE FUNCTION get_name_from_id(p_entity VARCHAR(64), p_id INT, p_participant_id VARCHAR(64))
 RETURNS VARCHAR(64)
 DETERMINISTIC
 BEGIN
@@ -329,7 +329,7 @@ BEGIN
         WHEN 'victor' THEN 
             SELECT name INTO p_name FROM victor WHERE victor = p_id;
         WHEN 'participant' THEN 
-            SELECT name INTO p_name FROM participant_details WHERE tribute_id = p_id;
+            SELECT name INTO p_name FROM participant_details WHERE participant_id = p_participant_id;
         ELSE
             SET p_entity = NULL;
     END CASE;

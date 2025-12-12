@@ -79,9 +79,12 @@ def get_raw_chances_of_winning(connection, participant_id, training_score, intel
 # intelligence = 0.3
 
 
-def get_name_from_id(connection, entity, id):
+def get_name_from_id(connection, entity, id, participant_id=None):
+    """
+    gets name from ID. When participant, participant_id is used. Otherwise it is None
+    """
     cursor = connection.cursor()
-    cursor.execute("SELECT get_name_from_id(%s, %s) AS name", (entity, id))
+    cursor.execute("SELECT get_name_from_id(%s, %s, %s) AS name", (entity, id, participant_id))
     result = cursor.fetchone()
     cursor.close()
     return result['name'] if result else 0

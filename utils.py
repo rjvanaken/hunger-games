@@ -85,9 +85,8 @@ def confirm_action(action):
             print("Invalid entry")
 
 
-def validate_name_from_id(name, entity_name):
-    if name is None:
-        print(f"Error: {entity_name} with ID of {id} does not exist.")
-        return
-    print(f"Updating {entity_name}: {name}")
+
+
+
+    
             

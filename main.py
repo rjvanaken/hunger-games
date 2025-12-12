@@ -154,8 +154,12 @@ def handle_manage_tributes(connection):
                 print("No tributes available to edit.")
                 continue
             id = menu.get_number_input('Enter ID of tribute to edit')
-            print(f"\nUpdating Tribute with ID of {id}")
-            print("─" * 42)
+
+            # display tribute they are editing
+            name = ops.get_name_from_id(connection, 'tribute', id)
+            entity = ops.view_tributes(connection, name)
+            menu.display_tributes(entity)
+
             name, dob, gender, district = menu.get_tribute_inputs(True)
             ops.edit_tribute(connection, id, name, dob, gender, district)
             
@@ -195,9 +199,13 @@ def handle_manage_sponsors(connection):
                 print("No sponsors available to edit.")
                 continue
             id = menu.get_number_input('Enter ID of sponsor to edit')
-            print(f"\nUpdating Sponsor with ID of {id}")
-            print("─" * 42)
-            name = menu.get_string_input("Enter the new full name of the sponsor or ENTER to skip")
+
+            # display sponsor they are editing
+            name = ops.get_name_from_id(connection, 'sponsor', id)
+            entity = ops.view_sponsors(connection, name)
+            menu.display_sponsors(entity)
+
+            name = menu.get_string_input("\nEnter the new full name of the sponsor or ENTER to skip")
             ops.edit_sponsor(connection, id, name)
             
         elif choice == '4': # DELETE
@@ -229,15 +237,18 @@ def handle_manage_games(connection):
             game_number, required_tribute_count = menu.get_games_inputs()
             ops.create_game(connection, game_number, required_tribute_count)
             
-        elif choice == '3': # EDIT
+        elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
             if not rows:
                 print("No games available to edit.")
                 continue
             game_number = menu.get_number_input('Enter the number of the game to edit')
-            print(f"\nUpdating Game {game_number}")
-            print("─" * 42)
+
+            # display game they are editing
+            entity = ops.view_games(connection, game_number)
+            menu.display_team_members(entity)
+
             start_date, end_date, game_status, required_tribute_count = menu.get_games_inputs(True)
             ops.edit_game(connection, game_number, start_date, end_date, game_status, required_tribute_count)
             
@@ -277,9 +288,12 @@ def handle_manage_gamemakers(connection):
                 print("No gamemakers available to edit.")
                 continue
             id = menu.get_number_input('Enter ID of gamemaker to edit')
+
+            # display gamemaker they are editing
             name = ops.get_name_from_id(connection, 'gamemaker', id)
             entity = ops.view_gamemakers(connection, name)
             menu.display_gamemakers(entity)
+
             name = menu.get_string_input("Enter the new full name of the gamemaker or ENTER to skip")
             ops.edit_gamemaker(connection, id, name)
             
@@ -321,11 +335,16 @@ def handle_manage_team_members(connection):
                 print("No team members available to edit.")
                 continue
             id = menu.get_number_input('Enter ID of team_member to edit')
-            print(f"\nUpdating Team member with ID of {id}")
-            print("─" * 42)
+            
+            # display team member they are editing
+            name = ops.get_name_from_id(connection, 'team_member', id)
+            entity = ops.view_team_members(connection, name)
+            menu.display_team_members(entity)
+
             name, victor_id = menu.get_team_member_inputs(True)
             ops.edit_team_member(connection, id, name, victor_id)
             
+
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'team_member')
             menu.display_team_members_full(rows)
@@ -376,6 +395,15 @@ def handle_manage_participants(connection):
             final_placement, intelligence_score, likeability_score = menu.get_participant_inputs(True)
             ops.edit_participant(connection, participant_id, final_placement, intelligence_score, likeability_score)
             
+            # display participant they are editing
+            name = ops.get_name_from_id(connection, 'participant', None, participant_id)
+            entity = ops.view_partipants(connection, name)
+            menu.display_participants(entity)
+
+            # display participant they are editing
+            # MORE COMPLICATED, NEED TO ADJUST SQL 
+
+
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'participant')
             menu.display_participants_full(rows)
