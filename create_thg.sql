@@ -306,6 +306,42 @@ DELIMITER ;
 
 
 -- ========================================================================
+-- FUNCTION: calculates and returns the participant's age during the games
+-- ========================================================================
+DROP FUNCTION IF EXISTS get_name_from_id;
+
+DELIMITER $$
+CREATE FUNCTION get_name_from_id(p_entity VARCHAR(64), p_id INT)
+RETURNS VARCHAR(64)
+DETERMINISTIC
+BEGIN
+    DECLARE p_name VARCHAR(64);
+
+    CASE p_entity
+        WHEN 'tribute' THEN 
+            SELECT name INTO p_name FROM tribute WHERE tribute_id = p_id;
+        WHEN 'team_member' THEN
+            SELECT name INTO p_name FROM team_member WHERE member_id = p_id;
+        WHEN 'gamemaker' THEN 
+            SELECT name INTO p_name FROM gamemaker WHERE gamemaker_id = p_id;
+        WHEN 'sponsor' THEN 
+            SELECT name INTO p_name FROM sponsor WHERE sponsor_id = p_id;
+        WHEN 'victor' THEN 
+            SELECT name INTO p_name FROM victor WHERE victor = p_id;
+        WHEN 'participant' THEN 
+            SELECT name INTO p_name FROM participant p JOIN tribute t ON p.tribute_id = t.tribute_id WHERE tribute_id = p_id;
+        ELSE
+            SET p_entity = NULL;
+    END CASE;
+            
+    RETURN p_name;
+    
+END $$
+	
+DELIMITER ;	
+
+
+-- ========================================================================
 -- FUNCTION: calculates and determined the number of tributes remaining
 -- ========================================================================
 DROP FUNCTION IF EXISTS get_num_tributes_remaining;
