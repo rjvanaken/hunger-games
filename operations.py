@@ -78,6 +78,16 @@ def get_raw_chances_of_winning(connection, participant_id, training_score, intel
 # training = 0.5
 # intelligence = 0.3
 
+
+def get_name_from_id(connection, entity, id):
+    cursor = connection.cursor()
+    cursor.execute("SELECT get_name_from_id(%s, %s) AS name", (entity, id))
+    result = cursor.fetchone()
+    cursor.close()
+    return result['name'] if result else 0
+
+
+
 '''
 ==============================
 ANALYTICS OPERATIONS
@@ -140,19 +150,6 @@ def get_funding_placement_analysis(connection):
 SELECT GAME OPERATIONS
 ==============================
 '''
-
-def get_games(connection):
-    cursor = connection.cursor()
-    query = "SELECT game_number FROM game"
-    cursor.execute (query)
-    rows = cursor.fetchall()
-    games = []
-    for row in rows:
-        games.append(row['game_number'])
-
-    cursor.close()
-    return games
-
 
 def view_game_staff(connection, game):
     """View game staff list for dashboard, combines members and gamemakers"""
