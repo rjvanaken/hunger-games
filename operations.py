@@ -180,10 +180,10 @@ def view_tributes(connection, name=None, district=None):
     return tributes
 
 # View Sponsors / Sponsorships
-def view_sponsors(connection, name=None):
+def view_sponsors(connection, name=None, id=None):
     """View sponsors by optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_sponsors', [name])
+    cursor.callproc('view_sponsors', [name, id])
     sponsors = cursor.fetchall()
     cursor.close()
     return sponsors
@@ -207,20 +207,20 @@ def view_games(connection, game_number=None, tribute_name=None, victor_name=None
 
 
 # View Gamemakers
-def view_gamemakers(connection, name=None, game_number=None):
+def view_gamemakers(connection, name=None, game_number=None, gamemaker_id=None):
     """View gamemakers with optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_gamemakers', [name, game_number])
+    cursor.callproc('view_gamemakers', [name, game_number, gamemaker_id])
     gamemakers = cursor.fetchall()
     cursor.close()
     return gamemakers
 
 
 # View Team Member
-def view_team_members(connection, name=None, member_type=None, tribute_name=None):
+def view_team_members(connection, name=None, member_type=None, tribute_name=None, member_id=None):
     """View team members with optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_team_members', [name, member_type, tribute_name])
+    cursor.callproc('view_team_members', [name, member_type, tribute_name, member_id])
     team_members = cursor.fetchall()
     cursor.close()
     return team_members

@@ -160,6 +160,9 @@ def handle_manage_tributes(connection):
             entity = ops.view_tributes(connection, name)
             menu.display_tributes(entity)
 
+            if not entity:
+                continue
+
             name, dob, gender, district = menu.get_tribute_inputs(True)
             ops.edit_tribute(connection, id, name, dob, gender, district)
             
@@ -201,9 +204,11 @@ def handle_manage_sponsors(connection):
             id = menu.get_number_input('Enter ID of sponsor to edit')
 
             # display sponsor they are editing
-            name = ops.get_name_from_id(connection, 'sponsor', id)
-            entity = ops.view_sponsors(connection, name)
-            menu.display_sponsors(entity)
+            entity = ops.view_sponsors(connection, None, id)
+            menu.display_sponsors(connection, entity)
+
+            if not entity:
+                continue
 
             name = menu.get_string_input("\nEnter the new full name of the sponsor or ENTER to skip")
             ops.edit_sponsor(connection, id, name)
@@ -247,7 +252,10 @@ def handle_manage_games(connection):
 
             # display game they are editing
             entity = ops.view_games(connection, game_number)
-            menu.display_team_members(entity)
+            menu.display_games(entity)
+
+            if not entity:
+                continue
 
             start_date, end_date, game_status, required_tribute_count = menu.get_games_inputs(True)
             ops.edit_game(connection, game_number, start_date, end_date, game_status, required_tribute_count)
@@ -290,9 +298,11 @@ def handle_manage_gamemakers(connection):
             id = menu.get_number_input('Enter ID of gamemaker to edit')
 
             # display gamemaker they are editing
-            name = ops.get_name_from_id(connection, 'gamemaker', id)
-            entity = ops.view_gamemakers(connection, name)
+            entity = ops.view_gamemakers(connection, None, None, id)
             menu.display_gamemakers(entity)
+
+            if not entity:
+                continue
 
             name = menu.get_string_input("Enter the new full name of the gamemaker or ENTER to skip")
             ops.edit_gamemaker(connection, id, name)
@@ -337,8 +347,9 @@ def handle_manage_team_members(connection):
             id = menu.get_number_input('Enter ID of team_member to edit')
             
             # display team member they are editing
-            name = ops.get_name_from_id(connection, 'team_member', id)
-            entity = ops.view_team_members(connection, name)
+            entity = ops.view_team_members(connection, None, None, None, id)
+            if not entity:
+                continue
             menu.display_team_members(entity)
 
             name, victor_id = menu.get_team_member_inputs(True)
@@ -390,18 +401,18 @@ def handle_manage_participants(connection):
                 print("No participants available to edit.")
                 continue
             participant_id = menu.get_string_input('Enter ID of the participant to edit')
-            print(f"\nUpdating Participant with ID of {participant_id}")
-            print("─" * 42)
-            final_placement, intelligence_score, likeability_score = menu.get_participant_inputs(True)
-            ops.edit_participant(connection, participant_id, final_placement, intelligence_score, likeability_score)
             
             # display participant they are editing
             name = ops.get_name_from_id(connection, 'participant', None, participant_id)
             entity = ops.view_partipants(connection, name)
             menu.display_participants(entity)
-
-            # display participant they are editing
-            # MORE COMPLICATED, NEED TO ADJUST SQL 
+            
+            if not entity:
+                continue
+            
+            final_placement, intelligence_score, likeability_score = menu.get_participant_inputs(True)
+            ops.edit_participant(connection, participant_id, final_placement, intelligence_score, likeability_score)
+            
 
 
         elif choice == '4': # DELETE
@@ -748,7 +759,7 @@ def handle_view_sponsors(connection):
         
         elif choice == "2":
             name = menu.get_string_input("Enter sponsor name")
-            rows = ops.search_sponsor_by_name(connection, name)
+            rows = ops.view_sponsors(connection, name)
             menu.display_sponsors(connection, rows)
         
         elif choice == "3":
