@@ -1197,21 +1197,25 @@ def display_team_members(team_members):
     name_width = max(name_width, len('Name'))
     
     roles_width = max(len(str(tm['roles']).title() if tm['roles'] else 'TBD') for tm in team_members)
-    roles_width = max(roles_width, len('Roles')) + 5
+    roles_width = max(roles_width, len('Roles'))
     
-    length = id_width + name_width + roles_width + 10
+    victor_id_width = max((len(str(tm['victor_id'])) for tm in team_members if tm['victor_id']), default=0)
+    victor_id_width = max(victor_id_width, len('Victor ID'))
+
+    length = id_width + name_width + roles_width + victor_id_width + 13
         
     print("\n╔" + "═" * (length - 2) + "╗")
     print("║ TEAM MEMBERS" + " " * (length - 15) + "║")
     print("╟" + "─" * (length - 2) + "╢")
-    print(f"║ {'Member ID':<{id_width}} │ {'Name':<{name_width}} │ {'Roles':<{roles_width}} ║")
+    print(f"║ {'Member ID':<{id_width}} │ {'Name':<{name_width}} │ {'Roles':<{roles_width}} │ {'Victor ID':<{victor_id_width}} ║")
     print("╠" + "═" * (length - 2) + "╣")
     
     for i, member in enumerate(team_members):
         if i > 0:
             print("╟" + "─" * (length - 2) + "╢")
         roles = member['roles'].title() if member['roles'] else 'TBD'
-        print(f"║ {member['member_id']:<{id_width}} │ {member['name']:<{name_width}} │ {roles:<{roles_width}} ║")
+        victor_display = str(member['victor_id']) if member['victor_id'] else 'N/A'
+        print(f"║ {member['member_id']:<{id_width}} │ {member['name']:<{name_width}} │ {roles:<{roles_width}} │ {victor_display:<{victor_id_width}} ║")
     
     print("╚" + "═" * (length - 2) + "╝\n")
 

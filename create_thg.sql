@@ -759,7 +759,7 @@ DELIMITER $$
 CREATE PROCEDURE view_team_members(p_name VARCHAR(64), p_member_type VARCHAR(64), p_tribute_name VARCHAR(64), p_member_id INT)
 BEGIN
     SELECT tm.member_id, tm.name, 
-           GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ", ") as roles
+           GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ", ") as roles, tm.victor_id
     FROM team_member tm
     LEFT JOIN team_role tr ON tm.member_id = tr.member_id
     LEFT JOIN participant p ON tr.participant_id = p.participant_id
