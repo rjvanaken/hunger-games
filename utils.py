@@ -85,8 +85,7 @@ def confirm_action(action):
             print("Invalid entry")
 
 
-def get_and_validate_name_from_id(connection, entity, id, entity_name):
-    name = ops.get_name_from_id(connection, entity, id)
+def validate_name_from_id(name, entity_name):
     if name is None:
         print(f"Error: {entity_name} with ID of {id} does not exist.")
         return
