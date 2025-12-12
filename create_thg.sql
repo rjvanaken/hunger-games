@@ -663,10 +663,11 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_sponsors;
 DELIMITER $$
 
-CREATE PROCEDURE view_sponsors(p_name VARCHAR(64))
+CREATE PROCEDURE view_sponsors(p_name VARCHAR(64), p_sponsor_id INT)
 BEGIN
     SELECT * FROM sponsor WHERE 1=1
     AND (p_name IS NULL OR name LIKE CONCAT('%', p_name, '%'))
+    AND (p_sponsor_id IS NULL OR sponsor_id = p_sponsor_id)
     ORDER BY sponsor_id;
 END $$
 
@@ -733,7 +734,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_gamemakers;
 DELIMITER $$
 
-CREATE PROCEDURE view_gamemakers(p_name VARCHAR(64), p_game_number INT)
+CREATE PROCEDURE view_gamemakers(p_name VARCHAR(64), p_game_number INT, p_gamemaker_id INT)
 BEGIN
     SELECT DISTINCT g.gamemaker_id as gamemaker_id, g.name as name
     FROM gamemaker g
@@ -741,6 +742,7 @@ BEGIN
     WHERE 1=1
     AND (p_name IS NULL OR g.name LIKE CONCAT('%', p_name, '%'))
     AND (p_game_number IS NULL OR gc.game_number = p_game_number)
+    AND (p_gamemaker_id IS NULL OR g.gamemaker_id = p_gamemaker_id)
     GROUP BY g.gamemaker_id
     ORDER BY g.gamemaker_id;
 END $$
@@ -754,7 +756,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_team_members;
 DELIMITER $$
 
-CREATE PROCEDURE view_team_members(p_name VARCHAR(64), p_member_type VARCHAR(64), p_tribute_name VARCHAR(64))
+CREATE PROCEDURE view_team_members(p_name VARCHAR(64), p_member_type VARCHAR(64), p_tribute_name VARCHAR(64), p_member_id INT)
 BEGIN
     SELECT tm.member_id, tm.name, 
            GROUP_CONCAT(DISTINCT tr.member_type ORDER BY tr.member_type SEPARATOR ", ") as roles
@@ -766,6 +768,7 @@ BEGIN
     AND (p_name IS NULL OR tm.name LIKE CONCAT('%', p_name, '%'))
     AND (p_member_type IS NULL OR tr.member_type = p_member_type)
     AND (p_tribute_name IS NULL OR t.name LIKE CONCAT('%', p_tribute_name, '%'))
+    AND (p_member_id IS NULL OR tm.member_id = p_member_id)
     GROUP BY tm.member_id, tm.name
     ORDER BY tm.member_id ASC;
 END $$
@@ -800,7 +803,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_victors;
 DELIMITER $$
 
-CREATE PROCEDURE view_victors(p_tribute_name VARCHAR(64), p_game_number INT)
+CREATE PROCEDURE view_victors(p_tribute_name VARCHAR(64), p_game_number INT, p_victor_id INT)
 BEGIN
     SELECT v.victor_id, t.name, t.district, GROUP_CONCAT(DISTINCT gv.game_number ORDER BY gv.game_number SEPARATOR ', ') as games_won
     FROM victor v
@@ -809,6 +812,7 @@ BEGIN
     WHERE 1=1 
     AND (p_tribute_name IS NULL OR t.name LIKE CONCAT('%', p_tribute_name, '%'))
     AND (p_game_number IS NULL OR gv.game_number = p_game_number)
+    AND (p_victor_id IS NULL OR v.victor_id = p_victor_id)
     GROUP BY v.victor_id, t.name, t.district
     ORDER BY v.victor_id ASC;
 END $$
