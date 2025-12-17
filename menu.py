@@ -1449,19 +1449,40 @@ def get_yes_no_input(prompt):
 
 def get_tribute_inputs(on_update=False):
     if on_update:
-        name = get_string_input("Enter the tribute's full name or ENTER to skip")
-        dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd' or ENTER to skip")
-        gender = get_string_input("Enter the tribute's gender (M or F) or ENTER to skip")
-        district = get_number_input("Enter the tribute's district number (1-12) or ENTER to skip", True)
+        name = get_string_input("Enter the NEW full name or ENTER to skip", optional=True)
+        if name == 'CANCEL':
+            return 'CANCEL' 
+        
+        dob = get_string_input("Enter the NEW birthday or ENTER to skip", optional=True)
+        if dob == 'CANCEL':
+            return 'CANCEL'
+        
+        gender = get_string_input("Enter the NEW gender or ENTER to skip", optional=True)
+        if gender == 'CANCEL':
+            return 'CANCEL'
+        
+        district = get_number_input("Enter the NEW district or ENTER to skip", optional=True)
+        if district == 'CANCEL':
+            return 'CANCEL'
     else:
-
-        name = get_string_input("Enter the tribute's full name", True)
-        dob = get_string_input("Enter tribute's birthday in the format 'yyyy-mm-dd'", True)
-
-        gender = get_string_input("Enter the tribute's gender (M or F)", True)
-        district = get_number_input("Enter the tribute's district number (1-12)")
+        name = get_string_input("Enter the tribute's full name", optional=False)
+        if name == 'CANCEL':
+            return 'CANCEL'
+        
+        dob = get_string_input("Enter tribute's birthday 'yyyy-mm-dd'", optional=False)
+        if dob == 'CANCEL':
+            return 'CANCEL'
+        
+        gender = get_string_input("Enter the tribute's gender (M or F)", optional=False)
+        if gender == 'CANCEL':
+            return 'CANCEL'
+        
+        district = get_number_input("Enter the tribute's district (1-12)", optional=False)
+        if district == 'CANCEL':
+            return 'CANCEL'
 
     return name, dob, gender, district
+
 
 
 def get_games_inputs(on_update=False):

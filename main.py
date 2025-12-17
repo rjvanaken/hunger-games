@@ -144,7 +144,12 @@ def handle_manage_tributes(connection):
             rows = ops.view_table(connection, 'tribute')
             menu.display_tributes_full(rows)
         elif choice == '2': # CREATE
-            name, dob, gender, district = menu.get_tribute_inputs()
+            result = menu.get_tribute_inputs()
+
+            if utils.handle_cancel(result):
+                continue
+
+            name, dob, gender, district = result
             ops.create_tribute(connection, name, dob, gender, district)
             
         elif choice == '3': # EDIT
@@ -153,7 +158,11 @@ def handle_manage_tributes(connection):
             if not rows:
                 print("No tributes available to edit.")
                 continue
+        
             id = menu.get_number_input('Enter ID of tribute to edit')
+
+            if utils.handle_cancel(id):
+                continue
 
             # display tribute they are editing
             name = ops.get_name_from_id(connection, 'tribute', id)
@@ -163,8 +172,12 @@ def handle_manage_tributes(connection):
             if not entity:
                 continue
 
-            name, dob, gender, district = menu.get_tribute_inputs(True)
-            ops.edit_tribute(connection, id, name, dob, gender, district)
+            result = menu.get_tribute_inputs(True)
+            if utils.handle_cancel(result):
+                continue
+
+            name, dob, gender, district = result
+            ops.create_tribute(connection, name, dob, gender, district)
             
         elif choice == '4': # DELETE
             rows = ops.view_table(connection, 'tribute')

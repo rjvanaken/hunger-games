@@ -85,6 +85,18 @@ def confirm_action(action):
             print("Invalid entry")
 
 
+def handle_cancel(result):
+    """Check if result contains cancellation.
+    
+    Returns True if cancelled, False otherwise.
+    """
+    if result == 'CANCEL':
+        print("\nOperation cancelled.")
+        return True
+    
+    return False
+
+
 
 
 
