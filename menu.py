@@ -1385,32 +1385,53 @@ def display_districts(districts):
 '''
 INPUT FUNCTIONS
 '''
-def get_string_input(prompt, required=False):
+def get_string_input(prompt, optional=False):
     """Get string from user for:
     - names (tribute, gamemaker, team_member)
     - gender
     - dates
+    
+    Args:
+        optional: If True, empty input is allowed (returns "")
     """
+    full_prompt = f"{prompt} (0 to cancel)"
+    
     while True:
-        string = input(f"{prompt}: ")
-        if required and string == '':
-            print("an entry is required")
-        else:
-            return string
+        string = input(f"{full_prompt}: ").strip()
+        
+        if string == '0':
+            return 'CANCEL'
+        
+        if not optional and string == '':
+            print("An entry is required")
+            continue
+            
+        return string
 
-def get_number_input(prompt, update=False):
+
+def get_number_input(prompt, optional=False):
     """Get and validate number from user for:
     - game
     - district
     - scores
+    
+    Args:
+        optional: If True, empty input is allowed (returns "")
     """
+    full_prompt = f"{prompt} (0 to cancel)"
+    
     while True:
-        number = input(f"{prompt}: ").strip()
-        if update and number == "":
-            return str(number)
-
+        number = input(f"{full_prompt}: ").strip()
+        
+        if number == '0':
+            return 'CANCEL'
+        
+        if optional and number == "":
+            return str(number)  # Return "" for your prepare functions
+        
         if number.isdigit():
             return int(number)
+            
         print("Invalid input. Please enter a number.")
 
 
