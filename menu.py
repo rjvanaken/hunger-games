@@ -1487,15 +1487,32 @@ def get_tribute_inputs(on_update=False):
 
 def get_games_inputs(on_update=False):
     if on_update:
-        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd' or ENTER to skip")
-        end_date = get_string_input("Enter game's end date in the format 'yyyy-mm-dd' or ENTER to skip")
-        game_status = get_string_input("Enter the game status (planned, in progress, or completed) or ENTER to skip")
+
+        start_date = get_string_input("Enter game's start date in the format 'yyyy-mm-dd' or ENTER to skip", True)
+        if start_date == 'CANCEL':
+            return 'CANCEL'
+        
+        end_date = get_string_input("Enter game's end date in the format 'yyyy-mm-dd' or ENTER to skip", True)
+        if end_date == 'CANCEL':
+            return 'CANCEL'
+        
+        game_status = get_string_input("Enter the game status (planned, in progress, or completed) or ENTER to skip", True)
+        if game_status == 'CANCEL':
+            return 'CANCEL'
+
         required_tribute_count = get_number_input("Enter the required number of tributes or ENTER to skip", True)
+        if required_tribute_count == 'CANCEL':
+            return 'CANCEL'
         
         return start_date, end_date, game_status, required_tribute_count
+        
     else:
         game_number = get_number_input("Enter the game number")
+        if game_number == 'CANCEL':
+            return 'CANCEL'
         required_tribute_count = get_number_input("Enter the required number of tributes")
+        if required_tribute_count == 'CANCEL':
+            return 'CANCEL'
 
         return game_number, required_tribute_count
 
@@ -1503,13 +1520,27 @@ def get_games_inputs(on_update=False):
 def get_team_member_inputs(on_update=False):
     if on_update:
 
-        name = get_string_input("Enter the team member's full name or ENTER to skip")
+        name = get_string_input("Enter the team member's full name or ENTER to skip", True)
+        if name == 'CANCEL':
+            return 'CANCEL'
+        
         victor_id = get_number_input("Enter the team member's victor_id or ENTER to skip", True)
+        if victor_id == 'CANCEL':
+            return 'CANCEL'
+        
     else:
         answer = get_string_input("Was this team member a past victor? (Y/N)")
-        name = get_string_input("Enter the team_member's full name", True)
+        if answer == 'CANCEL':
+            return 'CANCEL'
+            
+        name = get_string_input("Enter the team_member's full name")
+        if name == 'CANCEL':
+            return 'CANCEL'
+        
         if answer == 'Y' or answer == 'y':
             victor_id = get_number_input("Enter the team member's victor_id")
+            if victor_id == 'CANCEL':
+                return 'CANCEL'
         else:
             victor_id = None
         
@@ -1520,59 +1551,125 @@ def get_participant_inputs(on_update=False):
     if on_update:
 
         final_placement = get_number_input("Enter the tribute's final placement or ENTER to skip", True)
+        if final_placement == 'CANCEL':
+            return 'CANCEL'
+        
         intelligence_score = get_number_input("Enter the tribute's intelligence score or ENTER to skip", True)
+        if intelligence_score == 'CANCEL':
+            return 'CANCEL'
+        
         likeability_score = get_number_input("Enter the tribute's likeability score or ENTER to skip", True)
+        if likeability_score == 'CANCEL':
+            return 'CANCEL'
          
         return final_placement, intelligence_score, likeability_score
     
     else:
         tribute_id = get_number_input("Enter the participant's tribute_id")
+        if tribute_id == 'CANCEL':
+            return 'CANCEL'
+        
         game_number = get_number_input("Enter the game number")
+        if game_number == 'CANCEL':
+            return 'CANCEL'
 
         return tribute_id, game_number
 
 def get_sponsorship_inputs(on_update=False):
     if on_update:
+
         sponsor_amount = get_number_input("Enter the new sponsor amount or ENTER to skip", True)
+        if sponsor_amount == 'CANCEL':
+            return 'CANCEL'
+        
         return sponsor_amount
+    
     else:
-        participant_id = get_string_input("Enter the participant ID", True)
+        participant_id = get_string_input("Enter the participant ID")
+        if participant_id == 'CANCEL':
+            return 'CANCEL'
+        
         sponsor_id = get_number_input("Enter the sponsor ID")
+        if sponsor_id == 'CANCEL':
+            return 'CANCEL'
+        
         sponsor_amount = get_number_input("Enter the sponsor amount")
+        if sponsor_amount == 'CANCEL':
+            return 'CANCEL'
+        
         return participant_id, sponsor_id, sponsor_amount
 
 
 def get_team_role_inputs(on_update=False):
     if on_update:
-        member_type = get_string_input("Enter the new member type (escort, mentor, stylist, prep) or ENTER to skip")
+
+        member_type = get_string_input("Enter the new member type (escort, mentor, stylist, prep) or ENTER to skip", True)
+        if member_type == 'CANCEL':
+            return 'CANCEL'
+        
         return member_type
     else:
         member_id = get_number_input("Enter the member ID")
-        participant_id = get_string_input("Enter the participant ID", True)
-        member_type = get_string_input("Enter the member type (escort, mentor, stylist, prep)", True)
+        if member_id == 'CANCEL':
+            return 'CANCEL'
+
+        participant_id = get_string_input("Enter the participant ID")
+        if participant_id == 'CANCEL':
+            return 'CANCEL'
+        
+        member_type = get_string_input("Enter the member type (escort, mentor, stylist, prep)")
+        if member_type == 'CANCEL':
+            return 'CANCEL'
+        
         return member_id, participant_id, member_type
 
 
 def get_gamemaker_score_inputs(on_update=False):
     if on_update:
+
         assessment_score = get_number_input("Enter the new assessment score (1-12) or ENTER to skip", True)
+        if assessment_score == 'CANCEL':
+            return 'CANCEL'
+        
         return assessment_score
+    
     else:
         gamemaker_id = get_number_input("Enter the gamemaker ID")
-        participant_id = get_string_input("Enter the participant ID", True)
+        if gamemaker_id == 'CANCEL':
+            return 'CANCEL'
+        
+        participant_id = get_string_input("Enter the participant ID")
+        if participant_id == 'CANCEL':
+            return 'CANCEL'
+        
         assessment_score = get_number_input("Enter the assessment score (1-12)")
+        if assessment_score == 'CANCEL':
+            return 'CANCEL'
+
         return gamemaker_id, participant_id, assessment_score
 
 
 def get_game_victor_inputs():
     game_number = get_number_input("Enter the game number")
+    if game_number == 'CANCEL':
+        return 'CANCEL'
+    
     victor_id = get_number_input("Enter the victor ID")
+    if victor_id == 'CANCEL':
+        return 'CANCEL'
+    
     return game_number, victor_id
 
 
 def get_game_creator_inputs():
     game_number = get_number_input("Enter the game number")
+    if game_number == 'CANCEL':
+        return 'CANCEL'
+    
     gamemaker_id = get_number_input("Enter the gamemaker ID")
+    if gamemaker_id == 'CANCEL':
+        return 'CANCEL'
+    
     return game_number, gamemaker_id
 
 
