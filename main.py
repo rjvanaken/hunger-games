@@ -440,12 +440,6 @@ def handle_manage_participants(connection):
             rows = ops.view_table(connection, 'participant')
             menu.display_participants_full(rows)
         elif choice == '2': # CREATE
-            games = ops.view_table(connection, 'game')
-            menu.display_games_full(games)
-            tributes = ops.view_table(connection, 'tribute')
-            menu.display_tributes_full(tributes)
-
-            print("Use the above tables to help create your Participant\n")
 
             result = menu.get_participant_inputs()
             if utils.handle_cancel(result):
@@ -539,10 +533,6 @@ def handle_manage_sponsorships(connection):
             rows = ops.view_entity_for_ref(connection, 'view_sponsorships_for_ref')
             menu.display_sponsorships_full(rows)
         elif choice == '2': # CREATE
-            sponsors = ops.view_table(connection, 'sponsor')
-            menu.display_sponsors_full(sponsors)
-            participants = ops.view_table(connection, 'participant')
-            menu.display_participants_full(participants)
 
             print("Use the above tables to help create your Sponsorship\n")
 
@@ -609,10 +599,6 @@ def handle_manage_team_roles(connection):
             rows = ops.view_entity_for_ref(connection, 'view_team_roles_for_ref')
             menu.display_team_roles_full(rows)
         elif choice == '2': # CREATE
-            participants = ops.view_table(connection, 'participant')
-            menu.display_participants_full(participants)
-            members = ops.view_table(connection, 'team_member')
-            menu.display_team_members_full(members)
 
             print("Use the above tables to help create your Team Role\n")
 
@@ -677,10 +663,6 @@ def handle_manage_gamemaker_scores(connection):
             rows = ops.view_entity_for_ref(connection, 'view_gamemaker_scores_for_ref')
             menu.display_gamemaker_scores_full(rows)
         elif choice == '2': # CREATE
-            participants = ops.view_table(connection, 'participant')
-            menu.display_participants_full(participants)
-            gamemakers = ops.view_table(connection, 'gamemaker')
-            menu.display_gamemakers_full(gamemakers)
             
             print("Use the above tables to help create your Gamemaker Score\n")
             result = menu.get_gamemaker_score_inputs()

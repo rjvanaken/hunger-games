@@ -2,6 +2,7 @@ import operations as ops
 import colors
 from colors import Colors
 import utils
+import menu
 
 def display_menu():
     """Display the main menu"""
@@ -1547,7 +1548,7 @@ def get_team_member_inputs(on_update=False):
     return name, victor_id
 
 
-def get_participant_inputs(on_update=False):
+def get_participant_inputs(connection, on_update=False):
     if on_update:
 
         final_placement = get_number_input("Enter the tribute's final placement or ENTER to skip", True)
@@ -1565,17 +1566,24 @@ def get_participant_inputs(on_update=False):
         return final_placement, intelligence_score, likeability_score
     
     else:
+        tributes = ops.view_table(connection, 'tribute')
+        menu.display_tributes_full(tributes)
+
         tribute_id = get_number_input("Enter the participant's tribute_id")
         if tribute_id == 'CANCEL':
             return 'CANCEL'
         
+        games = ops.view_table(connection, 'game')
+        menu.display_games_full(games)
+
         game_number = get_number_input("Enter the game number")
         if game_number == 'CANCEL':
             return 'CANCEL'
+        
 
         return tribute_id, game_number
 
-def get_sponsorship_inputs(on_update=False):
+def get_sponsorship_inputs(connection, on_update=False):
     if on_update:
 
         sponsor_amount = get_number_input("Enter the new sponsor amount or ENTER to skip", True)
@@ -1585,9 +1593,15 @@ def get_sponsorship_inputs(on_update=False):
         return sponsor_amount
     
     else:
+        participants = ops.view_table(connection, 'participant')
+        menu.display_participants_full(participants)
+
         participant_id = get_string_input("Enter the participant ID")
         if participant_id == 'CANCEL':
             return 'CANCEL'
+        
+        sponsors = ops.view_table(connection, 'sponsor')
+        menu.display_sponsors_full(sponsors)
         
         sponsor_id = get_number_input("Enter the sponsor ID")
         if sponsor_id == 'CANCEL':
@@ -1600,7 +1614,7 @@ def get_sponsorship_inputs(on_update=False):
         return participant_id, sponsor_id, sponsor_amount
 
 
-def get_team_role_inputs(on_update=False):
+def get_team_role_inputs(connection, on_update=False):
     if on_update:
 
         member_type = get_string_input("Enter the new member type (escort, mentor, stylist, prep) or ENTER to skip", True)
@@ -1609,13 +1623,20 @@ def get_team_role_inputs(on_update=False):
         
         return member_type
     else:
+        members = ops.view_table(connection, 'team_member')
+        menu.display_team_members_full(members)
+
         member_id = get_number_input("Enter the member ID")
         if member_id == 'CANCEL':
             return 'CANCEL'
 
+        participants = ops.view_table(connection, 'participant')
+        menu.display_participants_full(participants)
+
         participant_id = get_string_input("Enter the participant ID")
         if participant_id == 'CANCEL':
             return 'CANCEL'
+        
         
         member_type = get_string_input("Enter the member type (escort, mentor, stylist, prep)")
         if member_type == 'CANCEL':
@@ -1624,7 +1645,7 @@ def get_team_role_inputs(on_update=False):
         return member_id, participant_id, member_type
 
 
-def get_gamemaker_score_inputs(on_update=False):
+def get_gamemaker_score_inputs(connection, on_update=False):
     if on_update:
 
         assessment_score = get_number_input("Enter the new assessment score (1-12) or ENTER to skip", True)
@@ -1634,9 +1655,16 @@ def get_gamemaker_score_inputs(on_update=False):
         return assessment_score
     
     else:
+        
+        gamemakers = ops.view_table(connection, 'gamemaker')
+        menu.display_gamemakers_full(gamemakers)
+
         gamemaker_id = get_number_input("Enter the gamemaker ID")
         if gamemaker_id == 'CANCEL':
             return 'CANCEL'
+        
+        participants = ops.view_table(connection, 'participant')
+        menu.display_participants_full(participants)
         
         participant_id = get_string_input("Enter the participant ID")
         if participant_id == 'CANCEL':
