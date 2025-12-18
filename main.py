@@ -205,7 +205,12 @@ def handle_manage_sponsors(connection):
             rows = ops.view_table(connection, 'sponsor')
             menu.display_sponsors_full(rows)
         elif choice == '2': # CREATE
-            name = menu.get_string_input("Enter the full name of the sponsor", True)
+            result = menu.get_string_input("Enter the full name of the sponsor")
+
+            if utils.handle_cancel(result):
+                continue
+
+            name = result
             ops.create_sponsor(connection, name)
             
         elif choice == '3': # UPDATE
@@ -252,9 +257,15 @@ def handle_manage_games(connection):
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
         elif choice == '2': # CREATE
-            game_number, required_tribute_count = menu.get_games_inputs()
+            result = menu.get_games_inputs()
+
+            if utils.handle_cancel(result):
+                continue
+
+            game_number, required_tribute_count = result
+
             ops.create_game(connection, game_number, required_tribute_count)
-            
+
         elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'game')
             menu.display_games_full(rows)
@@ -269,6 +280,7 @@ def handle_manage_games(connection):
 
             if not entity:
                 continue
+
 
             start_date, end_date, game_status, required_tribute_count = menu.get_games_inputs(True)
             ops.edit_game(connection, game_number, start_date, end_date, game_status, required_tribute_count)
@@ -299,7 +311,12 @@ def handle_manage_gamemakers(connection):
             rows = ops.view_table(connection, 'gamemaker')
             menu.display_gamemakers_full(rows)
         elif choice == '2': # CREATE
-            name = menu.get_string_input("Enter the full name of the gamemaker", True)
+            result = menu.get_string_input("Enter the full name of the gamemaker")
+
+            if utils.handle_cancel(result):
+                continue
+
+            name = result
             ops.create_gamemaker(connection, name)
             
         elif choice == '3': # UPDATE
@@ -348,9 +365,14 @@ def handle_manage_team_members(connection):
             rows = ops.view_table(connection, 'team_member')
             menu.display_team_members_full(rows)
         elif choice == '2': # CREATE
-            name, victor_id = menu.get_team_member_inputs()
+            result = menu.get_team_member_inputs()
+
+            if utils.handle_cancel(result):
+                continue
+
+            name, victor_id = result
             ops.create_team_member(connection, name, victor_id)
-            
+
         elif choice == '3': # UPDATE
             rows = ops.view_table(connection, 'team_member')
             menu.display_team_members_full(rows)
@@ -403,8 +425,12 @@ def handle_manage_participants(connection):
             menu.display_tributes_full(tributes)
 
             print("Use the above tables to help create your Participant\n")
-            
-            tribute_id, game_number = menu.get_participant_inputs()
+
+            result = menu.get_participant_inputs()
+            if utils.handle_cancel(result):
+                continue
+
+            tribute_id, game_number = result
             ops.create_participant(connection, tribute_id, game_number)
             
         elif choice == '3': # UPDATE
@@ -491,8 +517,14 @@ def handle_manage_sponsorships(connection):
 
             print("Use the above tables to help create your Sponsorship\n")
 
-            participant_id, sponsor_id, sponsor_amount = menu.get_sponsorship_inputs()
+            result = menu.get_sponsorship_inputs()
+
+            if utils.handle_cancel(result):
+                continue
+
+            participant_id, sponsor_id, sponsor_amount = result
             ops.create_sponsorship(connection, participant_id, sponsor_id, sponsor_amount)
+
         elif choice == '3': # EDIT
             rows = ops.view_entity_for_ref(connection, 'view_sponsorships_for_ref')
             menu.display_sponsorships_full(rows)
@@ -541,11 +573,16 @@ def handle_manage_team_roles(connection):
             menu.display_participants_full(participants)
             members = ops.view_table(connection, 'team_member')
             menu.display_team_members_full(members)
-    
+
             print("Use the above tables to help create your Team Role\n")
 
-            member_id, participant_id, member_type = menu.get_team_role_inputs()
+            result = menu.get_team_role_inputs()
+            if utils.handle_cancel(result):
+                continue
+
+            member_id, participant_id, member_type = result
             ops.create_team_role(connection, member_id, participant_id, member_type)
+
         elif choice == '3': # EDIT
             rows = ops.view_entity_for_ref(connection, 'view_team_roles_for_ref')
             menu.display_team_roles_full(rows)
@@ -596,8 +633,10 @@ def handle_manage_gamemaker_scores(connection):
             menu.display_gamemakers_full(gamemakers)
             
             print("Use the above tables to help create your Gamemaker Score\n")
-
-            gamemaker_id, participant_id, assessment_score = menu.get_gamemaker_score_inputs()
+            result = menu.get_gamemaker_score_inputs()
+            if utils.handle_cancel(result):
+                continue
+            gamemaker_id, participant_id, assessment_score = result
             ops.create_gamemaker_score(connection, gamemaker_id, participant_id, assessment_score)
         elif choice == '3': # EDIT
             rows = ops.view_entity_for_ref(connection, 'view_gamemaker_scores_for_ref')
@@ -682,8 +721,13 @@ def handle_manage_game_creators(connection):
 
             print("Use the above tables to help create your Game Creator\n")
 
-            game_number, gamemaker_id = menu.get_game_creator_inputs()
+            result = menu.get_game_creator_inputs()
+            if utils.handle_cancel(result):
+                continue
+
+            game_number, gamemaker_id = result
             ops.create_game_creator(connection, game_number, gamemaker_id)
+            
         elif choice == '3': # DELETE
             rows = ops.view_entity_for_ref(connection, 'view_game_creators_for_ref')
             menu.display_game_creators_full(rows)
