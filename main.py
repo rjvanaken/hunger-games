@@ -441,7 +441,7 @@ def handle_manage_participants(connection):
             menu.display_participants_full(rows)
         elif choice == '2': # CREATE
 
-            result = menu.get_participant_inputs()
+            result = menu.get_participant_inputs(connection)
             if utils.handle_cancel(result):
                 continue
 
@@ -468,7 +468,7 @@ def handle_manage_participants(connection):
             if not entity:
                 continue
 
-            result = menu.get_participant_inputs(True)
+            result = menu.get_participant_inputs(connection, True)
 
             if utils.handle_cancel(result):
                 continue
@@ -534,9 +534,7 @@ def handle_manage_sponsorships(connection):
             menu.display_sponsorships_full(rows)
         elif choice == '2': # CREATE
 
-            print("Use the above tables to help create your Sponsorship\n")
-
-            result = menu.get_sponsorship_inputs()
+            result = menu.get_sponsorship_inputs(connection)
 
             if utils.handle_cancel(result):
                 continue
@@ -559,7 +557,7 @@ def handle_manage_sponsorships(connection):
             print(f"\nUpdating Sponsorship")
             print("─" * 42)
 
-            result = menu.get_sponsorship_inputs(True)
+            result = menu.get_sponsorship_inputs(connection, True)
 
             if utils.handle_cancel(result):
                 continue
@@ -600,9 +598,7 @@ def handle_manage_team_roles(connection):
             menu.display_team_roles_full(rows)
         elif choice == '2': # CREATE
 
-            print("Use the above tables to help create your Team Role\n")
-
-            result = menu.get_team_role_inputs()
+            result = menu.get_team_role_inputs(connection)
             if utils.handle_cancel(result):
                 continue
 
@@ -623,7 +619,7 @@ def handle_manage_team_roles(connection):
                 continue
             print(f"\nUpdating Team Role")
             print("─" * 42)
-            result = menu.get_team_role_inputs(True)
+            result = menu.get_team_role_inputs(connection, True)
             if utils.handle_cancel(result):
                 continue
             member_type = result
@@ -664,8 +660,7 @@ def handle_manage_gamemaker_scores(connection):
             menu.display_gamemaker_scores_full(rows)
         elif choice == '2': # CREATE
             
-            print("Use the above tables to help create your Gamemaker Score\n")
-            result = menu.get_gamemaker_score_inputs()
+            result = menu.get_gamemaker_score_inputs(connection)
             if utils.handle_cancel(result):
                 continue
             gamemaker_id, participant_id, assessment_score = result
@@ -684,7 +679,7 @@ def handle_manage_gamemaker_scores(connection):
                 continue
             print(f"\nUpdating Gamemaker Score")
             print("─" * 42)
-            result = menu.get_gamemaker_score_inputs(True)
+            result = menu.get_gamemaker_score_inputs(connection, True)
             if utils.handle_cancel(result):
                 continue
             assessment_score = result
@@ -762,7 +757,7 @@ def handle_manage_game_creators(connection):
 
             print("Use the above tables to help create your Game Creator\n")
 
-            result = menu.get_game_creator_inputs()
+            result = menu.get_game_creator_inputs(connection)
             if utils.handle_cancel(result):
                 continue
 
