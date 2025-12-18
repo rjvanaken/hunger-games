@@ -750,13 +750,7 @@ def handle_manage_game_creators(connection):
 
 
         elif choice == '2': # CREATE
-            gamemakers = ops.view_table(connection, 'gamemaker')
-            menu.display_gamemakers_full(gamemakers)
-            games = ops.view_table(connection, 'game')
-            menu.display_games_full(games)
-
-            print("Use the above tables to help create your Game Creator\n")
-
+            
             result = menu.get_game_creator_inputs(connection)
             if utils.handle_cancel(result):
                 continue

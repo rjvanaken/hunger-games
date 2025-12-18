@@ -1689,11 +1689,15 @@ def get_game_victor_inputs():
     return game_number, victor_id
 
 
-def get_game_creator_inputs():
+def get_game_creator_inputs(connection):
+    games = ops.view_table(connection, 'game')
+    menu.display_games_full(games)
     game_number = get_number_input("Enter the game number")
     if game_number == 'CANCEL':
         return 'CANCEL'
     
+    gamemakers = ops.view_table(connection, 'gamemaker')
+    menu.display_gamemakers_full(gamemakers)
     gamemaker_id = get_number_input("Enter the gamemaker ID")
     if gamemaker_id == 'CANCEL':
         return 'CANCEL'
