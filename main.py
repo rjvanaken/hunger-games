@@ -186,8 +186,10 @@ def handle_manage_tributes(connection):
                 print("No tributes available to delete.")
                 continue
             id = menu.get_number_input('Enter ID of tribute to delete')
-            if id == 0:
+            
+            if utils.handle_cancel(id):
                 continue
+
             if utils.confirm_action(f"delete this tribute") == True:
                 ops.delete_tribute(connection, id)
             else:                
@@ -239,8 +241,10 @@ def handle_manage_sponsors(connection):
                 print("No sponsors available to delete.")
                 continue
             id = menu.get_number_input('Enter ID of sponsor to delete')
-            if id == 0:
+
+            if utils.handle_cancel(id):
                 continue
+
             if utils.confirm_action(f"delete this sponsor") == True:
                 ops.delete_sponsor(connection, id)
             else:                
@@ -300,8 +304,10 @@ def handle_manage_games(connection):
                 print("No games available to delete.")
                 continue
             game_number = menu.get_number_input('Enter the number of the game to delete')
-            if game_number == 0:
+
+            if utils.handle_cancel(game_number):
                 continue
+
             if utils.confirm_action(f"delete this game") == True:
                 ops.delete_game(connection, game_number)
             else:                
@@ -359,8 +365,9 @@ def handle_manage_gamemakers(connection):
                 continue
             id = menu.get_number_input('Enter ID of gamemaker to delete')
 
-            if id == 0:
+            if utils.handle_cancel(id):
                 continue
+
             if utils.confirm_action(f"delete this gamemaker") == True:
                 ops.delete_gamemaker(connection, id)
             else:                
@@ -419,8 +426,7 @@ def handle_manage_team_members(connection):
                 print("No team members available to delete.")
                 continue
             id = menu.get_number_input('Enter ID of team member to delete')
-
-            if id == 0:
+            if utils.handle_cancel(id):
                 continue
             if utils.confirm_action(f"delete this team member") == True:
                 ops.delete_team_member(connection, id)
@@ -484,8 +490,7 @@ def handle_manage_participants(connection):
                 print("No participants available to delete.")
                 continue
             participant_id = menu.get_string_input('Enter the ID of the participant to delete')
-            
-            if participant_id == 0:
+            if utils.handle_cancel(participant_id):
                 continue
             if utils.confirm_action(f"delete this participant") == True:
                 ops.delete_participant(connection, participant_id)
@@ -511,8 +516,7 @@ def handle_manage_victors(connection):
                 print("No victors available to delete.")
                 continue
             victor_id = menu.get_number_input('Enter the ID of the victor to delete')
-
-            if victor_id == 0:
+            if utils.handle_cancel(victor_id):
                 continue
             if utils.confirm_action(f"delete this victor") == True:
                 ops.delete_victor(connection, victor_id)
@@ -572,10 +576,10 @@ def handle_manage_sponsorships(connection):
                 print("No sponsorships available to delete.")
                 continue
             sponsor_id = menu.get_number_input('Enter sponsor ID of the sponsorship to delete')
-            if sponsor_id == 0:
+            if utils.handle_cancel(sponsor_id):
                 continue
             participant_id = menu.get_string_input('Enter participant ID of the sponsorship to delete')
-            if participant_id == 0:
+            if utils.handle_cancel(participant_id):
                 continue
             if utils.confirm_action(f"delete this sponsorship") == True:
                 ops.delete_sponsorship(connection, sponsor_id, participant_id)
@@ -635,10 +639,10 @@ def handle_manage_team_roles(connection):
                 continue
 
             member_id = menu.get_number_input('Enter member ID of the team role to delete')
-            if member_id == 0:
+            if utils.handle_cancel(member_id):
                 continue
             participant_id = menu.get_string_input('Enter participant ID of the team role to delete')
-            if participant_id == 0:
+            if utils.handle_cancel(participant_id):
                 continue
             if utils.confirm_action(f"delete this team role") == True:
                 ops.delete_team_role(connection, member_id, participant_id)
@@ -692,10 +696,10 @@ def handle_manage_gamemaker_scores(connection):
                 continue
 
             gamemaker_id = menu.get_number_input('Enter gamemaker ID of the gamemaker score to delete')
-            if gamemaker_id == 0:
+            if utils.handle_cancel(gamemaker_id):
                 continue
             participant_id = menu.get_string_input('Enter participant ID of the gamemaker score to delete')
-            if participant_id == 0:
+            if utils.handle_cancel(participant_id):
                 continue
             if utils.confirm_action(f"delete this gamemaker score") == True:
                 ops.delete_gamemaker_score(connection, gamemaker_id, participant_id)
@@ -724,10 +728,10 @@ def handle_manage_game_victors(connection):
                 continue
 
             game_number = menu.get_number_input('Enter game number of the game victor to delete')
-            if game_number == 0:
+            if utils.handle_cancel(game_number):
                 continue
             victor_id = menu.get_number_input('Enter victor ID of the game victor to delete')
-            if victor_id == 0:
+            if utils.handle_cancel(victor_id):
                 continue
             if utils.confirm_action(f"delete this game victor") == True:
                 ops.delete_game_victor(connection, game_number, victor_id)
@@ -750,7 +754,7 @@ def handle_manage_game_creators(connection):
 
 
         elif choice == '2': # CREATE
-            
+
             result = menu.get_game_creator_inputs(connection)
             if utils.handle_cancel(result):
                 continue
@@ -765,10 +769,10 @@ def handle_manage_game_creators(connection):
                 print("No game creators available to delete.")
                 continue
             game_number = menu.get_number_input('Enter game number of the game creator to delete')
-            if game_number == 0:
+            if utils.handle_cancel(game_number):
                 continue
             gamemaker_id = menu.get_number_input('Enter gamemaker ID of the game creator to delete')
-            if gamemaker_id == 0:
+            if utils.handle_cancel(gamemaker_id):
                 continue
             if utils.confirm_action(f"delete this game creator") == True:
                 ops.delete_game_creator(connection, game_number, gamemaker_id)
