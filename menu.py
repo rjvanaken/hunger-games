@@ -3,6 +3,7 @@ import colors
 from colors import Colors
 import utils
 import menu
+import plotext as plt
 
 def display_menu():
     """Display the main menu"""
@@ -160,6 +161,19 @@ def display_district_success(rates):
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
+    
+    districts = [r['district'] for r in rates]
+    victor_counts = [r['total_victors'] for r in rates]
+    
+    plt.plot_size(80, 20) 
+    plt.bar(districts, victor_counts)
+    plt.title("Victors by District")
+    plt.xlabel("District")
+    plt.ylabel("Total Victors")
+    plt.theme('pro')  # or 'clear', 'pro', 'retro', 'windows', 'girly', 'dreamland'
+
+    plt.show()
+
 def display_sponsorship_impact(results):
     """Display formatted list of the funding analysis"""
     if not results:
@@ -264,7 +278,7 @@ def display_game_dashboard(connection, game):
     display_game_staff(staff)
     predictions = ops.get_win_predictions(connection, game)
     display_win_predictions(predictions, game)
-    victors = ops.view_victors(connection, None, game)
+    victors = ops.view_victors(connection, tribute_name=None, game_id=game, victor_id=None)
     display_victors(victors)
     print("\n")
 

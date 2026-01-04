@@ -237,10 +237,10 @@ def view_partipants(connection, tribute_name=None, age_during_games=None, game_n
 
 
 # View Victors
-def view_victors(connection, tribute_name=None, game_number=None):
+def view_victors(connection, tribute_name=None, game_number=None, victor_id=None):
     """View victors with optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_victors', [tribute_name, game_number])
+    cursor.callproc('view_victors', [tribute_name, game_number, victor_id])
     victors = cursor.fetchall()
     cursor.close()
     return victors
