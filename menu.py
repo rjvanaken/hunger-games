@@ -108,7 +108,22 @@ def display_win_predictions(predictions, game_number):
         print(f"║ {prediction['name']:<{name_width}} │ {prediction['district']:<{district_width}} │ {prediction['training_score'] or 'N/A':<{training_width}} │ {prediction['intelligence_score'] or 'N/A':<{intel_width}} │ {prediction['likeability_score'] or 'N/A':<{like_width}} │ {chance:<{prediction_width}} ║")
         
     print("╚" + "═" * (length - 2) + "╝\n")
+    # display graph - only plot tributes with prediction scores
+    tributes_with_scores = [p for p in predictions if p['chances_of_winning'] is not None]
 
+    if tributes_with_scores:
+        names = [p['name'].split()[0] for p in tributes_with_scores]  # Just first name
+        chances = [float(p['chances_of_winning']) * 100 for p in tributes_with_scores]
+
+        plt.clear_figure()
+        plt.plot_size(80, 20)
+        plt.bar(names, chances, width=0.7)
+        plt.title(f"Game {game_number} Win Prediction Percentages")
+        plt.xlabel("Tribute Name")
+        plt.ylabel("Win Chance (%)")
+        plt.theme('pro')
+        plt.show()
+    print("\n")
 
     # Show the predicted winner
     if predictions and predictions[0]['chances_of_winning'] is not None:
@@ -122,6 +137,8 @@ def display_win_predictions(predictions, game_number):
         print(f"║{' ' * ((box_width - len(winner_name)) // 2)}{Colors.YELLOW}{winner_name}{Colors.RESET}{' ' * ((box_width - len(winner_name)) // 2)}║")
         print(f"║{' ' * ((box_width - len(f'Odds: {chance}')) // 2)}Odds: {chance}{' ' * ((box_width - len(f'Odds: {chance}')) // 2)}║")
         print("╚" + "═" * box_width + "╝\n")
+
+    print("\n")
 
 
 def display_district_success(rates):
@@ -163,16 +180,19 @@ def display_district_success(rates):
 
     
     districts = [r['district'] for r in rates]
-    victor_counts = [r['total_victors'] for r in rates]
+    victor_counts = [float(r['total_victors']) for r in rates]
     
+    plt.clear_figure()
     plt.plot_size(80, 20) 
-    plt.bar(districts, victor_counts)
+    plt.bar(districts, victor_counts, width=0.6)
     plt.title("Victors by District")
     plt.xlabel("District")
     plt.ylabel("Total Victors")
     plt.theme('pro')  # or 'clear', 'pro', 'retro', 'windows', 'girly', 'dreamland'
 
     plt.show()
+    
+    print("\n")
 
 def display_sponsorship_impact(results):
     """Display formatted list of the funding analysis"""
@@ -207,8 +227,19 @@ def display_sponsorship_impact(results):
         print(f"║ {result['placement_group']:<{placement_width}} │ ${result['avg_funding']:<{avg_funding_width-1},.2f} │ {result['tribute_count']:<{tributes_width}} ║")
     print("╚" + "═" * (length - 2) + "╝\n")
 
-def display_assessment_analysis(results):
-    pass
+    #display graph
+    placements = [r['placement_group'] for r in results]
+    funding_amounts = [float(r['avg_funding']) for r in results]  # Convert Decimal to float
+    
+    plt.clear_figure()
+    plt.plot_size(80, 20)
+    plt.bar(placements, funding_amounts, width=0.7)
+    plt.title("Average Funding by Placement Group")
+    plt.xlabel("Placement Group")
+    plt.ylabel("Average Funding ($)")
+    plt.theme('pro')
+    plt.show()
+
 
 
 def display_victor_age_analysis(results):
@@ -245,8 +276,19 @@ def display_victor_age_analysis(results):
     print("╚" + "═" * (length - 2) + "╝\n")
 
 
-def display_mentor_success_rates(rows):
-    pass
+    # display graph
+    ages = [r['age_during_games'] for r in results]
+    victor_counts = [r['total_victors'] for r in results]
+
+    plt.clear_figure()
+    plt.plot_size(80, 20)
+    plt.bar(ages, victor_counts, width=0.7)
+    plt.title("Victor Count by Age")
+    plt.xlabel("Age During Games")
+    plt.ylabel("Total Victors")
+    plt.theme('pro')
+    plt.show()
+
 
 
 
@@ -278,7 +320,7 @@ def display_game_dashboard(connection, game):
     display_game_staff(staff)
     predictions = ops.get_win_predictions(connection, game)
     display_win_predictions(predictions, game)
-    victors = ops.view_victors(connection, tribute_name=None, game_id=game, victor_id=None)
+    victors = ops.view_victors(connection, tribute_name=None, game_number=game, victor_id=None)
     display_victors(victors)
     print("\n")
 

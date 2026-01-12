@@ -86,8 +86,8 @@ def handle_select_game(connection):
     rows = ops.view_games(connection)
     menu.display_games(rows)
     while True:
-        game_number = menu.get_number_input("\nEnter the game number to view its game dashboard or 0 to RETURN")
-        if game_number == 0:
+        game_number = menu.get_number_input("\nEnter the game number to view its game dashboard")
+        if utils.handle_cancel(game_number):
             break
         rows = ops.view_games(connection, game_number)
         if not rows:
@@ -467,8 +467,7 @@ def handle_manage_participants(connection):
                 continue
             
             # display participant they are editing
-            name = ops.get_name_from_id(connection, 'participant', None, participant_id)
-            entity = ops.view_partipants(connection, name)
+            entity = ops.view_partipants(connection, None, None, None, None, None, None, participant_id)
             menu.display_participants(entity)
             
             if not entity:
@@ -1065,8 +1064,8 @@ def handle_win_predictions(connection):
     rows = ops.view_games(connection)
     menu.display_games(rows)
     while True:
-        game_number = menu.get_number_input("\nEnter the game number to view its win predictions or 0 to RETURN")
-        if game_number == 0:
+        game_number = menu.get_number_input("\nEnter the game number to view its win predictions")
+        if utils.handle_cancel(game_number):
             break
         rows = ops.view_games(connection, game_number)
         if not rows:

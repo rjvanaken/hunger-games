@@ -782,7 +782,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS view_participants;
 DELIMITER $$
 
-CREATE PROCEDURE view_participants(p_tribute_name VARCHAR(64), p_age_during_games INT, p_game_number INT, p_training_score INT, p_intelligence_score INT, p_likeability_score INT)
+CREATE PROCEDURE view_participants(p_tribute_name VARCHAR(64), p_age_during_games INT, p_game_number INT, p_training_score INT, p_intelligence_score INT, p_likeability_score INT, p_participant_id VARCHAR(64))
 BEGIN
     SELECT * FROM participant_details
     WHERE 1=1 
@@ -792,6 +792,7 @@ BEGIN
     AND (p_training_score IS NULL OR training_score = p_training_score)
     AND (p_intelligence_score IS NULL OR intelligence_score = p_intelligence_score)
     AND (p_likeability_score IS NULL OR likeability_score = p_likeability_score)
+    AND (p_participant_id IS NULL OR participant_id = p_participant_id)
     ORDER BY game_number, district, gender;
 END $$
 DELIMITER ;
@@ -2587,4 +2588,12 @@ INSERT INTO gamemaker_score (participant_id, gamemaker_id, assessment_score) VAL
 
 
 -- TODO: add more likeability and intellgence
-CAll edit_participant('74.12.f.1', 1, 8, 9);
+CALL edit_participant('74.12.F.1', NULL, 8, 9);   -- Katniss (Intelligence: 8, Likeability: 9)
+CALL edit_participant('74.1.F.1', NULL, 6, 8);    -- Glimmer (Intelligence: 6, Likeability: 8 - pretty, Capitol favorite)
+CALL edit_participant('74.1.M.1', NULL, 5, 6);    -- Marvel (Intelligence: 5, Likeability: 6 - Career, decent)
+CALL edit_participant('74.11.F.1', NULL, 7, 10);  -- Rue (Intelligence: 7, Likeability: 10 - innocent, beloved)
+CALL edit_participant('74.11.M.1', NULL, 8, 7);   -- Thresh (Intelligence: 8, Likeability: 7 - strong, honorable)
+CALL edit_participant('74.12.M.1', NULL, 8, 10);  -- Peeta (Intelligence: 8, Likeability: 10 - extremely likeable)
+CALL edit_participant('74.2.F.1', NULL, 7, 4);    -- Clove (Intelligence: 7, Likeability: 4 - skilled but cruel)
+CALL edit_participant('74.2.M.1', NULL, 6, 5);    -- Cato (Intelligence: 6, Likeability: 5 - threatening)
+CALL edit_participant('74.5.F.1', NULL, 9, 5);    -- Foxface (Intelligence: 9, Likeability: 5 - clever but not social)

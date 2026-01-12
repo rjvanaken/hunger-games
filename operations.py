@@ -227,10 +227,10 @@ def view_team_members(connection, name=None, member_type=None, tribute_name=None
 
 
 # View Participants
-def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None, intelligence_score=None, likeability_score=None):
+def view_partipants(connection, tribute_name=None, age_during_games=None, game_number=None, training_score=None, intelligence_score=None, likeability_score=None, participant_id=None):
     """view participants with optional filters"""
     cursor = connection.cursor()
-    cursor.callproc('view_participants', [tribute_name, age_during_games, game_number, training_score, intelligence_score, likeability_score])
+    cursor.callproc('view_participants', [tribute_name, age_during_games, game_number, training_score, intelligence_score, likeability_score, participant_id])
     participants = cursor.fetchall()
     cursor.close()
     return participants
